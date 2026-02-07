@@ -8,17 +8,9 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 
 public class Main {
+    private static final String databasePath = "jdbc:sqlite:database.db";
+
     public static void main(String[] args) {
-        Doctor doctor = new Doctor(0, "John", "Brown", 1,3,1990, "Surgeon");
-
-        //System.out.println(doctor);
-
-        Database database = new Database("jdbc:sqlite:database.db");
-
-        try {
-            System.out.println(database.addPatient("John", "Brown", LocalDate.now(), "Cancer"));
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-        }
+        Hospital hospital = new Hospital(databasePath);
     }
 }

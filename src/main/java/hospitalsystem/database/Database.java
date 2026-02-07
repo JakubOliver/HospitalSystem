@@ -14,7 +14,7 @@ public class Database {
         this.url = url;
 
         try (Connection conn = DriverManager.getConnection(url)) {
-            System.out.println("Connection to SQLite has been established.");
+            //System.out.println("Connection to SQLite has been established.");
 
             Statement stmt =  conn.createStatement();
             stmt.execute("CREATE TABLE IF NOT EXISTS patients (id INTEGER PRIMARY KEY, firstname text NOT NULL, lastname text NOT NULL, birth_date TEXT NOT NULL CHECK ( birth_date GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]' and date(birth_date) IS NOT NULL), anamnesis text NOT NULL);");
