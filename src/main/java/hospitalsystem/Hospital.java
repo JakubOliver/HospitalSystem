@@ -14,7 +14,9 @@ public class Hospital {
     private final Database database;
     private UIState uiState = UIState.RUN;
 
-    private final String header = """
+    private final String header =
+     """
+     
      /$$   /$$                               /$$   /$$               /$$        /$$$$$$                        /$$
     | $$  | $$                              |__/  | $$              | $$       /$$__  $$                      | $$
     | $$  | $$  /$$$$$$   /$$$$$$$  /$$$$$$  /$$ /$$$$$$    /$$$$$$ | $$      | $$  \\__/ /$$   /$$  /$$$$$$$ /$$$$$$    /$$$$$$  /$$$$$$/$$$$
@@ -25,7 +27,7 @@ public class Hospital {
     |__/  |__/ \\______/ |_______/ | $$____/ |__/   \\___/   \\_______/|__/       \\______/  \\____  $$|_______/    \\___/   \\_______/|__/ |__/ |__/
                                   | $$                                                   /$$  | $$
                                   | $$                                                  |  $$$$$$/
-   """;
+    """;
 
     public Hospital(String databasePath){
         database = new Database(databasePath);
@@ -72,17 +74,25 @@ public class Hospital {
     }
 
     private int getOption(Scanner scanner, int range){
-        System.out.print("Select an option: ");
-        int option = scanner.nextInt(); //TODO: maybe rewrite into do while
-        //TODO: validate number
+        int option = 0; //TODO: constant
+        String line;
 
-        while (option >= range || option <= 0){ //TODO: Constant
+        do {
             System.out.print("Select an option: ");
 
-            option = scanner.nextInt();
-        }
+            line =  scanner.nextLine();
 
-        scanner.nextLine();
+            try {
+                option = Integer.parseInt(line.trim());
+
+                if (option >= range || option <= 0){
+                    System.out.println("Invalid option: out of range");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid option: invalid format");
+            }
+
+        } while (option >= range || option <= 0);
 
         return option;
     }
@@ -100,10 +110,13 @@ public class Hospital {
     private void addPatient(Scanner scanner){
         System.out.print("First name: ");
         String firstName = scanner.nextLine();
+
         System.out.print("Last name: ");
         String lastName = scanner.nextLine();
+
         System.out.print("Date of birth (YYYY-MM-DD): ");
         String dateOfBirth = scanner.nextLine();
+
         System.out.print("Anamnesis: ");
         String anamnesis = scanner.nextLine();
 
@@ -113,11 +126,12 @@ public class Hospital {
             database.addPatient(firstName, lastName, LocalDate.parse(dateOfBirth), anamnesis);
 
             System.out.println("Success!");
-            System.out.print("Press enter to continue...");
-            String buffer = scanner.nextLine();
         } catch (Exception e){
-            System.out.println(e.getMessage());
+            System.out.println("Error: " + e.getMessage());
         }
+
+        System.out.print("Press enter to continue...");
+        scanner.nextLine();
     }
 
     private void UI(){
