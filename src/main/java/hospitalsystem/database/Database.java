@@ -23,6 +23,16 @@ public class Database {
         }
     }
 
+    private int getLastUsedId(Statement stmt) throws SQLException {
+        try (ResultSet rs = stmt.getGeneratedKeys()){
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+
+            throw new SQLException("Unable to get generated key.");
+        }
+    }
+
     public Patient addPatient(String firstname, String lastname, LocalDate birthDate, String anamnesis) throws Exception {
         try (Connection conn = DriverManager.getConnection(url)) {
             conn.setAutoCommit(false);
@@ -35,15 +45,12 @@ public class Database {
 
             stmt.executeUpdate();
 
-            try (ResultSet rs = stmt.getGeneratedKeys()) {
-                if (rs.next()) {
-                    System.out.println("Patient successfully added to the database");
-                    conn.commit();
+            try {
+                int id = getLastUsedId(stmt);
 
-                    return new Patient(rs.getInt(1), firstname, lastname, birthDate, anamnesis);
-                }
+                conn.commit();
 
-                throw new SQLException("Unable to get generated key.");
+                return new Patient(id, firstname, lastname, birthDate, anamnesis);
             } catch (SQLException e) {
                 conn.rollback();
 
