@@ -1,4 +1,4 @@
-package HospitalSystem;
+package hospitalsystem;
 
 public class Hospital {
 }

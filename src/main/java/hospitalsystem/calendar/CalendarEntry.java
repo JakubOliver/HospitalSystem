@@ -1,4 +1,4 @@
-package HospitalSystem.Calendar;
+package hospitalsystem.calendar;
 
 public class CalendarEntry {
 

@@ -1,4 +1,6 @@
-package HospitalSystem;
+package hospitalsystem;
+
+import hospitalsystem.personnel.Doctor;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -16,6 +18,10 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        connect();
+        //connect();
+
+        Doctor doctor = new Doctor(0, "John", "Brown", 1,3,1990, "Surgeon");
+
+        System.out.println(doctor);
     }
 }
