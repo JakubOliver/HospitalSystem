@@ -5,6 +5,7 @@ import hospitalsystem.personnel.Doctor;
 import hospitalsystem.personnel.Patient;
 import hospitalsystem.util.SystemLogger;
 
+import javax.xml.crypto.Data;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -105,7 +106,7 @@ public class Database {
         }
     }
 
-    public Patient addPatient(String firstname, String lastname, LocalDate birthDate, String anamnesis) throws Exception {
+    public Patient addPatient(String firstname, String lastname, LocalDate birthDate, String anamnesis) throws DatabaseException {
         try (Connection connection = DriverManager.getConnection(url)) {
             connection.setAutoCommit(false);
 
@@ -120,7 +121,7 @@ public class Database {
             return patient;
         } catch  (SQLException e) {
             System.out.println(e.getMessage());
-            throw new Exception("Unable to correctly add patient into database"); //TODO: use custom exception and use constant for the message
+            throw new DatabaseException(DatabaseException.patientDatabaseError);
         }
 
         /*
@@ -154,7 +155,7 @@ public class Database {
          */
     }
 
-    private void addDoctorDetails(Connection connection, int id, String specialization) throws Exception {
+    private void addDoctorDetails(Connection connection, int id, String specialization) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(insertDoctorDetail)){
             statement.setInt(1, id);
             statement.setString(2, specialization);
@@ -163,7 +164,7 @@ public class Database {
         }
     }
 
-    public Doctor addDoctor(String firstname, String lastname, LocalDate birthDate, String specialization) throws Exception {
+    public Doctor addDoctor(String firstname, String lastname, LocalDate birthDate, String specialization) throws DatabaseException {
         try (Connection connection = DriverManager.getConnection(url)) {
             connection.setAutoCommit(false);
 
@@ -174,11 +175,11 @@ public class Database {
 
             return new Doctor(id, firstname, lastname, birthDate, specialization);
         } catch  (SQLException e) {
-            throw new Exception("Unable to correctly add doctor into database"); //TODO: use custom exception and use constant for the message
+            throw new DatabaseException(DatabaseException.doctorDatabaseError);
         }
     }
 
-    private int pushAppointmentIntoDatabase(Connection connection, int patientId, int doctorId, LocalDateTime startTime, LocalDateTime endTime) throws Exception {
+    private int pushAppointmentIntoDatabase(Connection connection, int patientId, int doctorId, LocalDateTime startTime, LocalDateTime endTime) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(insertAppointment)){
             statement.setInt(1, patientId);
             statement.setInt(2, doctorId);
@@ -197,7 +198,7 @@ public class Database {
         }
     }
 
-    public CalendarEntry addAppointment(Patient patient, Doctor doctor, LocalDateTime startTime, LocalDateTime endTime) throws Exception {
+    public CalendarEntry addAppointment(Patient patient, Doctor doctor, LocalDateTime startTime, LocalDateTime endTime) throws DatabaseException {
         try (Connection connection = DriverManager.getConnection(url)) {
             connection.setAutoCommit(false);
 
@@ -208,7 +209,7 @@ public class Database {
             return new CalendarEntry(appointmentId, patient, doctor, startTime, endTime);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
-            throw new Exception("Unable to correctly add appointment into database");
+            throw new DatabaseException(DatabaseException.appointmentDatabaseError);
         }
     }
 }
