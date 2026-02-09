@@ -43,6 +43,8 @@ public class Patient extends Person{
     /** Returns anamnesis of patient */
     public String getAnamnesis() { return anamnesis; }
 
+    public static String getClassIdentifier() { return "patient"; }
+
     @Override
     public String toString() {
         return super.toString() + ", anamnesis: " + anamnesis;

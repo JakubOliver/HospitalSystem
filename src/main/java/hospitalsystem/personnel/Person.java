@@ -64,6 +64,8 @@ abstract public class Person {
     /** Returns age of person */
     public int getAge() { return Period.between(dateOfBirth, LocalDate.now()).getYears(); }
 
+    public static String getClassIdentifier() { return "person"; }
+
     @Override
     public String toString() {
         return "id: " + id + ", firstname: " + firstName + ", lastname: " + lastName + ", age: " + getAge();

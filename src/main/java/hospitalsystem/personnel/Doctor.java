@@ -43,6 +43,8 @@ public class Doctor extends Person{
     /** Returns specialization of doctor */
     public String getSpecialization() { return  specialization; }
 
+    public static String getClassIdentifier() { return "doctor"; }
+
     @Override
     public String toString() {
         return super.toString() + ", specialization: " + specialization;

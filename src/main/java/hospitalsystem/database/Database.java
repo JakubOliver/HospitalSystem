@@ -18,6 +18,8 @@ public class Database {
     private static final String insertPatient = "INSERT INTO patients(firstname, lastname, birth_date, anamnesis) VALUES (?, ?, ?, ?)";
     private static final String insertDoctor = "INSERT INTO patients(firstname, lastname, birth_date, specialization) VALUES (?, ?, ?, ?)";
 
+    private static final String getLastUsedIdError = "Unable to get generated key.";
+
     private final String url;
 
     public Database(String url){
@@ -74,7 +76,7 @@ public class Database {
                 return rs.getInt(1);
             }
 
-            throw new SQLException("Unable to get generated key.");
+            throw new SQLException(getLastUsedIdError);
         }
     }
 
@@ -110,7 +112,7 @@ public class Database {
         try (Connection connection = DriverManager.getConnection(url)) {
             connection.setAutoCommit(false);
 
-            int id = addPerson(connection, firstname, lastname, birthDate, "patient");
+            int id = addPerson(connection, firstname, lastname, birthDate, Patient.getClassIdentifier());
             addPatientDetails(connection, id, anamnesis);
 
             connection.commit();
@@ -168,7 +170,7 @@ public class Database {
         try (Connection connection = DriverManager.getConnection(url)) {
             connection.setAutoCommit(false);
 
-            int id = addPerson(connection, firstname, lastname, birthDate, "doctor");
+            int id = addPerson(connection, firstname, lastname, birthDate, Doctor.getClassIdentifier());
             addDoctorDetails(connection, id, specialization);
 
             connection.commit();
