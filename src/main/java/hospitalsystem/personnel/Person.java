@@ -6,7 +6,7 @@ import java.time.Period;
 /**
  * Represents generic person in hospital system.
  */
-abstract public class Person {
+public class Person {
     private final int id;
     private String firstName;
     private String lastName;
@@ -41,6 +41,13 @@ abstract public class Person {
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = LocalDate.of(year, month, day);
+    }
+
+    public Person(Person person){
+        this.id = person.id;
+        this.firstName = person.firstName;
+        this.lastName = person.lastName;
+        this.dateOfBirth = person.dateOfBirth;
     }
 
     /**

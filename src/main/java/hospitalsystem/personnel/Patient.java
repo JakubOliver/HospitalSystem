@@ -1,5 +1,8 @@
 package hospitalsystem.personnel;
 
+import hospitalsystem.personnel.util.PatientData;
+import hospitalsystem.personnel.util.PatientsDetails;
+
 import java.time.LocalDate;
 
 /**
@@ -38,6 +41,12 @@ public class Patient extends Person{
         super(id, firstName, lastName, day, month, year);
 
         this.anamnesis = anamnesis;
+    }
+
+    public Patient(Person person, PatientsDetails details){
+        super(person);
+
+        this.anamnesis = details.anamnesis();
     }
 
     /** Returns anamnesis of patient */

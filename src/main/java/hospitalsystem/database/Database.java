@@ -3,12 +3,15 @@ package hospitalsystem.database;
 import hospitalsystem.calendar.CalendarEntry;
 import hospitalsystem.personnel.Doctor;
 import hospitalsystem.personnel.Patient;
-import hospitalsystem.util.SystemLogger;
+import hospitalsystem.personnel.Person;
+import hospitalsystem.personnel.util.PatientData;
+import hospitalsystem.personnel.util.PatientsDetails;
 
-import javax.xml.crypto.Data;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Database {
     private static final String insertPerson = "INSERT INTO people(firstname, lastname, birth_date, type) VALUES (?, ?, ?, ?)";
@@ -18,7 +21,13 @@ public class Database {
     private static final String insertPatient = "INSERT INTO patients(firstname, lastname, birth_date, anamnesis) VALUES (?, ?, ?, ?)";
     private static final String insertDoctor = "INSERT INTO patients(firstname, lastname, birth_date, specialization) VALUES (?, ?, ?, ?)";
 
-    private static final String getLastUsedIdError = "Unable to get generated key.";
+    private static final String getPersonById = "SELECT * FROM people WHERE id = ?";
+    private static final String getAllPeopleByType = "SELECT * FROM people, patients_details, doctors_details WHERE people.type = ?";
+    private static final String getPatientDetailsById = "SELECT * FROM patients_details WHERE id = ?";
+    private static final String getAllPatients = "SELECT * FROM people, patients_details WHERE people.id = patients_details.id";
+
+    private static final String getLastUsedIdError = "Unable to get generated key!";
+    private static final String notExistingIdentifierError = "Id does not exist!";
 
     private final String url;
 
@@ -80,6 +89,10 @@ public class Database {
         }
     }
 
+    /////////////////////////////////
+    ///          PERSON          ///
+    ////////////////////////////////
+
     private int addPerson(Connection connection, String firstname, String lastname, LocalDate birthDate, String type) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(insertPerson)){
             statement.setString(1, firstname);
@@ -98,6 +111,24 @@ public class Database {
             }
         }
     }
+
+    private Person getPerson(Connection connection, int id) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(getPersonById)){
+            statement.setInt(1, id);
+
+            ResultSet result = statement.executeQuery();
+
+            if (result.next()) {
+                return new Person(result.getInt("id"), result.getString("first_name"), result.getString("last_name"), LocalDate.parse(result.getString("birth_date")));
+            }
+
+            throw new SQLException(notExistingIdentifierError);
+        }
+    }
+
+    /////////////////////////////////
+    ///         Patient          ///
+    ////////////////////////////////
 
     private void addPatientDetails(Connection connection, int id, String anamnesis) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(insertPatientDetail)){
@@ -123,7 +154,7 @@ public class Database {
             return patient;
         } catch  (SQLException e) {
             System.out.println(e.getMessage());
-            throw new DatabaseException(DatabaseException.patientDatabaseError);
+            throw new DatabaseException(DatabaseException.patientInsertDatabaseError);
         }
 
         /*
@@ -157,6 +188,63 @@ public class Database {
          */
     }
 
+    private PatientsDetails getPatientDetails(Connection connection, int id) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(getPatientDetailsById)){
+            statement.setInt(1, id);
+
+            ResultSet result = statement.executeQuery();
+
+            if (result.next()) {
+                return new PatientsDetails(result.getString("anamnesis"));
+            }
+
+            throw new SQLException(notExistingIdentifierError);
+        }
+    }
+
+    public Patient getPatient(int id) throws DatabaseException {
+        try (Connection connection = DriverManager.getConnection(url)){
+            Person person = getPerson(connection, id);
+            PatientsDetails details =  getPatientDetails(connection, id);
+
+            return new Patient(person, details);
+        } catch  (SQLException e) {
+            throw new DatabaseException(DatabaseException.patientGetDatabaseError);
+        }
+    }
+
+    private List<Patient> findAllPatients(Connection connection) throws SQLException{
+        try (PreparedStatement statement = connection.prepareStatement(getAllPatients)){
+            ResultSet result = statement.executeQuery();
+
+            ArrayList<Patient> patients = new ArrayList<>();
+
+            while (result.next()) {
+                patients.add(new Patient(
+                        result.getInt("id"),
+                        result.getString("firstname"),
+                        result.getString("lastname"),
+                        LocalDate.parse(result.getString("birth_date")),
+                        result.getString("anamnesis")
+                ));
+            }
+
+            return patients;
+        }
+    }
+
+    public List<Patient> getAllPatients() throws DatabaseException {
+        try (Connection connection = DriverManager.getConnection(url)){
+            return findAllPatients(connection);
+        } catch (SQLException e) {
+            throw new DatabaseException(DatabaseException.patientGetDatabaseError);
+        }
+    }
+
+    /////////////////////////////////
+    ///          DOCTOR          ///
+    ////////////////////////////////
+
     private void addDoctorDetails(Connection connection, int id, String specialization) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(insertDoctorDetail)){
             statement.setInt(1, id);
@@ -177,9 +265,13 @@ public class Database {
 
             return new Doctor(id, firstname, lastname, birthDate, specialization);
         } catch  (SQLException e) {
-            throw new DatabaseException(DatabaseException.doctorDatabaseError);
+            throw new DatabaseException(DatabaseException.doctorInsertDatabaseError);
         }
     }
+
+    /////////////////////////////////
+    ///       Appointment        ///
+    ////////////////////////////////
 
     private int pushAppointmentIntoDatabase(Connection connection, int patientId, int doctorId, LocalDateTime startTime, LocalDateTime endTime) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(insertAppointment)){
@@ -211,7 +303,7 @@ public class Database {
             return new CalendarEntry(appointmentId, patient, doctor, startTime, endTime);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
-            throw new DatabaseException(DatabaseException.appointmentDatabaseError);
+            throw new DatabaseException(DatabaseException.appointmentInsertDatabaseError);
         }
     }
 }
