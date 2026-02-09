@@ -4,7 +4,6 @@ import hospitalsystem.calendar.CalendarEntry;
 import hospitalsystem.personnel.Doctor;
 import hospitalsystem.personnel.Patient;
 import hospitalsystem.personnel.Person;
-import hospitalsystem.personnel.util.PatientData;
 import hospitalsystem.personnel.util.PatientsDetails;
 
 import java.sql.*;
@@ -12,6 +11,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+//TODO: zvazit zda nenahradit cast metd tim ze dostanou Query a parametry pomoci ... a potom se sestroji
 
 public class Database {
     private static final String insertPerson = "INSERT INTO people(firstname, lastname, birth_date, type) VALUES (?, ?, ?, ?)";
@@ -35,10 +36,7 @@ public class Database {
         this.url = url;
 
         try (Connection conn = DriverManager.getConnection(url)) {
-            //System.out.println("Connection to SQLite has been established.");
-
             Statement stmt =  conn.createStatement();
-            //stmt.execute("CREATE TABLE IF NOT EXISTS patients (id INTEGER PRIMARY KEY, firstname text NOT NULL, lastname text NOT NULL, birth_date TEXT NOT NULL CHECK ( birth_date GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]' and date(birth_date) IS NOT NULL), anamnesis text NOT NULL);");
 
             stmt.execute("CREATE TABLE IF NOT EXISTS people (id INTEGER PRIMARY KEY, firstname TEXT NOT NULL, lastname TEXT NOT NULL, birth_date TEXT NOT NULL CHECK ( birth_date GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]' and date(birth_date) IS NOT NULL), type TEXT NOT NULL CHECK (type IN ('patient', 'doctor')));");
 
@@ -119,7 +117,11 @@ public class Database {
             ResultSet result = statement.executeQuery();
 
             if (result.next()) {
-                return new Person(result.getInt("id"), result.getString("first_name"), result.getString("last_name"), LocalDate.parse(result.getString("birth_date")));
+                return new Person(
+                        result.getInt("id"),
+                        result.getString("firstname"),
+                        result.getString("lastname"),
+                        LocalDate.parse(result.getString("birth_date")));
             }
 
             throw new SQLException(notExistingIdentifierError);
@@ -153,39 +155,8 @@ public class Database {
             //SystemLogger.successfullNewPatient(patient);
             return patient;
         } catch  (SQLException e) {
-            System.out.println(e.getMessage());
             throw new DatabaseException(DatabaseException.patientInsertDatabaseError);
         }
-
-        /*
-        try (Connection conn = DriverManager.getConnection(url)) {
-            conn.setAutoCommit(false);
-            PreparedStatement stmt = conn.prepareStatement(insertPatient);
-
-            stmt.setString(1, firstname);
-            stmt.setString(2, lastname);
-            stmt.setString(3, birthDate.toString());
-            stmt.setString(4, anamnesis);
-
-            stmt.executeUpdate();
-
-            try {
-                int id = getLastUsedId(stmt);
-
-                conn.commit();
-
-                return new Patient(id, firstname, lastname, birthDate, anamnesis);
-            } catch (SQLException e) {
-                conn.rollback();
-
-                throw e;
-            }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-
-            throw new Exception("Unable to correctly add patient into database"); //TODO: use custom exception and use constant for the message
-        }
-         */
     }
 
     private PatientsDetails getPatientDetails(Connection connection, int id) throws SQLException {
@@ -209,6 +180,7 @@ public class Database {
 
             return new Patient(person, details);
         } catch  (SQLException e) {
+            System.out.println(e.getMessage());
             throw new DatabaseException(DatabaseException.patientGetDatabaseError);
         }
     }
@@ -292,18 +264,21 @@ public class Database {
         }
     }
 
-    public CalendarEntry addAppointment(Patient patient, Doctor doctor, LocalDateTime startTime, LocalDateTime endTime) throws DatabaseException {
+    public void addAppointment(int patientId, int doctorId, LocalDateTime startTime, LocalDateTime endTime) throws DatabaseException {
         try (Connection connection = DriverManager.getConnection(url)) {
             connection.setAutoCommit(false);
 
-            int appointmentId = pushAppointmentIntoDatabase(connection, patient.getId(), doctor.getId(), startTime, endTime);
+            int appointmentId = pushAppointmentIntoDatabase(connection, patientId, doctorId, startTime, endTime);
 
             connection.commit();
 
-            return new CalendarEntry(appointmentId, patient, doctor, startTime, endTime);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             throw new DatabaseException(DatabaseException.appointmentInsertDatabaseError);
         }
+    }
+
+    public void addAppointment(Patient patient, Doctor doctor, LocalDateTime startTime, LocalDateTime endTime) throws DatabaseException {
+        addAppointment(patient.getId(), doctor.getId(), startTime, endTime);
     }
 }

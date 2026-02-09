@@ -12,5 +12,8 @@ abstract class Submenu extends Menu{
         super(api);
 
         this.scanner = scanner;
+
+        printMenu();
+        processMenu();
     }
 }

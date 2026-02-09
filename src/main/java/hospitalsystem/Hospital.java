@@ -1,13 +1,14 @@
 package hospitalsystem;
 
 import hospitalsystem.UI.MainMenu;
+import hospitalsystem.calendar.CalendarEntry;
+import hospitalsystem.calendar.util.CalendarEntryData;
 import hospitalsystem.database.Database;
 import hospitalsystem.database.DatabaseException;
 import hospitalsystem.personnel.Doctor;
 import hospitalsystem.personnel.Patient;
 import hospitalsystem.personnel.util.DoctorData;
 import hospitalsystem.personnel.util.PatientData;
-import hospitalsystem.personnel.util.PersonData;
 import hospitalsystem.util.HospitalAPI;
 
 import java.time.LocalDate;
@@ -21,19 +22,25 @@ public class Hospital {
         database = new Database(databasePath);
 
         MainMenu mainMenu = new MainMenu(new HospitalAPI(this));
-
-        //TODO: moc mi nedává smysl aby menu mělo databázi nebylo by loepší, kdyby mělo okdkaz na Hospital a metody by byli v hospital
     }
 
     public void addPatient(PatientData patientData) {
         //TODO: validate
 
         try {
-            database.addPatient(patientData.person().firstName(), patientData.person().lastName(), LocalDate.parse(patientData.person().dateOfBirth()), patientData.details().anamnesis());
+            database.addPatient(patientData.person().firstName(), patientData.person().lastName(), LocalDate.parse(patientData.person().dateOfBirth()), patientData.details().anamnesis()); //TODO: rozbalovani az na urovni databaze
 
             System.out.println("Success!");
         } catch (DatabaseException e){
             System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    public String getPatientInfo(int id){
+        try{
+            return database.getPatient(id).toString();
+        } catch (DatabaseException e){
+            return "Error: " + e.getMessage();
         }
     }
 
@@ -60,15 +67,16 @@ public class Hospital {
         }
     }
 
-    public void addAppointment(){
-        //TODO:
+    public void addAppointment(CalendarEntryData calendarEntryData) {
+        //TODO: validate
 
         try {
             database.addAppointment(
-                    new Patient(5, "Kamil", "Dorazil", LocalDate.of(1999, 1, 1), "Broken leg"),
-                    new Doctor(3, "Pepa", "Novak", LocalDate.of(1990, 2, 2), "Surgeon"),
-                    LocalDateTime.of(2026,9,2,13,0),
-                    LocalDateTime.of(2025,9,2,14,0));
+                    calendarEntryData.patientsId(),
+                    calendarEntryData.doctorsId(),
+                    calendarEntryData.starTime(),
+                    calendarEntryData.endTime()
+            );
 
             System.out.println("Success!");
         } catch (DatabaseException e){

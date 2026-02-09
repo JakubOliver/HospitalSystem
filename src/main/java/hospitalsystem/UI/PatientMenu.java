@@ -1,24 +1,15 @@
 package hospitalsystem.UI;
 
-import hospitalsystem.Hospital;
-import hospitalsystem.database.Database;
-import hospitalsystem.database.DatabaseException;
-import hospitalsystem.personnel.Patient;
 import hospitalsystem.personnel.util.PatientData;
 import hospitalsystem.personnel.util.PatientsDetails;
 import hospitalsystem.personnel.util.PersonData;
 import hospitalsystem.util.HospitalAPI;
 
-import java.time.LocalDate;
-import java.util.List;
 import java.util.Scanner;
 
 public class PatientMenu extends Submenu {
     PatientMenu(HospitalAPI api, Scanner scanner) {
         super(api, scanner);
-
-        printMenu();
-        processMenu();
     }
 
     @Override
@@ -36,28 +27,35 @@ public class PatientMenu extends Submenu {
     public void processMenu() {
         switch (getOption(scanner, 7)){
             case 1:
-                addPatient(scanner); break;
+                addPatient(); break;
+            case 4:
+                findById(); break;
             case 6:
-                findAllPatient(scanner); break;
+                findAllPatient(); break;
         }
     }
 
-    private void addPatient(Scanner scanner){
+    private void findById(){
+        int id = getInteger(scanner, "ID: ");
+
+        System.out.println(api.findPatient(id));
+
+        waitForEnter(scanner);
+    }
+
+    private void addPatient(){
         PersonData personData = getPersonData(scanner);
 
-        System.out.print("Anamnesis: ");
-        String anamnesis = scanner.nextLine();
+        String anamnesis = getString(scanner, "Anamnesis: ");
 
         api.addPatient(new PatientData(personData, new PatientsDetails(anamnesis)));
 
-        System.out.print("Press enter to continue...");
-        scanner.nextLine();
+        waitForEnter(scanner);
     }
 
-    private void findAllPatient(Scanner scanner){
+    private void findAllPatient(){
         api.findAllPatients();
 
-        System.out.print("Press enter to continue...");
-        scanner.nextLine();
+        waitForEnter(scanner);
     }
 }

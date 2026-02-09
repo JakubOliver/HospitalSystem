@@ -1,5 +1,6 @@
 package hospitalsystem.UI;
 
+import hospitalsystem.calendar.util.CalendarEntryData;
 import hospitalsystem.database.Database;
 import hospitalsystem.database.DatabaseException;
 import hospitalsystem.personnel.Doctor;
@@ -25,12 +26,25 @@ public class AppointmentMenu extends Submenu{
     public void processMenu() {
         switch (getOption(scanner, 2)){
             case 1:
-                addAppointment(scanner);
+                addAppointment(scanner); break;
         }
     }
 
     private void addAppointment(Scanner scanner){
-        System.out.print("Press enter to continue...");
-        scanner.nextLine();
+        //TODO: volba zda si vybrat (id nebo jmeno) nebo vytvořit noveho
+
+        int patientsId = getInteger(scanner, "Patient's ID: ");
+        int doctorsId = getInteger(scanner, "Doctor's ID: ");
+        LocalDateTime startTime = getDateTime(scanner, "Start Time: ");
+        LocalDateTime endTime = getDateTime(scanner, "End Time: ");
+
+        api.addAppointment(new CalendarEntryData(
+                patientsId,
+                doctorsId,
+                startTime,
+                endTime
+        ));
+
+        waitForEnter(scanner);
     }
 }
