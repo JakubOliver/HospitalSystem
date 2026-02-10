@@ -7,7 +7,16 @@ import hospitalsystem.util.HospitalAPI;
 
 import java.util.Scanner;
 
+/**
+ * Menu page containing options connected with patients.
+ */
 public class PatientMenu extends Submenu {
+    /**
+     * Creates patient menu page.
+     *
+     * @param api HospitalAPI giving the menu options how to interact with hospital system.
+     * @param scanner Scanner pointing to the input data.
+     */
     public PatientMenu(HospitalAPI api, Scanner scanner) {
         super(api, scanner);
     }
@@ -35,6 +44,11 @@ public class PatientMenu extends Submenu {
         }
     }
 
+    /**
+     * Prints information about patient with provided ID.
+     * <p>
+     * ID is provided via input data in class scanner.
+     */
     private void findById(){
         int id = getInteger(scanner, "ID: ");
 
@@ -43,6 +57,9 @@ public class PatientMenu extends Submenu {
         waitForEnter(scanner);
     }
 
+    /**
+     * Processes input data and calls for creating of new patient in hospital system.
+     */
     private void addPatient(){
         PersonData personData = getPersonData(scanner);
 
@@ -53,6 +70,9 @@ public class PatientMenu extends Submenu {
         waitForEnter(scanner);
     }
 
+    /**
+     * Prints all patients in the hospital system.
+     */
     private void findAllPatient(){
         api.findAllPatients();
 
