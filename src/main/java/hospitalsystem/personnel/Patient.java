@@ -43,15 +43,28 @@ public class Patient extends Person{
         this.anamnesis = anamnesis;
     }
 
+    /**
+     * Creates patient based on provided Person and details needed for the patient.
+     *
+     * @param person Person for who we want to create patient object.
+     * @param details Details that extends person.
+     */
     public Patient(Person person, PatientsDetails details){
         super(person);
 
         this.anamnesis = details.anamnesis();
     }
 
-    /** Returns anamnesis of patient */
+    /**
+     * Returns anamnesis of the patient.
+     * @return anamnesis of the patient.
+     */
     public String getAnamnesis() { return anamnesis; }
 
+    /**
+     * Returns custom patient class identifier.
+     * @return custom patient class identifier.
+     */
     public static String getClassIdentifier() { return "patient"; }
 
     @Override

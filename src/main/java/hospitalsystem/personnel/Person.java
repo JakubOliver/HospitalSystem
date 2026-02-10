@@ -43,6 +43,10 @@ public class Person {
         this.dateOfBirth = LocalDate.of(year, month, day);
     }
 
+    /**
+     * Creates new Person as a copy of provided Person.
+     * @param person Person that the constructor should copy.
+     */
     public Person(Person person){
         this.id = person.id;
         this.firstName = person.firstName;
@@ -56,10 +60,16 @@ public class Person {
      */
     public int getId() { return id; }
 
-    /** Returns firstname of person */
+    /**
+     * Returns firstname of person.
+     * @return firstname of person.
+     */
     public String getFirstName() { return firstName; }
 
-    /** Returns lastname of person */
+    /**
+     * Returns lastname of person.
+     * @return lastname of person.
+     */
     public String getLastName() { return lastName; }
 
     /**
@@ -68,9 +78,16 @@ public class Person {
      */
     public LocalDate getDateOfBirth() { return dateOfBirth; }
 
-    /** Returns age of person */
+    /**
+     * Returns age of the person.
+     * @return age of the person.
+     */
     public int getAge() { return Period.between(dateOfBirth, LocalDate.now()).getYears(); }
 
+    /**
+     * Returns custom identifier for Person class.
+     * @return custom identifier for Person class.
+     */
     public static String getClassIdentifier() { return "person"; }
 
     @Override

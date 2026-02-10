@@ -40,9 +40,16 @@ public class Doctor extends Person{
         this.specialization = specialization;
     }
 
-    /** Returns specialization of doctor */
+    /**
+     * Returns specialization of the doctor.
+     * @return specialization of the doctor.
+     */
     public String getSpecialization() { return  specialization; }
 
+    /**
+     * Returns custom doctor class identifier.
+     * @return custom doctor class identifier.
+     */
     public static String getClassIdentifier() { return "doctor"; }
 
     @Override
