@@ -1,3 +1,5 @@
 package hospitalsystem.personnel.util;
 
-public record PersonData(String firstName, String lastName, String dateOfBirth) { }
+import java.time.LocalDate;
+
+public record PersonData(String firstName, String lastName, LocalDate dateOfBirth) { }

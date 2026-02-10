@@ -8,7 +8,7 @@ import hospitalsystem.util.HospitalAPI;
 import java.util.Scanner;
 
 public class DoctorMenu extends Submenu {
-    DoctorMenu(HospitalAPI api, Scanner scanner) {
+    public DoctorMenu(HospitalAPI api, Scanner scanner) {
         super(api, scanner);
     }
 

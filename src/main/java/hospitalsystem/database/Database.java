@@ -175,7 +175,7 @@ public class Database {
 
     public Patient getPatient(int id) throws DatabaseException {
         try (Connection connection = DriverManager.getConnection(url)){
-            Person person = getPerson(connection, id);
+            Person person = getPerson(connection, id); //TODO: validace, že je to opravdu patient
             PatientsDetails details =  getPatientDetails(connection, id);
 
             return new Patient(person, details);

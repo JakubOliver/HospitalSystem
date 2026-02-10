@@ -9,6 +9,7 @@ import org.apache.commons.digester3.RegexMatcher;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -16,52 +17,33 @@ import java.util.regex.Pattern;
 abstract class Menu implements Page{
     HospitalAPI api;
 
-    Menu(HospitalAPI api) {
+    public Menu(HospitalAPI api) {
         this.api = api;
     }
 
-    protected static int getOption(Scanner scanner, int range){
-        int option = 0; //TODO: constant
-        String line;
+    public static int getOption(Scanner scanner, int range){
+        int option = getInteger(scanner, "Select an option: ");
 
-        do {
-            System.out.print("Select an option: ");
-
-            line =  scanner.nextLine();
-
-            try {
-                option = Integer.parseInt(line.trim());
-
-                if (option > range || option <= 0){
-                    System.out.println("Invalid option: out of range");
-                }
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid option: invalid format");
-            }
-
-        } while (option > range || option <= 0);
+        while (option > range || option <= 0){
+            System.out.println("Invalid option: out of range");
+            option = getInteger(scanner, "Select an option: ");
+        }
 
         return option;
     }
 
-    protected static PersonData getPersonData(Scanner scanner){
-        System.out.print("First name: ");
-        String firstName = scanner.nextLine();
-
-        System.out.print("Last name: ");
-        String lastName = scanner.nextLine();
-
-        System.out.print("Date of birth (YYYY-MM-DD): ");
-        String dateOfBirth = scanner.nextLine();
+    public static PersonData getPersonData(Scanner scanner){
+        String firstName = getString(scanner, "First name: ");
+        String lastName = getString(scanner, "Last name: ");
+        LocalDate dateOfBirth = getDate(scanner, "Date of birth: ");
 
         return new PersonData(firstName, lastName, dateOfBirth);
     }
 
-    protected static void clearConsole()
+    public static void clearConsole()
     {
         String os = System.getProperty("os.name");
         try {
-            System.out.println(os);
             if (os.startsWith("Windows")) {
                 // Command for Windows
                 new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
@@ -75,37 +57,40 @@ abstract class Menu implements Page{
         }
     }
 
-    protected int getInteger(Scanner scanner, String question){
-        System.out.print(question);
-        String line = scanner.nextLine();
+    public static int getInteger(Scanner scanner, String question){
+        while (scanner.hasNextLine()) {
+            System.out.print(question);
+            String line = scanner.nextLine();
 
-        while (true){
             try{
                 return Integer.parseInt(line.trim());
             } catch (NumberFormatException e){
-                System.out.println("Invalid input");
-
-                System.out.print(question);
-                line = scanner.nextLine();
+                System.out.println("Invalid input: not a valid number");
             }
         }
+
+        throw new InputMismatchException("Scanner run out of lines and no correct integer found.");
     }
 
-    protected String getString(Scanner scanner, String question){
+    public static String getString(Scanner scanner, String question){
         System.out.print(question);
-        String line = scanner.nextLine();
+        String line = "";
 
-        while (line.isEmpty()){
-            System.out.println("Invalid input");
-
+        while (scanner.hasNextLine()){
             System.out.print(question);
             line = scanner.nextLine();
+
+            if (!line.isEmpty()){
+                return line.trim();
+            }
+
+            System.out.println("Invalid input: enter not empty string.");
         }
 
-        return line;
+        throw new InputMismatchException("Scanner run out of lines and no correct string found.");
     }
 
-    protected String satisfyRegex(Scanner scanner, String question, String regex){
+    public static String satisfyRegex(Scanner scanner, String question, String regex){
         Pattern pattern = Pattern.compile(regex);
 
         String text = getString(scanner, question);
@@ -117,38 +102,43 @@ abstract class Menu implements Page{
         return text;
     }
 
-    protected LocalDate getDate(Scanner scanner, String question){
-        String line = getString(scanner, question);
+    public static LocalDate getDate(Scanner scanner, String question){
+        while (scanner.hasNextLine()){
+            String line = getString(scanner, question);
 
-        while (true){
             try{
-                return LocalDate.parse(line);
-            } catch (DateTimeParseException e){
-                line = getString(scanner, question);
-            }
+                return LocalDate.parse(line.trim());
+            } catch (DateTimeParseException _){}
         }
+
+        throw new InputMismatchException("Scanner run out of lines and did not found valid date."); //TODO: const
     }
 
-    protected LocalDateTime getDateTime(Scanner scanner, String question){
-        String line = getString(scanner, question);
+    public static LocalDateTime getDateTime(Scanner scanner, String question){
+        while (scanner.hasNextLine()){
+            String line = getString(scanner, question);
 
-        while (true){
-            try{
-                return LocalDateTime.parse(line);
-            } catch (DateTimeParseException e){
-                line = getString(scanner, question);
+            if (line.contains(" ")){
+                String[] parts = line.split(" ");
+                line = String.join("T", parts);
             }
+
+            try{
+                return LocalDateTime.parse(line.trim());
+            } catch (DateTimeParseException _){}
         }
+
+        throw new InputMismatchException("Scanner run out of lines and did not found valid date and time."); //TODO: const
     }
 
-    protected boolean createNew(Scanner scanner, String what){
+    public static boolean createNew(Scanner scanner, String what){
         System.out.print("Use existing " + what + ": ");
         String existing = scanner.nextLine();
 
         return existing.trim().equals("Y");
     }
 
-    protected void waitForEnter(Scanner scanner){
+    public static void waitForEnter(Scanner scanner){
         System.out.print("Press enter to continue...");
         scanner.nextLine();
     }

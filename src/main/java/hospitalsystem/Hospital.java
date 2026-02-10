@@ -20,15 +20,13 @@ public class Hospital {
 
     public Hospital(String databasePath){
         database = new Database(databasePath);
-
-        MainMenu mainMenu = new MainMenu(new HospitalAPI(this));
     }
 
     public void addPatient(PatientData patientData) {
         //TODO: validate
 
         try {
-            database.addPatient(patientData.person().firstName(), patientData.person().lastName(), LocalDate.parse(patientData.person().dateOfBirth()), patientData.details().anamnesis()); //TODO: rozbalovani az na urovni databaze
+            database.addPatient(patientData.person().firstName(), patientData.person().lastName(), patientData.person().dateOfBirth(), patientData.details().anamnesis()); //TODO: rozbalovani az na urovni databaze
 
             System.out.println("Success!");
         } catch (DatabaseException e){
@@ -59,7 +57,7 @@ public class Hospital {
     public void addDoctor(DoctorData doctorData) {
         //TODO: validate
         try {
-            database.addDoctor(doctorData.person().firstName(), doctorData.person().lastName(), LocalDate.parse(doctorData.person().dateOfBirth()), doctorData.details().specialization());
+            database.addDoctor(doctorData.person().firstName(), doctorData.person().lastName(), doctorData.person().dateOfBirth(), doctorData.details().specialization());
 
             System.out.println("Success!");
         } catch (DatabaseException e){
