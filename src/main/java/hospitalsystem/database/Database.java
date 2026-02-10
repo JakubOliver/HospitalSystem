@@ -4,7 +4,7 @@ import hospitalsystem.calendar.CalendarEntry;
 import hospitalsystem.personnel.Doctor;
 import hospitalsystem.personnel.Patient;
 import hospitalsystem.personnel.Person;
-import hospitalsystem.personnel.util.PatientsDetails;
+import hospitalsystem.personnel.util.*;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -14,6 +14,9 @@ import java.util.List;
 
 //TODO: zvazit zda nenahradit cast metd tim ze dostanou Query a parametry pomoci ... a potom se sestroji
 
+/**
+ * Interface for communication with SQLite database from Hospital system request.
+ */
 public class Database {
     private static final String insertPerson = "INSERT INTO people(firstname, lastname, birth_date, type) VALUES (?, ?, ?, ?)";
     private static final String insertPatientDetail = "INSERT INTO patients_details(id, anamnesis) VALUES (?, ?)";
@@ -32,6 +35,12 @@ public class Database {
 
     private final String url;
 
+    /**
+     * Connects to the databased located on provided url and check whether the databases has correct structure.
+     * If not then creates missing tables.
+     *
+     * @param url Location of the database.
+     */
     public Database(String url){
         this.url = url;
 
@@ -77,6 +86,13 @@ public class Database {
         }
     }
 
+    /**
+     * Returns id that was given to the entry in the provided statement.
+     *
+     * @param stmt Statement for which we want to know the id.
+     * @return Id that was given to the entry in the provided statement.
+     * @throws SQLException Errors connected with the problem of retrieving id of the entry created by the statement.
+     */
     private int getLastUsedId(Statement stmt) throws SQLException {
         try (ResultSet rs = stmt.getGeneratedKeys()){
             if (rs.next()) {
@@ -91,11 +107,20 @@ public class Database {
     ///          PERSON          ///
     ////////////////////////////////
 
-    private int addPerson(Connection connection, String firstname, String lastname, LocalDate birthDate, String type) throws SQLException {
+    /**
+     * Adds new person into database.
+     *
+     * @param connection Connection to the database.
+     * @param person Person data that will be used for entry creation.
+     * @param type Type of the person (patient/doctor)
+     * @return Identifier of the person.
+     * @throws SQLException Errors connected with the unability of storing new person.
+     */
+    private int addPerson(Connection connection, PersonData person, String type) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(insertPerson)){
-            statement.setString(1, firstname);
-            statement.setString(2, lastname);
-            statement.setString(3, birthDate.toString());
+            statement.setString(1, person.firstName());
+            statement.setString(2, person.lastName());
+            statement.setString(3, person.dateOfBirth().toString());
             statement.setString(4, type);
 
             statement.executeUpdate();
@@ -110,6 +135,14 @@ public class Database {
         }
     }
 
+    /**
+     * Returns Person with the provided id.
+     *
+     * @param connection Connection to the database.
+     * @param id Id of the person.
+     * @return Person with the provided id.
+     * @throws SQLException Errors connected with the unability of retrieve person with provided id.
+     */
     private Person getPerson(Connection connection, int id) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(getPersonById)){
             statement.setInt(1, id);
@@ -132,25 +165,46 @@ public class Database {
     ///         Patient          ///
     ////////////////////////////////
 
-    private void addPatientDetails(Connection connection, int id, String anamnesis) throws SQLException {
+    /**
+     * Adds patients details into database.
+     *
+     * @param connection Connection to the database.
+     * @param id Id of the patient in the person table.
+     * @param details Details of the patient.
+     * @throws SQLException Errors connected with the unability of storing patients details.
+     */
+    private void addPatientDetails(Connection connection, int id, PatientsDetails details) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(insertPatientDetail)){
             statement.setInt(1, id);
-            statement.setString(2, anamnesis);
+            statement.setString(2, details.anamnesis());
 
             statement.executeUpdate();
         }
     }
 
-    public Patient addPatient(String firstname, String lastname, LocalDate birthDate, String anamnesis) throws DatabaseException {
+    /**
+     * Adds patients into the database.
+     *
+     * @param patientData Patients data which will be used for entry creation.
+     * @return Patient object matching with the patient that was stored in database.
+     * @throws DatabaseException Errors connected with the unability of storing new patient.
+     */
+    public Patient addPatient(PatientData patientData) throws DatabaseException {
         try (Connection connection = DriverManager.getConnection(url)) {
             connection.setAutoCommit(false);
 
-            int id = addPerson(connection, firstname, lastname, birthDate, Patient.getClassIdentifier());
-            addPatientDetails(connection, id, anamnesis);
+            int id = addPerson(connection, patientData.person(), Patient.getClassIdentifier());
+            addPatientDetails(connection, id, patientData.details());
 
             connection.commit();
 
-            Patient patient = new Patient(id, firstname, lastname, birthDate, anamnesis);
+            Patient patient = new Patient(
+                    id,
+                    patientData.person().firstName(),
+                    patientData.person().lastName(),
+                    patientData.person().dateOfBirth(),
+                    patientData.details().anamnesis()
+            );
 
             //SystemLogger.successfullNewPatient(patient);
             return patient;
@@ -159,6 +213,14 @@ public class Database {
         }
     }
 
+    /**
+     * Returns patients details for patient with provided id.
+     *
+     * @param connection Connection to the database.
+     * @param id Id of the patient.
+     * @return patients details for patient with provided id.
+     * @throws SQLException Errors connected with the unability to retrieve patients details.
+     */
     private PatientsDetails getPatientDetails(Connection connection, int id) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(getPatientDetailsById)){
             statement.setInt(1, id);
@@ -173,6 +235,14 @@ public class Database {
         }
     }
 
+
+    /**
+     * Returns patient based on provided id.
+     *
+     * @param id Id of the patient we want to retrieve from database.
+     * @return patient based on provided id.
+     * @throws DatabaseException Error connected with the unability to successfully retrieve patients data from database.
+     */
     public Patient getPatient(int id) throws DatabaseException {
         try (Connection connection = DriverManager.getConnection(url)){
             Person person = getPerson(connection, id); //TODO: validace, že je to opravdu patient
@@ -185,6 +255,13 @@ public class Database {
         }
     }
 
+    /**
+     * Find and returns all patients in the database.
+     *
+     * @param connection Connection to the database.
+     * @return list of all patients in the database.
+     * @throws SQLException Error connected to the unability to successfully retrieve patients data from database.
+     */
     private List<Patient> findAllPatients(Connection connection) throws SQLException{
         try (PreparedStatement statement = connection.prepareStatement(getAllPatients)){
             ResultSet result = statement.executeQuery();
@@ -205,6 +282,12 @@ public class Database {
         }
     }
 
+    /**
+     * Returns all patients in the database.
+     *
+     * @return list of all patients in the database.
+     * @throws DatabaseException Error connected to the failure of retrieving all patients from the database.
+     */
     public List<Patient> getAllPatients() throws DatabaseException {
         try (Connection connection = DriverManager.getConnection(url)){
             return findAllPatients(connection);
@@ -217,25 +300,46 @@ public class Database {
     ///          DOCTOR          ///
     ////////////////////////////////
 
-    private void addDoctorDetails(Connection connection, int id, String specialization) throws SQLException {
+    /**
+     * Adds new doctor details to the database.
+     *
+     * @param connection Connection to the database.
+     * @param id Id of the doctor.
+     * @param details Wrapper for all doctor details.
+     * @throws SQLException Error connected to the unability to successfully store doctor details in database.
+     */
+    private void addDoctorDetails(Connection connection, int id, DoctorDetails details) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(insertDoctorDetail)){
             statement.setInt(1, id);
-            statement.setString(2, specialization);
+            statement.setString(2, details.specialization());
 
             statement.executeUpdate();
         }
     }
 
-    public Doctor addDoctor(String firstname, String lastname, LocalDate birthDate, String specialization) throws DatabaseException {
+    /**
+     * Adds doctor into the database.
+     *
+     * @param doctorData Doctor data that will be stored in the database.
+     * @return Doctor matching with the doctor entry stored in database.
+     * @throws DatabaseException Error connected to the failure of storing new doctor in database.
+     */
+    public Doctor addDoctor(DoctorData doctorData) throws DatabaseException {
         try (Connection connection = DriverManager.getConnection(url)) {
             connection.setAutoCommit(false);
 
-            int id = addPerson(connection, firstname, lastname, birthDate, Doctor.getClassIdentifier());
-            addDoctorDetails(connection, id, specialization);
+            int id = addPerson(connection, doctorData.person(), Doctor.getClassIdentifier());
+            addDoctorDetails(connection, id, doctorData.details());
 
             connection.commit();
 
-            return new Doctor(id, firstname, lastname, birthDate, specialization);
+            return new Doctor(
+                    id,
+                    doctorData.person().firstName(),
+                    doctorData.person().lastName(),
+                    doctorData.person().dateOfBirth(),
+                    doctorData.details().specialization()
+            ); //TODO: vytvorit konstruktory, ktere budou lepe zpracovat tyto vstupy
         } catch  (SQLException e) {
             throw new DatabaseException(DatabaseException.doctorInsertDatabaseError);
         }
@@ -245,6 +349,17 @@ public class Database {
     ///       Appointment        ///
     ////////////////////////////////
 
+    /**
+     * Stores new appointment in the database.
+     *
+     * @param connection Connection to the database.
+     * @param patientId Patients identifier.
+     * @param doctorId Doctors identifier.
+     * @param startTime Starting time of appointment.
+     * @param endTime Ending time of appointment.
+     * @return Identifier of appointment.
+     * @throws SQLException Error connected to the failure of storing new appointment into database or retrieving identifier from database.
+     */
     private int pushAppointmentIntoDatabase(Connection connection, int patientId, int doctorId, LocalDateTime startTime, LocalDateTime endTime) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(insertAppointment)){
             statement.setInt(1, patientId);
@@ -264,6 +379,15 @@ public class Database {
         }
     }
 
+    /**
+     * Adds new appointment to the database.
+     *
+     * @param patientId Patients identifier.
+     * @param doctorId Doctors identifier.
+     * @param startTime Starting time of appointment.
+     * @param endTime Ending time of appointment.
+     * @throws DatabaseException Error connected to the failure of storing new appointment.
+     */
     public void addAppointment(int patientId, int doctorId, LocalDateTime startTime, LocalDateTime endTime) throws DatabaseException {
         try (Connection connection = DriverManager.getConnection(url)) {
             connection.setAutoCommit(false);
@@ -278,6 +402,15 @@ public class Database {
         }
     }
 
+    /**
+     * Adds new appointment to the database.
+     *
+     * @param patient Patient connected to the appointment.
+     * @param doctor Doctor connected to the appointment.
+     * @param startTime Starting time of appointment.
+     * @param endTime Ending time of appointment.
+     * @throws DatabaseException Error connected to the failure of storing new appointment.
+     */
     public void addAppointment(Patient patient, Doctor doctor, LocalDateTime startTime, LocalDateTime endTime) throws DatabaseException {
         addAppointment(patient.getId(), doctor.getId(), startTime, endTime);
     }

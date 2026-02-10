@@ -34,12 +34,7 @@ public class Hospital {
         //TODO: validate
 
         try {
-            database.addPatient(
-                    patientData.person().firstName(),
-                    patientData.person().lastName(),
-                    patientData.person().dateOfBirth(),
-                    patientData.details().anamnesis()
-            ); //TODO: rozbalovani az na urovni databaze
+            database.addPatient(patientData);
 
             System.out.println("Success!");
         } catch (DatabaseException e){
@@ -86,12 +81,7 @@ public class Hospital {
     public void addDoctor(DoctorData doctorData) {
         //TODO: validate
         try {
-            database.addDoctor(
-                    doctorData.person().firstName(),
-                    doctorData.person().lastName(),
-                    doctorData.person().dateOfBirth(),
-                    doctorData.details().specialization()
-            );
+            database.addDoctor(doctorData);
 
             System.out.println("Success!");
         } catch (DatabaseException e){
