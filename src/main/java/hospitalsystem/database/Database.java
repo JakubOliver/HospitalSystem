@@ -5,6 +5,7 @@ import hospitalsystem.personnel.Patient;
 import hospitalsystem.personnel.Person;
 import hospitalsystem.personnel.util.*;
 
+import javax.print.Doc;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -28,9 +29,11 @@ public class Database {
     private static final String getAllPeopleByType = "SELECT * FROM people, patients_details, doctors_details WHERE people.type = ?";
     private static final String getPatientDetailsById = "SELECT * FROM patients_details WHERE id = ?";
     private static final String getAllPatients = "SELECT * FROM people, patients_details WHERE people.id = patients_details.id";
+    private static final String getDoctorDetailsById = "SELECT * FROM doctors_details WHERE id = ?";
 
     private static final String getLastUsedIdError = "Unable to get generated key!";
     private static final String notExistingIdentifierError = "Id does not exist!";
+    private static final String notExistingPatientIdentifierError = "Patient with this id does not exist!";
 
     private final String url;
 
@@ -60,7 +63,7 @@ public class Database {
                     CREATE TABLE IF NOT EXISTS patients_details (
                         id INTEGER PRIMARY KEY,
                         anamnesis TEXT NOT NULL,
-                        
+                    
                         FOREIGN KEY (id) REFERENCES people(id) ON DELETE CASCADE
                     );
                     """);
@@ -69,7 +72,7 @@ public class Database {
                     CREATE TABLE IF NOT EXISTS doctors_details (
                         id INTEGER PRIMARY KEY,
                         specialization TEXT NOT NULL,
-                        
+                    
                         FOREIGN KEY (id) REFERENCES people(id) ON DELETE CASCADE
                     );
                     """);
@@ -246,7 +249,7 @@ public class Database {
                 return new PatientsDetails(result.getString("anamnesis"));
             }
 
-            throw new SQLException(notExistingIdentifierError);
+            throw new SQLException(notExistingPatientIdentifierError);
         }
     }
 
@@ -265,8 +268,8 @@ public class Database {
 
             return new Patient(person, details);
         } catch  (SQLException e) {
-            System.out.println(e.getMessage());
-            throw new DatabaseException(DatabaseException.patientGetDatabaseError);
+            //System.out.println(e.getMessage());
+            throw new DatabaseException(DatabaseException.patientGetDatabaseError, e.getMessage());
         }
     }
 
@@ -357,6 +360,47 @@ public class Database {
             ); //TODO: vytvorit konstruktory, ktere budou lepe zpracovat tyto vstupy
         } catch  (SQLException e) {
             throw new DatabaseException(DatabaseException.doctorInsertDatabaseError);
+        }
+    }
+
+    /**
+     * Returns doctors details for doctor with provided id.
+     *
+     * @param connection Connection to the database.
+     * @param id Id of the doctor.
+     * @return Doctors details for doctor with provided id.
+     * @throws SQLException Errors connected with the unability to retrieve doctors details.
+     */
+    private DoctorDetails getDoctorDetails(Connection connection, int id) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(getDoctorDetailsById)){
+            statement.setInt(1, id);
+
+            ResultSet result = statement.executeQuery();
+
+            if (result.next()) {
+                return new DoctorDetails(result.getString("specialization"));
+            }
+
+            throw new SQLException(notExistingPatientIdentifierError);
+        }
+    }
+
+
+    /**
+     * Returns Doctor with corresponding id.
+     *
+     * @param id Id of the doctor.
+     * @return Doctor with corresponding id.
+     * @throws DatabaseException Error connected with failure of retrieving doctor from database.
+     */
+    public Doctor getDoctor(int id) throws DatabaseException {
+        try (Connection connection = DriverManager.getConnection(url)){
+            Person person = getPerson(connection, id);
+            DoctorDetails details = getDoctorDetails(connection, id);
+
+            return new Doctor(person, details);
+        } catch (SQLException e) {
+            throw new DatabaseException(DatabaseException.doctorGetDatabaseError, e.getMessage());
         }
     }
 

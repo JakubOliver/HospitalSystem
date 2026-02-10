@@ -1,5 +1,7 @@
 package hospitalsystem.personnel;
 
+import hospitalsystem.personnel.util.DoctorDetails;
+
 import java.time.LocalDate;
 
 /**
@@ -38,6 +40,18 @@ public class Doctor extends Person{
         super(id, firstName, lastName, day, month, year);
 
         this.specialization = specialization;
+    }
+
+    /**
+     * Creates doctor based on provided parameters.
+     *
+     * @param person Person for who we want to create patient object.
+     * @param details Details that extends person.
+     */
+    public Doctor(Person person, DoctorDetails details){
+        super(person);
+
+        this.specialization = details.specialization();
     }
 
     /**
