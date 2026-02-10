@@ -7,6 +7,9 @@ import hospitalsystem.util.HospitalAPI;
 
 import java.util.Scanner;
 
+/**
+ * Menu page containing crossroad to other submenus.
+ */
 public class MainMenu extends Menu{
     UIState state = UIState.RUN;
     Scanner scanner = new Scanner(System.in);
