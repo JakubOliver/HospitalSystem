@@ -1,10 +1,7 @@
 package hospitalsystem.UI;
 
-import hospitalsystem.Hospital;
-import hospitalsystem.database.Database;
 import hospitalsystem.personnel.util.PersonData;
 import hospitalsystem.util.HospitalAPI;
-import org.apache.commons.digester3.RegexMatcher;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -14,13 +11,28 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Abstract ancestor for menu pages. Implementing various methods with processing input data.
+ */
 abstract class Menu implements Page{
     HospitalAPI api;
 
+    /**
+     * Abstract constructor used in the chain of construction.
+     *
+     * @param api HospitalAPI giving the menu options how to interact with hospital system.
+     */
     public Menu(HospitalAPI api) {
         this.api = api;
     }
 
+    /**
+     * Processes input and returns extracted option.
+     *
+     * @param scanner Scanner pointing to the input data.
+     * @param range Upper bound for not zero positive range of options, thus (0, range]
+     * @return First valid option in the input stream.
+     */
     public static int getOption(Scanner scanner, int range){
         int option = getInteger(scanner, "Select an option: ");
 
@@ -32,6 +44,12 @@ abstract class Menu implements Page{
         return option;
     }
 
+    /**
+     * Processes input and extracts valid information into Person data wrapper.
+     *
+     * @param scanner Scanner pointing to the input data.
+     * @return Wrapper containing data for Person creating (without id)
+     */
     public static PersonData getPersonData(Scanner scanner){
         String firstName = getString(scanner, "First name: ");
         String lastName = getString(scanner, "Last name: ");
@@ -40,8 +58,12 @@ abstract class Menu implements Page{
         return new PersonData(firstName, lastName, dateOfBirth);
     }
 
+    /**
+     * Clears console with appropriate command based on OS
+     */
     public static void clearConsole()
     {
+        //TODO: rozhodnout OS na zacatku ať se to nemusi porad pocitat
         String os = System.getProperty("os.name");
         try {
             if (os.startsWith("Windows")) {
@@ -57,6 +79,13 @@ abstract class Menu implements Page{
         }
     }
 
+    /**
+     * Processes input and extracts first valid integer.
+     *
+     * @param scanner Scanner pointing to the input data.
+     * @param question Question with which will be user prompted.
+     * @return Valid integer.
+     */
     public static int getInteger(Scanner scanner, String question){
         while (scanner.hasNextLine()) {
             System.out.print(question);
@@ -72,6 +101,13 @@ abstract class Menu implements Page{
         throw new InputMismatchException("Scanner run out of lines and no correct integer found.");
     }
 
+    /**
+     * Processes input and extracts first not empty line.
+     *
+     * @param scanner Scanner pointing to the input data.
+     * @param question Question with which will be user prompted.
+     * @return Not empty string.
+     */
     public static String getString(Scanner scanner, String question){
         System.out.print(question);
         String line = "";
@@ -90,6 +126,14 @@ abstract class Menu implements Page{
         throw new InputMismatchException("Scanner run out of lines and no correct string found.");
     }
 
+    /**
+     * Processes input and extracts first line satisfying regular expression.
+     *
+     * @param scanner Scanner pointing to the input data.
+     * @param question Question with which will be user prompted.
+     * @param regex Regular expression which has to be satisfied.
+     * @return Not empty string satisfying provided regular expression.
+     */
     public static String satisfyRegex(Scanner scanner, String question, String regex){
         Pattern pattern = Pattern.compile(regex);
 
@@ -102,6 +146,13 @@ abstract class Menu implements Page{
         return text;
     }
 
+    /**
+     * Processes input and extracts first line containing valid date (in format YYYY-MM-DD)
+     *
+     * @param scanner Scanner pointing to the input data.
+     * @param question Question with which will be user prompted.
+     * @return LocalDate object containing valid date.
+     */
     public static LocalDate getDate(Scanner scanner, String question){
         while (scanner.hasNextLine()){
             String line = getString(scanner, question);
@@ -114,6 +165,15 @@ abstract class Menu implements Page{
         throw new InputMismatchException("Scanner run out of lines and did not found valid date."); //TODO: const
     }
 
+    /**
+     * Processes input and extracts first line containing valid date and time.
+     * <p>
+     * (in format YYYY-MM-DDTHH:MM or YYYY-MM-DD HH:MM)
+     *
+     * @param scanner Scanner pointing to the input data.
+     * @param question Question with which will be user prompted.
+     * @return LocalDateTime object containing valid date and time.
+     */
     public static LocalDateTime getDateTime(Scanner scanner, String question){
         while (scanner.hasNextLine()){
             String line = getString(scanner, question);
@@ -138,6 +198,11 @@ abstract class Menu implements Page{
         return existing.trim().equals("Y");
     }
 
+    /**
+     * Show waiting text and prompts user into pressing any key.
+     *
+     * @param scanner Scanner pointing to the input data.
+     */
     public static void waitForEnter(Scanner scanner){
         System.out.print("Press enter to continue...");
         scanner.nextLine();
