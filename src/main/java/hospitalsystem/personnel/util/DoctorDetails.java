@@ -1,4 +1,8 @@
 package hospitalsystem.personnel.util;
 
-public record DoctorDetails(String specialization) {
-}
+/**
+ * Wrapper for data which extends person into doctor.
+ *
+ * @param specialization Specialization of the doctor.
+ */
+public record DoctorDetails(String specialization) { }
