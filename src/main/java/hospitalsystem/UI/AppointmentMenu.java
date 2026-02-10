@@ -1,13 +1,8 @@
 package hospitalsystem.UI;
 
-import hospitalsystem.calendar.util.CalendarEntryData;
-import hospitalsystem.database.Database;
-import hospitalsystem.database.DatabaseException;
-import hospitalsystem.personnel.Doctor;
-import hospitalsystem.personnel.Patient;
+import hospitalsystem.calendar.util.AppointmentData;
 import hospitalsystem.util.HospitalAPI;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Scanner;
 
@@ -50,7 +45,7 @@ public class AppointmentMenu extends Submenu{
         LocalDateTime startTime = getDateTime(scanner, "Start Time: ");
         LocalDateTime endTime = getDateTime(scanner, "End Time: ");
 
-        api.addAppointment(new CalendarEntryData(
+        api.addAppointment(new AppointmentData(
                 patientsId,
                 doctorsId,
                 startTime,

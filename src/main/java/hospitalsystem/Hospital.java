@@ -1,6 +1,6 @@
 package hospitalsystem;
 
-import hospitalsystem.calendar.util.CalendarEntryData;
+import hospitalsystem.calendar.util.AppointmentData;
 import hospitalsystem.database.Database;
 import hospitalsystem.database.DatabaseException;
 import hospitalsystem.personnel.Patient;
@@ -92,17 +92,17 @@ public class Hospital {
     /**
      * Adds new appointment into the system.
      *
-     * @param calendarEntryData Calendar Entry data that describes the new appointment.
+     * @param appointmentData Calendar Entry data that describes the new appointment.
      */
-    public void addAppointment(CalendarEntryData calendarEntryData) {
+    public void addAppointment(AppointmentData appointmentData) {
         //TODO: validate
 
         try {
             database.addAppointment(
-                    calendarEntryData.patientsId(),
-                    calendarEntryData.doctorsId(),
-                    calendarEntryData.starTime(),
-                    calendarEntryData.endTime()
+                    appointmentData.patientsId(),
+                    appointmentData.doctorsId(),
+                    appointmentData.starTime(),
+                    appointmentData.endTime()
             );
 
             System.out.println("Success!");

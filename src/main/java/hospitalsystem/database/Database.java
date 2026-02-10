@@ -1,6 +1,5 @@
 package hospitalsystem.database;
 
-import hospitalsystem.calendar.CalendarEntry;
 import hospitalsystem.personnel.Doctor;
 import hospitalsystem.personnel.Patient;
 import hospitalsystem.personnel.Person;
@@ -47,14 +46,29 @@ public class Database {
         try (Connection conn = DriverManager.getConnection(url)) {
             Statement stmt =  conn.createStatement();
 
-            stmt.execute("CREATE TABLE IF NOT EXISTS people (id INTEGER PRIMARY KEY, firstname TEXT NOT NULL, lastname TEXT NOT NULL, birth_date TEXT NOT NULL CHECK ( birth_date GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]' and date(birth_date) IS NOT NULL), type TEXT NOT NULL CHECK (type IN ('patient', 'doctor')));");
+            stmt.execute("""
+                    CREATE TABLE IF NOT EXISTS people (
+                        id INTEGER PRIMARY KEY,
+                        firstname TEXT NOT NULL,
+                        lastname TEXT NOT NULL,
+                        birth_date TEXT NOT NULL CHECK ( birth_date GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]' and date(birth_date) IS NOT NULL),
+                        type TEXT NOT NULL CHECK (type IN ('patient', 'doctor'))
+                    );
+                    """);
 
-            stmt.execute("CREATE TABLE IF NOT EXISTS patients_details (id INTEGER PRIMARY KEY, anamnesis TEXT NOT NULL, FOREIGN KEY (id) REFERENCES people(id) ON DELETE CASCADE);");
+            stmt.execute("""
+                    CREATE TABLE IF NOT EXISTS patients_details (
+                        id INTEGER PRIMARY KEY,
+                        anamnesis TEXT NOT NULL,
+                        
+                        FOREIGN KEY (id) REFERENCES people(id) ON DELETE CASCADE
+                    );
+                    """);
 
             stmt.execute("""
                     CREATE TABLE IF NOT EXISTS doctors_details (
-                        id INTEGER PRIMARY KEY, 
-                        specialization TEXT NOT NULL, 
+                        id INTEGER PRIMARY KEY,
+                        specialization TEXT NOT NULL,
                         
                         FOREIGN KEY (id) REFERENCES people(id) ON DELETE CASCADE
                     );
@@ -154,7 +168,8 @@ public class Database {
                         result.getInt("id"),
                         result.getString("firstname"),
                         result.getString("lastname"),
-                        LocalDate.parse(result.getString("birth_date")));
+                        LocalDate.parse(result.getString("birth_date"))
+                );
             }
 
             throw new SQLException(notExistingIdentifierError);

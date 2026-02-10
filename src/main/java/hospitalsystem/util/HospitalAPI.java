@@ -1,8 +1,7 @@
 package hospitalsystem.util;
 
 import hospitalsystem.Hospital;
-import hospitalsystem.calendar.util.CalendarEntryData;
-import hospitalsystem.database.Database;
+import hospitalsystem.calendar.util.AppointmentData;
 import hospitalsystem.personnel.util.DoctorData;
 import hospitalsystem.personnel.util.PatientData;
 
@@ -62,9 +61,9 @@ public class HospitalAPI {
     /**
      * Calls for creation of new appointment in hospital system.
      *
-     * @param calendarEntryData Calendar Entry data that will be used for creation of new appointment.
+     * @param appointmentData Calendar Entry data that will be used for creation of new appointment.
      */
-    public void addAppointment(CalendarEntryData calendarEntryData) {
-        hospital.addAppointment(calendarEntryData);
+    public void addAppointment(AppointmentData appointmentData) {
+        hospital.addAppointment(appointmentData);
     }
 }
