@@ -30,7 +30,7 @@ public class DatabaseTests extends Tests{
     static DoctorData sampleDoctorData = new DoctorData(samplePersonData, sampleDoctorDetails);
 
     @BeforeEach
-    public void setup() throws SQLException {
+    public void setup() {
         api = new HospitalAPI(new Hospital("jdbc:sqlite:memory:"));
     }
 

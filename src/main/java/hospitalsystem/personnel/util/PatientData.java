@@ -6,4 +6,4 @@ package hospitalsystem.personnel.util;
  * @param person Person data that describe possible patient.
  * @param details Patient details that describe possible patient.
  */
-public record PatientData(PersonData person, PatientsDetails details){};
+public record PatientData(PersonData person, PatientsDetails details){}

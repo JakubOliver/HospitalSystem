@@ -35,7 +35,7 @@ public class Database {
     private final String url;
 
     /**
-     * Connects to the databased located on provided url and check whether the databases has correct structure.
+     * Connects to the databased located on provided url and check whether the database has correct structure.
      * If not then creates missing tables.
      *
      * @param url Location of the database.

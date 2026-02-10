@@ -7,10 +7,10 @@ public interface Page {
     /**
      * Shows menu options in terminal.
      */
-    public void printMenu();
+    void printMenu();
 
     /**
      * Processes the user option based on page menu.
      */
-    public void processMenu();
+    void processMenu();
 }

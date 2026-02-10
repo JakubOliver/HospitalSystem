@@ -1,6 +1,5 @@
 package hospitalsystem.personnel;
 
-import hospitalsystem.personnel.util.PatientData;
 import hospitalsystem.personnel.util.PatientsDetails;
 
 import java.time.LocalDate;

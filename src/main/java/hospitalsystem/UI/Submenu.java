@@ -1,6 +1,5 @@
 package hospitalsystem.UI;
 
-import hospitalsystem.Hospital;
 import hospitalsystem.util.HospitalAPI;
 
 import java.util.Scanner;

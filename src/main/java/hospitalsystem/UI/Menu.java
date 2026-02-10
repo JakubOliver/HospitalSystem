@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -87,15 +86,19 @@ abstract class Menu implements Page{
      * @return Valid integer.
      */
     public static int getInteger(Scanner scanner, String question){
+        String line;
+        System.out.print(question);
+
         while (scanner.hasNextLine()) {
-            System.out.print(question);
-            String line = scanner.nextLine();
+            line = scanner.nextLine();
 
             try{
                 return Integer.parseInt(line.trim());
             } catch (NumberFormatException e){
                 System.out.println("Invalid input: not a valid number");
             }
+
+            System.out.print(question);
         }
 
         throw new InputMismatchException("Scanner run out of lines and no correct integer found.");
@@ -109,11 +112,10 @@ abstract class Menu implements Page{
      * @return Not empty string.
      */
     public static String getString(Scanner scanner, String question){
+        String line;
         System.out.print(question);
-        String line = "";
 
         while (scanner.hasNextLine()){
-            System.out.print(question);
             line = scanner.nextLine();
 
             if (!line.isEmpty()){
@@ -121,6 +123,7 @@ abstract class Menu implements Page{
             }
 
             System.out.println("Invalid input: enter not empty string.");
+            System.out.print(question);
         }
 
         throw new InputMismatchException("Scanner run out of lines and no correct string found.");
