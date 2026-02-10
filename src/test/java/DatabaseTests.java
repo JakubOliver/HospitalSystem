@@ -1,19 +1,13 @@
 import hospitalsystem.Hospital;
 import hospitalsystem.UI.PatientMenu;
-import hospitalsystem.calendar.CalendarEntry;
-import hospitalsystem.calendar.util.CalendarEntryData;
+import hospitalsystem.calendar.util.AppointmentData;
 import hospitalsystem.personnel.Patient;
 import hospitalsystem.personnel.util.*;
 import hospitalsystem.util.HospitalAPI;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Scanner;
@@ -66,7 +60,7 @@ public class DatabaseTests extends Tests{
         api.addPatient(samplePatientData);
         api.addDoctor(sampleDoctorData);
 
-        api.addAppointment(new CalendarEntryData(
+        api.addAppointment(new AppointmentData(
                 1,
                 2,
                 LocalDateTime.of(2001, 1, 1, 1, 1),
