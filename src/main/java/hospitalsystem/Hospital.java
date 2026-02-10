@@ -13,7 +13,11 @@ import hospitalsystem.util.HospitalAPI;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Hospital {
     private final Database database;
@@ -42,16 +46,16 @@ public class Hospital {
         }
     }
 
-    public void findAllPatient(){
+    public List<String> findAllPatient(){
         try{
             List<Patient> patients = database.getAllPatients();
 
-            for (Patient patient : patients){
-                System.out.println(patient);
-            }
+            return patients.stream().map(Patient::toString).toList();
         } catch (DatabaseException e){
             System.out.println("Error: " + e.getMessage());
         }
+
+        return new ArrayList<String>();
     }
 
     public void addDoctor(DoctorData doctorData) {

@@ -5,6 +5,7 @@ import hospitalsystem.personnel.util.PatientsDetails;
 import hospitalsystem.personnel.util.PersonData;
 import hospitalsystem.util.HospitalAPI;
 
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -74,7 +75,11 @@ public class PatientMenu extends Submenu {
      * Prints all patients in the hospital system.
      */
     private void findAllPatient(){
-        api.findAllPatients();
+        List<String> patients = api.findAllPatients();
+
+        for(String patient : patients){
+            System.out.println(patient);
+        }
 
         waitForEnter(scanner);
     }
