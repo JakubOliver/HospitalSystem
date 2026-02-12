@@ -158,15 +158,22 @@ abstract class Menu implements Page{
      * @return LocalDate object containing valid date.
      */
     public static LocalDate getDate(Scanner scanner, String question){
-        while (scanner.hasNextLine()){
+        boolean acquireCorrectDate = false;
+        LocalDate date = null; // Even thought the value here is null, if we get to the return statement in the date variable will always be valid date.
+
+        while (!acquireCorrectDate){
             String line = getString(scanner, question);
 
             try{
-                return LocalDate.parse(line.trim());
+                date = LocalDate.parse(line.trim());
+
+                acquireCorrectDate = true;
             } catch (DateTimeParseException _){}
         }
 
-        throw new InputMismatchException("Scanner run out of lines and did not found valid date."); //TODO: const
+        return date;
+
+        //throw new InputMismatchException("Scanner run out of lines and did not found valid date."); //TODO: const
     }
 
     /**
@@ -179,7 +186,10 @@ abstract class Menu implements Page{
      * @return LocalDateTime object containing valid date and time.
      */
     public static LocalDateTime getDateTime(Scanner scanner, String question){
-        while (scanner.hasNextLine()){
+        boolean acquireCorrectDateTime = false;
+        LocalDateTime date = null;
+
+        while (!acquireCorrectDateTime){
             String line = getString(scanner, question);
 
             if (line.contains(" ")){
@@ -188,11 +198,15 @@ abstract class Menu implements Page{
             }
 
             try{
-                return LocalDateTime.parse(line.trim());
+                date =  LocalDateTime.parse(line.trim());
+
+                acquireCorrectDateTime = true;
             } catch (DateTimeParseException _){}
         }
 
-        throw new InputMismatchException("Scanner run out of lines and did not found valid date and time."); //TODO: const
+        return date;
+
+        //throw new InputMismatchException("Scanner run out of lines and did not found valid date and time."); //TODO: const
     }
 
     /**
@@ -244,14 +258,6 @@ abstract class Menu implements Page{
         }
 
         return isValidBoolTrue(line);
-    }
-
-    public static void resolvePacketStatus(GeneralPacket packet){
-        if (packet.successful){
-            System.out.println("Successful!");
-        } else {
-            System.out.println("Error: " + packet.error);
-        }
     }
 
     /**
