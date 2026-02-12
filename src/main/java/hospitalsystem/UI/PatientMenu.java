@@ -69,7 +69,7 @@ public class PatientMenu extends Submenu {
 
         GeneralPacket packet = api.addPatient(new PatientData(personData, new PatientsDetails(anamnesis)));
 
-        resolvePacketStatus(packet);
+        System.out.println(packet.resolveStatus());
 
         waitForEnter(scanner);
     }

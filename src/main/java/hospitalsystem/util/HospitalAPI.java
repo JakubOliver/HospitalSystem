@@ -67,4 +67,8 @@ public class HospitalAPI {
     public void addAppointment(AppointmentData appointmentData) {
         hospital.addAppointment(appointmentData);
     }
+
+    public void showCalendar(){
+        hospital.showCalendar();
+    }
 }

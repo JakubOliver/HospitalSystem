@@ -15,4 +15,12 @@ public class GeneralPacket {
         this.successful = true;
         this.error = Optional.empty();
     }
+
+    public String resolveStatus(){
+        if (successful) {
+            return "Successful!";
+        }
+
+        return "Error: " + error.get();
+    }
 }

@@ -1,5 +1,6 @@
 package hospitalsystem;
 
+import hospitalsystem.calendar.Calendar;
 import hospitalsystem.calendar.util.AppointmentData;
 import hospitalsystem.database.Database;
 import hospitalsystem.database.DatabaseException;
@@ -108,6 +109,16 @@ public class Hospital {
             System.out.println("Success!");
         } catch (DatabaseException e){
             System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    public void showCalendar(){
+        try {
+            Calendar calendar = database.getCalendar();
+
+            System.out.print(calendar);
+        } catch (DatabaseException e) {
+            throw new RuntimeException(e);
         }
     }
 }

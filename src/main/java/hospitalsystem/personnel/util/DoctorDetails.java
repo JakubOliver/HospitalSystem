@@ -5,4 +5,4 @@ package hospitalsystem.personnel.util;
  *
  * @param specialization Specialization of the doctor.
  */
-public record DoctorDetails(String specialization) { }
+public record DoctorDetails(String specialization, String department) { }

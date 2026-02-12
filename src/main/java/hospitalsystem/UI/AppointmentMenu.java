@@ -23,14 +23,17 @@ public class AppointmentMenu extends Submenu{
     @Override
     public void printMenu() {
         System.out.println("1. Add new appointment");
-        System.out.println("2. Back"); //TODO: mozna spotit na volani s PetientMenu
+        System.out.println("2. List appointments");
+        System.out.println("3. Back"); //TODO: mozna spotit na volani s PetientMenu
     }
 
     @Override
     public void processMenu() {
-        switch (getOption(scanner, 2)){
+        switch (getOption(scanner, 3)){
             case 1:
                 addAppointment(); break;
+            case 2:
+                showCalendar(); break;
         }
     }
 
@@ -64,6 +67,12 @@ public class AppointmentMenu extends Submenu{
                 startTime,
                 endTime
         ));
+
+        waitForEnter(scanner);
+    }
+
+    private void showCalendar(){
+        api.showCalendar();
 
         waitForEnter(scanner);
     }

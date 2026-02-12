@@ -4,6 +4,7 @@ import hospitalsystem.personnel.Doctor;
 import hospitalsystem.personnel.Patient;
 import hospitalsystem.personnel.Person;
 import hospitalsystem.personnel.util.*;
+import hospitalsystem.calendar.*;
 
 import javax.print.Doc;
 import java.sql.*;
@@ -20,8 +21,8 @@ import java.util.List;
 public class Database {
     private static final String insertPerson = "INSERT INTO people(firstname, lastname, birth_date, type) VALUES (?, ?, ?, ?)";
     private static final String insertPatientDetail = "INSERT INTO patients_details(id, anamnesis) VALUES (?, ?)";
-    private static final String insertDoctorDetail = "INSERT INTO doctors_details(id, specialization) VALUES (?, ?)";
-    private static final String insertAppointment = "INSERT INTO appointments(patient_id, doctor_id, start_time, end_time) VALUES (?, ?, ?, ?)";
+    private static final String insertDoctorDetail = "INSERT INTO doctors_details(id, specialization, department) VALUES (?, ?, ?)";
+    private static final String insertAppointment = "INSERT INTO appointments(patient_id, doctor_id, department, start_time, end_time) VALUES (?, ?, ?, ?, ?)";
     private static final String insertPatient = "INSERT INTO patients(firstname, lastname, birth_date, anamnesis) VALUES (?, ?, ?, ?)";
     private static final String insertDoctor = "INSERT INTO patients(firstname, lastname, birth_date, specialization) VALUES (?, ?, ?, ?)";
 
@@ -30,6 +31,8 @@ public class Database {
     private static final String getPatientDetailsById = "SELECT * FROM patients_details WHERE id = ?";
     private static final String getAllPatients = "SELECT * FROM people, patients_details WHERE people.id = patients_details.id";
     private static final String getDoctorDetailsById = "SELECT * FROM doctors_details WHERE id = ?";
+
+    private static final String getAllAppointments = "SELECT * FROM appointments";
 
     private static final String getLastUsedIdError = "Unable to get generated key!";
     private static final String notExistingIdentifierError = "Id does not exist!";
@@ -72,6 +75,7 @@ public class Database {
                     CREATE TABLE IF NOT EXISTS doctors_details (
                         id INTEGER PRIMARY KEY,
                         specialization TEXT NOT NULL,
+                        department TEXT NOT NULL,
                     
                         FOREIGN KEY (id) REFERENCES people(id) ON DELETE CASCADE
                     );
@@ -82,6 +86,7 @@ public class Database {
                     	id INTEGER PRIMARY KEY,
                     	patient_id INTEGER NOT NULL,
                     	doctor_id INTEGER NOT NULL,
+                    	department TEXT NOT NULL,
                     
                     	start_time TEXT NOT NULL
                     		CHECK (
@@ -330,6 +335,7 @@ public class Database {
         try (PreparedStatement statement = connection.prepareStatement(insertDoctorDetail)){
             statement.setInt(1, id);
             statement.setString(2, details.specialization());
+            statement.setString(3, details.department());
 
             statement.executeUpdate();
         }
@@ -356,10 +362,11 @@ public class Database {
                     doctorData.person().firstName(),
                     doctorData.person().lastName(),
                     doctorData.person().dateOfBirth(),
-                    doctorData.details().specialization()
+                    doctorData.details().specialization(),
+                    doctorData.details().department()
             ); //TODO: vytvorit konstruktory, ktere budou lepe zpracovat tyto vstupy
         } catch  (SQLException e) {
-            throw new DatabaseException(DatabaseException.doctorInsertDatabaseError);
+            throw new DatabaseException(DatabaseException.doctorInsertDatabaseError, e.getMessage());
         }
     }
 
@@ -378,7 +385,10 @@ public class Database {
             ResultSet result = statement.executeQuery();
 
             if (result.next()) {
-                return new DoctorDetails(result.getString("specialization"));
+                return new DoctorDetails(
+                        result.getString("specialization"),
+                        result.getString("department")
+                );
             }
 
             throw new SQLException(notExistingPatientIdentifierError);
@@ -419,12 +429,13 @@ public class Database {
      * @return Identifier of appointment.
      * @throws SQLException Error connected to the failure of storing new appointment into database or retrieving identifier from database.
      */
-    private int pushAppointmentIntoDatabase(Connection connection, int patientId, int doctorId, LocalDateTime startTime, LocalDateTime endTime) throws SQLException {
+    private int pushAppointmentIntoDatabase(Connection connection, int patientId, int doctorId, String department, LocalDateTime startTime, LocalDateTime endTime) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(insertAppointment)){
             statement.setInt(1, patientId);
             statement.setInt(2, doctorId);
-            statement.setString(3, startTime.toString());
-            statement.setString(4, endTime.toString());
+            statement.setString(3, department);
+            statement.setString(4, startTime.toString());
+            statement.setString(5, endTime.toString());
 
             statement.executeUpdate();
 
@@ -447,14 +458,9 @@ public class Database {
      * @param endTime Ending time of appointment.
      * @throws DatabaseException Error connected to the failure of storing new appointment.
      */
-    public void addAppointment(int patientId, int doctorId, LocalDateTime startTime, LocalDateTime endTime) throws DatabaseException {
+    public void addAppointment(int patientId, int doctorId, String department, LocalDateTime startTime, LocalDateTime endTime) throws DatabaseException {
         try (Connection connection = DriverManager.getConnection(url)) {
-            connection.setAutoCommit(false);
-
-            int appointmentId = pushAppointmentIntoDatabase(connection, patientId, doctorId, startTime, endTime);
-
-            connection.commit();
-
+            int appointmentId = pushAppointmentIntoDatabase(connection, patientId, doctorId, department, startTime, endTime);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             throw new DatabaseException(DatabaseException.appointmentInsertDatabaseError);
@@ -471,6 +477,26 @@ public class Database {
      * @throws DatabaseException Error connected to the failure of storing new appointment.
      */
     public void addAppointment(Patient patient, Doctor doctor, LocalDateTime startTime, LocalDateTime endTime) throws DatabaseException {
-        addAppointment(patient.getId(), doctor.getId(), startTime, endTime);
+        addAppointment(patient.getId(), doctor.getId(), doctor.getDepartment(), startTime, endTime);
+    }
+
+    public void addAppointment(int patientId, int doctorId,LocalDateTime startTime, LocalDateTime endTime) throws DatabaseException {
+        Doctor doctor = getDoctor(doctorId);
+
+        addAppointment(patientId, doctorId, doctor.getDepartment(), startTime, endTime);
+    }
+
+    public Calendar getCalendar() throws DatabaseException {
+        try (Connection connection = DriverManager.getConnection(url); PreparedStatement statement = connection.prepareStatement(getAllAppointments)){
+
+            ResultSet result = statement.executeQuery();
+
+            Calendar calendar = new Calendar();
+            calendar.importData(result);
+
+            return calendar;
+        } catch (SQLException e){
+            throw new DatabaseException("Doplnit");
+        }
     }
 }

@@ -41,10 +41,10 @@ public class DoctorMenu extends Submenu {
     private void addDoctor(){
         PersonData personData = getPersonData(scanner);
 
-        System.out.print("Specialization: ");
-        String specialization = scanner.nextLine();
+        String specialization = getString(scanner, "Specialization: ");
+        String department = getString(scanner, "Department: ");
 
-        DoctorData  doctorData = new DoctorData(personData, new DoctorDetails(specialization));
+        DoctorData  doctorData = new DoctorData(personData, new DoctorDetails(specialization, department));
 
         api.addDoctor(doctorData);
 
