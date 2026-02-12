@@ -3,6 +3,8 @@ package hospitalsystem;
 import hospitalsystem.calendar.util.AppointmentData;
 import hospitalsystem.database.Database;
 import hospitalsystem.database.DatabaseException;
+import hospitalsystem.packet.GeneralPacket;
+import hospitalsystem.packet.PersonPacket;
 import hospitalsystem.personnel.Patient;
 import hospitalsystem.personnel.util.DoctorData;
 import hospitalsystem.personnel.util.PatientData;
@@ -30,15 +32,13 @@ public class Hospital {
      *
      * @param patientData Patients data which describes new patient.
      */
-    public void addPatient(PatientData patientData) {
+    public GeneralPacket addPatient(PatientData patientData) {
         //TODO: validate
 
         try {
-            database.addPatient(patientData);
-
-            System.out.println("Success!");
+            return new PersonPacket(database.addPatient(patientData));
         } catch (DatabaseException e){
-            System.out.println("Error: " + e.getMessage());
+            return new GeneralPacket(false, e.getMessage());
         }
     }
 

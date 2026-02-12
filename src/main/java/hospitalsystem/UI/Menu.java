@@ -1,5 +1,6 @@
 package hospitalsystem.UI;
 
+import hospitalsystem.packet.GeneralPacket;
 import hospitalsystem.personnel.util.PersonData;
 import hospitalsystem.util.HospitalAPI;
 
@@ -194,11 +195,63 @@ abstract class Menu implements Page{
         throw new InputMismatchException("Scanner run out of lines and did not found valid date and time."); //TODO: const
     }
 
-    public static boolean createNew(Scanner scanner, String what){
-        System.out.print("Use existing " + what + ": ");
-        String existing = scanner.nextLine();
+    /**
+     * Check whether the input can be classified as true.
+     *
+     * @param answer Input string.
+     * @return Whether the input can be classified as true.
+     */
+    private static boolean isValidBoolTrue(String answer){
+        return answer.equals("Yes") || answer.equals("Y");
+    }
 
-        return existing.trim().equals("Y");
+    /**
+     * Check whether the input can be classified as false.
+     *
+     * @param answer Input string.
+     * @return Whether the input can be classified as false.
+     */
+    private static boolean isValidBoolFalse(String answer){
+        return answer.equals("No") || answer.equals("N");
+    }
+
+    /**
+     * Check whether the input can be classified as boolean value.
+     *
+     * @param answer Input string.
+     * @return Whether the input can be classified as boolean value.
+     */
+    private static boolean isValidBoolAnswer(String answer){
+        return isValidBoolTrue(answer) || isValidBoolFalse(answer);
+    }
+
+    /**
+     * Checks whether the user wants to create new object.
+     *
+     * @param scanner Scanner pointing to the input data.
+     * @param what The object in question.
+     * @return Whether the user wants to create new object.
+     */
+    public static boolean createNew(Scanner scanner, String what){
+        String question = "Use existing " + what + " (Yes/No) : ";
+
+        String line = getString(scanner, question);
+
+        while (!isValidBoolAnswer(line)){
+            System.out.println("Invalid input!");
+
+            line = getString(scanner, question);
+        }
+
+        return isValidBoolTrue(line);
+    }
+
+    public static void resolvePacketStatus(GeneralPacket packet){
+        if (packet.successful){
+            System.out.println("Successful!");
+        } else {
+            System.out.println("Error: " + packet.error);
+        }
     }
 
     /**

@@ -40,8 +40,21 @@ public class AppointmentMenu extends Submenu{
     private void addAppointment(){
         //TODO: volba zda si vybrat (id nebo jmeno) nebo vytvořit noveho
 
-        int patientsId = getInteger(scanner, "Patient's ID: ");
-        int doctorsId = getInteger(scanner, "Doctor's ID: ");
+        int patientsId;
+        if (createNew(scanner, "patient")){
+            //TODO: dodelat pres packety
+            patientsId = getInteger(scanner, "Patient's ID: ");
+        } else {
+            patientsId = getInteger(scanner, "Patient's ID: ");
+        }
+
+        int doctorsId;
+        if (createNew(scanner, "doctor")){
+            //TODO: dodelat pres packety
+            doctorsId = getInteger(scanner, "Doctor's ID: ");
+        } else {
+            doctorsId = getInteger(scanner, "Doctor's ID: ");
+        }
         LocalDateTime startTime = getDateTime(scanner, "Start Time: ");
         LocalDateTime endTime = getDateTime(scanner, "End Time: ");
 

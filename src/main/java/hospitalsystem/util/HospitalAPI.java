@@ -2,6 +2,7 @@ package hospitalsystem.util;
 
 import hospitalsystem.Hospital;
 import hospitalsystem.calendar.util.AppointmentData;
+import hospitalsystem.packet.GeneralPacket;
 import hospitalsystem.personnel.util.DoctorData;
 import hospitalsystem.personnel.util.PatientData;
 
@@ -27,8 +28,8 @@ public class HospitalAPI {
      *
      * @param patientData Patient data that will be used for patient creation.
      */
-    public void addPatient(PatientData patientData) {
-        hospital.addPatient(patientData);
+    public GeneralPacket addPatient(PatientData patientData) {
+        return hospital.addPatient(patientData);
     }
 
     /**
