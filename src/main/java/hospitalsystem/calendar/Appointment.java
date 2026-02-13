@@ -92,7 +92,7 @@ public class Appointment implements Comparable<Appointment> {
             int idDigits = numberOfDigits(patientId);
             int emptySize = (length - idDigits) / 2;
 
-            return prefix + " ".repeat(emptySize) + patientId + " ".repeat(length - idDigits - emptySize);
+            return prefix + " ".repeat(emptySize) + "\u001b[31m" + patientId + "\u001b[0m" + " ".repeat(length - idDigits - emptySize);
         } else {
             return prefix + startTime.toLocalTime().toString() + " ".repeat(length - 10) + endTime.toLocalTime().toString();
         }

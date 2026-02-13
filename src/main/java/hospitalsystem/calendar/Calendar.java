@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.*;
 
 class Department{
@@ -32,12 +33,16 @@ class Department{
         }
     }
 
-    public SortedSet<Appointment> appointments;
+    public String name;
 
-    private Map<Integer, List<Appointment>> layers;
-    private Map<Appointment, Integer> layerOfAppointment;
+    public final SortedSet<Appointment> appointments;
 
-    Department(){
+    private final Map<Integer, List<Appointment>> layers;
+    private final Map<Appointment, Integer> layerOfAppointment;
+
+    Department(String name){
+        this.name = name;
+
         appointments = new TreeSet<>();
         layers = new HashMap<>();
         layerOfAppointment = new HashMap<>();
@@ -76,69 +81,13 @@ class Department{
 
     @Override
     public String toString(){
-        /*
         StringBuilder sb = new StringBuilder();
 
-        for (int layer = 0; layer < layers.size(); layer++){
-            for (int part = 0; part < 3; part++){
-                LocalDateTime time = appointments.first().startTime.withHour(8).withMinute(0).withSecond(0).withNano(0);
-
-                for (Appointment appointment : appointments){
-                    if (layerOfAppointment.get(appointment) == layer){
-                        for (int i = 0; i < (Duration.between(time, appointment.endTime).toMinutes()) / 30; i++){
-                            sb.append("---");
-                        }
-
-                        sb.append(appointment.getStringForPart(part));
-                        time = appointment.endTime;
-                    }
-                }
-                sb.append("\n");
-            }
-        }
+        sb.append(name).append("\n");
 
         List<Appointment> sortedAppointments = new ArrayList<>(appointments);
 
         LocalDateTime time = sortedAppointments.getFirst().startTime.withHour(8).withMinute(0).withSecond(0).withNano(0);
-        int firstOfDay = 0;
-
-        for (int layer = 0; layer < layers.size(); layer++){
-            for (int part = 0; part < 3; part++){
-                for (int idx = firstOfDay; idx < sortedAppointments.size(); idx++){
-                    if (!time.toLocalDate().equals(sortedAppointments.get(idx).startTime.toLocalDate())){
-                        if (idx == firstOfDay){
-                            sb.append(printEmpty(part));
-                        }
-
-                        if (part == 2){
-                            firstOfDay = idx;
-                        }
-
-                        break;
-                    }
-
-                    if (layerOfAppointment.get(sortedAppointments.get(idx)) == layer){
-                        for (int i = 0; i < (Duration.between(time, sortedAppointments.get(idx).startTime).toMinutes()) / 30; i++){
-                            sb.append("---");
-                        }
-
-                        sb.append(sortedAppointments.get(idx).getStringForPart(part));
-                        time = sortedAppointments.get(idx).endTime;
-                    }
-                }
-
-                sb.append("\n");
-            }
-
-            time = time.plusDays(1).withHour(8).withMinute(0).withSecond(0).withNano(0);
-        }
-        */
-
-        StringBuilder sb = new StringBuilder();
-
-        List<Appointment> sortedAppointments = new ArrayList<>(appointments);
-
-        LocalDateTime time;
 
         int startIdx = 0;
         int lastIdx;
@@ -148,17 +97,12 @@ class Department{
 
             for (int layer = 0; layer < layers.size(); layer++){
                 for (int part = 0; part < 3; part++){
-                    if (lastIdx <= startIdx){
-                        sb.append(printEmpty(part));
-                        break;
-                    }
-
                     time = sortedAppointments.get(startIdx).startTime.withHour(8).withMinute(0).withSecond(0).withNano(0);
 
                     if (layer == 0) {
                         sb.append(printDate(time, part));
                     } else {
-                        sb.append(" ".repeat(6));
+                        sb.append(" ".repeat(10));
                     }
 
                     for (int idx = startIdx; idx < lastIdx; idx++){
@@ -180,14 +124,49 @@ class Department{
                 }
             }
 
+            sb.append("\n");
+
+            if (lastIdx != sortedAppointments.size()){
+                for (int empty = 0; empty < Period.between(sortedAppointments.get(startIdx).startTime.toLocalDate(), sortedAppointments.get(lastIdx).startTime.toLocalDate()).getDays() - 1; empty++){
+                    time = time.plusDays(1);
+
+                    //TODO: whole at ones
+                    for (int part = 0; part < 3; part++){
+                        sb.append(printDate(time, part));
+                        sb.append("-".repeat((16 - 8) * 2 * 6));
+                        sb.append("\n");
+                    }
+
+                    sb.append("\n");
+                }
+            }
+
             startIdx = lastIdx;
         }
 
         return sb.toString();
     }
 
+    private String processEmptyDays(int days, LocalDateTime time){
+        StringBuilder sb = new StringBuilder();
+
+        for (int empty = 0; empty < days; empty++){
+            time = time.plusDays(1);
+
+            for (int part = 0; part < 3; part++){
+                sb.append(printDate(time, part));
+                sb.append("-".repeat((16 - 8) * 2 * 6));
+                sb.append("\n");
+            }
+
+            sb.append("\n");
+        }
+
+        return sb.toString();
+    }
+
     private int getLastSameIdx(List<Appointment> appointments, int startIdx){
-        int idx = 0;
+        int idx = startIdx;
 
         while (idx < appointments.size() && appointments.get(startIdx).startTime.toLocalDate().equals(appointments.get(idx).startTime.toLocalDate())){
             idx++;
@@ -197,12 +176,19 @@ class Department{
     }
 
     private String printDate(LocalDateTime time, int part){
+        int size = 10;
+
         if (part == 0){
-            return time.getDayOfWeek().toString();
+            String dayName = time.getDayOfWeek().toString();
+            int offset = (size - dayName.length()) / 2;
+
+            return " ".repeat(offset) + dayName + " ".repeat(size - dayName.length() - offset);
         } else if (part == 1){
-            return String.format("%02d", time.getDayOfMonth()) + "  " + String.format("%02d", time.getMonthValue());
+            return String.format("%02d", time.getDayOfMonth()) + " ".repeat(size - 4) + String.format("%02d", time.getMonthValue());
         } else {
-            return " " + time.getYear() + " ";
+            int offset = (size - 4) / 2;
+
+            return " ".repeat(offset) + time.getYear() + " ".repeat(size - 4 - offset);
         }
     }
 
@@ -216,7 +202,7 @@ class Department{
 }
 
 public class Calendar {
-    Map<String, Department> departments;
+    private final Map<String, Department> departments;
 
     //TODO: validate times, isPatient, isDoctor etc.
     public Calendar() {
@@ -228,7 +214,7 @@ public class Calendar {
             Appointment appointment = new Appointment(resultSet);
 
             if (!departments.containsKey(appointment.department)) {
-                departments.put(appointment.department, new Department());
+                departments.put(appointment.department, new Department(appointment.department));
             }
 
             departments.get(appointment.department).addAppointment(appointment);
@@ -248,7 +234,6 @@ public class Calendar {
         StringBuilder sb = new StringBuilder();
 
         for (String department : departments.keySet()){
-            sb.append(department).append("\n");
             sb.append(departments.get(department).toString());
         }
 
