@@ -26,6 +26,9 @@ public class Database {
     private static final String insertPatient = "INSERT INTO patients(firstname, lastname, birth_date, anamnesis) VALUES (?, ?, ?, ?)";
     private static final String insertDoctor = "INSERT INTO patients(firstname, lastname, birth_date, specialization) VALUES (?, ?, ?, ?)";
 
+    private static final String updatePerson = "UPDATE people SET firstname = ?, lastname = ?, birth_date = ? WHERE id = ?";
+    private static final String updatePatientDetails = "UPDATE patients_details SET anamnesis = ? WHERE id = ?";
+
     private static final String getPersonById = "SELECT * FROM people WHERE id = ?";
     private static final String getAllPeopleByType = "SELECT * FROM people, patients_details, doctors_details WHERE people.type = ?";
     private static final String getPatientDetailsById = "SELECT * FROM patients_details WHERE id = ?";
@@ -157,6 +160,17 @@ public class Database {
         }
     }
 
+    private void updatePerson(Connection connection, Person person) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(updatePerson)){
+            statement.setString(1, person.getFirstName());
+            statement.setString(2, person.getLastName());
+            statement.setString(3, person.getDateOfBirth().toString());
+            statement.setInt(4, person.getId());
+
+            statement.executeUpdate();
+        }
+    }
+
     /**
      * Returns Person with the provided id.
      *
@@ -165,13 +179,17 @@ public class Database {
      * @return Person with the provided id.
      * @throws SQLException Errors connected with the unability of retrieve person with provided id.
      */
-    private Person getPerson(Connection connection, int id) throws SQLException {
+    private Person getPerson(Connection connection, int id, String expectedType) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(getPersonById)){
             statement.setInt(1, id);
 
             ResultSet result = statement.executeQuery();
 
             if (result.next()) {
+                if (!expectedType.equals(result.getString("type"))) {
+                    throw new SQLException("Person with id " + id + " is not " + expectedType);
+                }
+
                 return new Person(
                         result.getInt("id"),
                         result.getString("firstname"),
@@ -236,6 +254,26 @@ public class Database {
         }
     }
 
+    private void updatePatientDetails(Connection connection, Patient patient) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(updatePatientDetails)){
+            statement.setString(1, patient.getAnamnesis());
+            statement.setInt(2, patient.getId());
+
+            statement.executeUpdate();
+        }
+    }
+
+    public void updatePatient(Patient patient) throws DatabaseException {
+        try (Connection connection = DriverManager.getConnection(url)){
+            updatePerson(connection, patient);
+            updatePatientDetails(connection, patient);
+
+            //TODO promislet znad nevracet
+        }catch  (SQLException e) {
+            throw new DatabaseException(DatabaseException.patientInsertDatabaseError, e.getMessage()); //todo: vlastni expression
+        }
+    }
+
     /**
      * Returns patients details for patient with provided id.
      *
@@ -268,7 +306,7 @@ public class Database {
      */
     public Patient getPatient(int id) throws DatabaseException {
         try (Connection connection = DriverManager.getConnection(url)){
-            Person person = getPerson(connection, id); //TODO: validace, že je to opravdu patient
+            Person person = getPerson(connection, id, Patient.getClassIdentifier()); //TODO: validace, že je to opravdu patient
             PatientsDetails details =  getPatientDetails(connection, id);
 
             return new Patient(person, details);
@@ -405,7 +443,7 @@ public class Database {
      */
     public Doctor getDoctor(int id) throws DatabaseException {
         try (Connection connection = DriverManager.getConnection(url)){
-            Person person = getPerson(connection, id);
+            Person person = getPerson(connection, id, Doctor.getClassIdentifier());
             DoctorDetails details = getDoctorDetails(connection, id);
 
             return new Doctor(person, details);

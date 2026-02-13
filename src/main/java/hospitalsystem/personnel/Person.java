@@ -1,5 +1,7 @@
 package hospitalsystem.personnel;
 
+import hospitalsystem.personnel.util.PersonData;
+
 import java.time.LocalDate;
 import java.time.Period;
 
@@ -52,6 +54,15 @@ public class Person {
         this.firstName = person.firstName;
         this.lastName = person.lastName;
         this.dateOfBirth = person.dateOfBirth;
+    }
+
+    public Person(int id, PersonData personData){
+        this(
+            id,
+            personData.firstName(),
+            personData.lastName(),
+            personData.dateOfBirth()
+        );
     }
 
     /**

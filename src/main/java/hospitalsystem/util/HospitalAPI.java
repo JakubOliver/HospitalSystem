@@ -3,6 +3,7 @@ package hospitalsystem.util;
 import hospitalsystem.Hospital;
 import hospitalsystem.calendar.util.AppointmentData;
 import hospitalsystem.packet.GeneralPacket;
+import hospitalsystem.personnel.Patient;
 import hospitalsystem.personnel.util.DoctorData;
 import hospitalsystem.personnel.util.PatientData;
 
@@ -38,8 +39,12 @@ public class HospitalAPI {
      * @param id Id that identifies patient.
      * @return String containing info about patient with provided id.
      */
-    public String findPatient(int id){
+    public GeneralPacket findPatient(int id){
         return hospital.getPatientInfo(id);
+    }
+
+    public GeneralPacket updatePatient(Patient patient) {
+        return hospital.updatePatientInfo(patient);
     }
 
     /**

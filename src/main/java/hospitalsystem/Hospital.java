@@ -7,6 +7,7 @@ import hospitalsystem.database.DatabaseException;
 import hospitalsystem.packet.GeneralPacket;
 import hospitalsystem.packet.PersonPacket;
 import hospitalsystem.personnel.Patient;
+import hospitalsystem.personnel.Person;
 import hospitalsystem.personnel.util.DoctorData;
 import hospitalsystem.personnel.util.PatientData;
 
@@ -49,11 +50,22 @@ public class Hospital {
      * @param id Id that identifies patient.
      * @return info about patient.
      */
-    public String getPatientInfo(int id){
+    public GeneralPacket getPatientInfo(int id){
         try{
-            return database.getPatient(id).toString();
+            return new PersonPacket(database.getPatient(id));
         } catch (DatabaseException e){
-            return "Error: " + e.getMessage();
+            return new GeneralPacket(false, e.getMessage());
+            //return "Error: " + e.getMessage();
+        }
+    }
+
+    public GeneralPacket updatePatientInfo(Patient patient){
+        try{
+            database.updatePatient(patient);
+
+            return new GeneralPacket();
+        } catch (DatabaseException e) {
+            return new GeneralPacket(false, e.getMessage());
         }
     }
 

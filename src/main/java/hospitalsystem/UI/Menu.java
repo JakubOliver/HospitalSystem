@@ -1,6 +1,7 @@
 package hospitalsystem.UI;
 
 import hospitalsystem.packet.GeneralPacket;
+import hospitalsystem.personnel.Person;
 import hospitalsystem.personnel.util.PersonData;
 import hospitalsystem.util.HospitalAPI;
 
@@ -8,6 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.InputMismatchException;
+import java.util.Optional;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
@@ -50,12 +52,49 @@ abstract class Menu implements Page{
      * @param scanner Scanner pointing to the input data.
      * @return Wrapper containing data for Person creating (without id)
      */
-    public static PersonData getPersonData(Scanner scanner){
-        String firstName = getString(scanner, "First name: ");
-        String lastName = getString(scanner, "Last name: ");
-        LocalDate dateOfBirth = getDate(scanner, "Date of birth: ");
+    public static PersonData getPersonData(Scanner scanner, Person person){
+        String firstName = getString(
+                scanner,
+                getQuestion("First name", person != null ? person.getFirstName() : ""),
+                person != null ? person.getFirstName() : null
+        );
+
+        String lastName = getString(
+                scanner,
+                getQuestion("Last name", person != null ? person.getLastName() : ""),
+                person != null ? person.getLastName() : null
+        );
+
+        LocalDate dateOfBirth = getDate(
+                scanner,
+                getQuestion("Date of birth", person != null ? person.getDateOfBirth().toString() : ""),
+                person != null ? person.getDateOfBirth() : null
+        );
 
         return new PersonData(firstName, lastName, dateOfBirth);
+    }
+
+    public static PersonData getPersonData(Scanner scanner){
+        return getPersonData(scanner, null);
+    }
+
+    public static String getQuestion(String question){
+        return getQuestion(question, "");
+    }
+
+    public static String getQuestion(String question, String defaultValue){
+        StringBuilder fullQuestion = new  StringBuilder();
+        fullQuestion.append("First Name");
+
+        if (!defaultValue.isEmpty()) {
+            fullQuestion.append(" [");
+            fullQuestion.append(defaultValue);
+            fullQuestion.append("]");
+        }
+
+        fullQuestion.append(": ");
+
+        return fullQuestion.toString();
     }
 
     /**
@@ -112,7 +151,7 @@ abstract class Menu implements Page{
      * @param question Question with which will be user prompted.
      * @return Not empty string.
      */
-    public static String getString(Scanner scanner, String question){
+    public static String getString(Scanner scanner, String question, String defaultValue){
         String line;
         System.out.print(question);
 
@@ -121,6 +160,8 @@ abstract class Menu implements Page{
 
             if (!line.isEmpty()){
                 return line.trim();
+            } else if (defaultValue != null) {
+                return defaultValue;
             }
 
             System.out.println("Invalid input: enter not empty string.");
@@ -128,6 +169,10 @@ abstract class Menu implements Page{
         }
 
         throw new InputMismatchException("Scanner run out of lines and no correct string found.");
+    }
+
+    public static String getString(Scanner scanner, String question){
+        return getString(scanner, question, null);
     }
 
     /**
@@ -157,12 +202,12 @@ abstract class Menu implements Page{
      * @param question Question with which will be user prompted.
      * @return LocalDate object containing valid date.
      */
-    public static LocalDate getDate(Scanner scanner, String question){
+    public static LocalDate getDate(Scanner scanner, String question,LocalDate defaultValue){
         boolean acquireCorrectDate = false;
         LocalDate date = null; // Even thought the value here is null, if we get to the return statement in the date variable will always be valid date.
 
         while (!acquireCorrectDate){
-            String line = getString(scanner, question);
+            String line = getString(scanner, question, defaultValue != null ? defaultValue.toString() : null);
 
             try{
                 date = LocalDate.parse(line.trim());
@@ -174,6 +219,10 @@ abstract class Menu implements Page{
         return date;
 
         //throw new InputMismatchException("Scanner run out of lines and did not found valid date."); //TODO: const
+    }
+
+    public static LocalDate getDate(Scanner scanner, String question){
+        return getDate(scanner, question, null);
     }
 
     /**

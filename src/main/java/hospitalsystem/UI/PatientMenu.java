@@ -1,6 +1,9 @@
 package hospitalsystem.UI;
 
 import hospitalsystem.packet.GeneralPacket;
+import hospitalsystem.packet.PersonPacket;
+import hospitalsystem.personnel.Patient;
+import hospitalsystem.personnel.Person;
 import hospitalsystem.personnel.util.PatientData;
 import hospitalsystem.personnel.util.PatientsDetails;
 import hospitalsystem.personnel.util.PersonData;
@@ -39,24 +42,13 @@ public class PatientMenu extends Submenu {
         switch (getOption(scanner, 7)){
             case 1:
                 addPatient(); break;
+            case 2:
+                editPatient(); break;
             case 4:
                 findById(); break;
             case 6:
                 findAllPatient(); break;
         }
-    }
-
-    /**
-     * Prints information about patient with provided ID.
-     * <p>
-     * ID is provided via input data in class scanner.
-     */
-    private void findById(){
-        int id = getInteger(scanner, "ID: ");
-
-        System.out.println(api.findPatient(id));
-
-        waitForEnter(scanner);
     }
 
     /**
@@ -70,6 +62,74 @@ public class PatientMenu extends Submenu {
         GeneralPacket packet = api.addPatient(new PatientData(personData, new PatientsDetails(anamnesis)));
 
         System.out.println(packet.resolveStatus());
+
+        waitForEnter(scanner);
+    }
+
+    private void editPatient(){
+        int id = getInteger(scanner, "ID: ");
+
+        GeneralPacket packet = api.findPatient(id);
+
+        if (!packet.successful){
+            System.out.println(packet.resolveStatus());
+            waitForEnter(scanner);
+
+            return;
+        }
+
+        if (!(packet instanceof PersonPacket personPacket)){
+            System.out.println("Invalid packet"); //TODO: nejak lepe vyresit
+            waitForEnter(scanner);
+
+            return;
+        }
+
+        if (!(personPacket.person instanceof Patient patient)){
+            System.out.println("Invalid packet"); //TODO: nejak lepe vyresit
+            waitForEnter(scanner);
+
+            return;
+        }
+
+        PersonData personData = getPersonData(scanner, personPacket.person);
+        String  anamnesis = getString(
+                scanner,
+                getQuestion("Anamnesis", patient.getAnamnesis()),
+                patient.getAnamnesis()
+        );
+
+        Patient updatePatient = new Patient(
+                new Person(personPacket.person.getId(), personData),
+                new PatientsDetails(anamnesis)
+        );
+
+        GeneralPacket response = api.updatePatient(updatePatient);
+
+        System.out.println(response.resolveStatus());
+        waitForEnter(scanner);
+    }
+
+    /**
+     * Prints information about patient with provided ID.
+     * <p>
+     * ID is provided via input data in class scanner.
+     */
+    private void findById(){
+        int id = getInteger(scanner, "ID: ");
+
+        //System.out.println(api.findPatient(id));
+        GeneralPacket packet = api.findPatient(id);
+
+        System.out.println(packet.resolveStatus());
+
+        if (packet.successful){
+            if (packet instanceof PersonPacket){
+                System.out.println(((PersonPacket) packet).person);
+            } else {
+                System.out.println("Invalid packet"); //TODO: nejak lepe vyresit
+            }
+        }
 
         waitForEnter(scanner);
     }

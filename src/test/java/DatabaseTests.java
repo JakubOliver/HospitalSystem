@@ -26,7 +26,7 @@ public class DatabaseTests extends Tests{
     static PatientsDetails samplePatientDetails = new PatientsDetails("Broken leg");
     static PatientData samplePatientData = new PatientData(samplePersonData, samplePatientDetails);
 
-    static DoctorDetails sampleDoctorDetails = new DoctorDetails("Surgeon");
+    static DoctorDetails sampleDoctorDetails = new DoctorDetails("Surgeon", "Traumatology");
     static DoctorData sampleDoctorData = new DoctorData(samplePersonData, sampleDoctorDetails);
 
     @BeforeEach
