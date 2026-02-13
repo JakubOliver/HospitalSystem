@@ -84,7 +84,7 @@ abstract class Menu implements Page{
 
     public static String getQuestion(String question, String defaultValue){
         StringBuilder fullQuestion = new  StringBuilder();
-        fullQuestion.append("First Name");
+        fullQuestion.append(question);
 
         if (!defaultValue.isEmpty()) {
             fullQuestion.append(" [");

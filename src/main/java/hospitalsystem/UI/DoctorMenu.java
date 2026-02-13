@@ -31,7 +31,9 @@ public class DoctorMenu extends Submenu {
     public void processMenu() {
         switch (getOption(scanner, 2)){
             case 1:
-                addDoctor();
+                addDoctor(); break;
+            case 2:
+                end(); break;
         }
     }
 

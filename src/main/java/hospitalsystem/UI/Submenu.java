@@ -9,6 +9,7 @@ import java.util.Scanner;
  */
 abstract class Submenu extends Menu{
     Scanner scanner;
+    UIState state = UIState.RUN;
 
     /**
      * Abstract constructor used in the chain of construction of submenu pages.
@@ -21,7 +22,13 @@ abstract class Submenu extends Menu{
 
         this.scanner = scanner;
 
-        printMenu();
-        processMenu();
+        while (state == UIState.RUN){
+            printMenu();
+            processMenu();
+        }
+    }
+
+    protected void end(){
+        state =  UIState.END;
     }
 }

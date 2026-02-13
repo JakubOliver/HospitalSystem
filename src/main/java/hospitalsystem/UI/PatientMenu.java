@@ -28,6 +28,7 @@ public class PatientMenu extends Submenu {
 
     @Override
     public void printMenu() {
+        System.out.println(); //TODO: rozmyslet, zda dava u submenu odstup a opakovani
         System.out.println("1. Add new patient");
         System.out.println("2. Edit existing patient");
         System.out.println("3. Delete existing patient");
@@ -44,10 +45,14 @@ public class PatientMenu extends Submenu {
                 addPatient(); break;
             case 2:
                 editPatient(); break;
+            case 3:
+                deletePatient(); break;
             case 4:
                 findById(); break;
             case 6:
                 findAllPatient(); break;
+            case 7:
+                end(); break;
         }
     }
 
@@ -107,6 +112,15 @@ public class PatientMenu extends Submenu {
         GeneralPacket response = api.updatePatient(updatePatient);
 
         System.out.println(response.resolveStatus());
+        waitForEnter(scanner);
+    }
+
+    private void deletePatient(){
+        int id = getInteger(scanner, "ID: ");
+
+        GeneralPacket packet = api.deletePatient(id);
+
+        System.out.println(packet.resolveStatus());
         waitForEnter(scanner);
     }
 

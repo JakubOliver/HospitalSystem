@@ -29,6 +29,9 @@ public class Database {
     private static final String updatePerson = "UPDATE people SET firstname = ?, lastname = ?, birth_date = ? WHERE id = ?";
     private static final String updatePatientDetails = "UPDATE patients_details SET anamnesis = ? WHERE id = ?";
 
+    private static final String deletePerson = "DELETE FROM people WHERE id = ?";
+    private static final String deletePatientDetails = "DELETE FROM patients_details WHERE id = ?";
+
     private static final String getPersonById = "SELECT * FROM people WHERE id = ?";
     private static final String getAllPeopleByType = "SELECT * FROM people, patients_details, doctors_details WHERE people.type = ?";
     private static final String getPatientDetailsById = "SELECT * FROM patients_details WHERE id = ?";
@@ -171,6 +174,14 @@ public class Database {
         }
     }
 
+    private void deletePerson(Connection connection, int id) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(deletePerson)){
+            statement.setInt(1, id);
+
+            statement.executeUpdate();
+        }
+    }
+
     /**
      * Returns Person with the provided id.
      *
@@ -271,6 +282,23 @@ public class Database {
             //TODO promislet znad nevracet
         }catch  (SQLException e) {
             throw new DatabaseException(DatabaseException.patientInsertDatabaseError, e.getMessage()); //todo: vlastni expression
+        }
+    }
+
+    private void deletePatientsDetails(Connection connection, int id) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(deletePatientDetails)){
+            statement.setInt(1, id);
+
+            statement.executeUpdate();
+        }
+    }
+
+    public void deletePatient(int id) throws DatabaseException {
+        try (Connection connection = DriverManager.getConnection(url)){
+            deletePatientsDetails(connection, id);
+            deletePerson(connection, id);
+        } catch (SQLException e) {
+            throw new DatabaseException(DatabaseException.patientGetDatabaseError, e.getMessage()); //TODO: vlastni sprava
         }
     }
 

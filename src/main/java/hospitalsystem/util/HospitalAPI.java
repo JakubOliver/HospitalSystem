@@ -47,6 +47,10 @@ public class HospitalAPI {
         return hospital.updatePatientInfo(patient);
     }
 
+    public GeneralPacket deletePatient(int id) {
+        return hospital.deletePatient(id);
+    }
+
     /**
      * Returns list information about every patient in hospital system.
      * @return List of information about every patient in hospital system.

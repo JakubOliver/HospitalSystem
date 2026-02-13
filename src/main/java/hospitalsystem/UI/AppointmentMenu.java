@@ -34,6 +34,8 @@ public class AppointmentMenu extends Submenu{
                 addAppointment(); break;
             case 2:
                 showCalendar(); break;
+            case 3:
+                end(); break;
         }
     }
 

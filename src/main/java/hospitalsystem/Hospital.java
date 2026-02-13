@@ -69,6 +69,16 @@ public class Hospital {
         }
     }
 
+    public GeneralPacket deletePatient(int id){
+        try{
+            database.deletePatient(id);
+
+            return new GeneralPacket();
+        } catch (DatabaseException e) {
+            return new GeneralPacket(false, e.getMessage()); //TODO: udelat Packet konstruktor ne z stringu ale z DatabaseException (nebo exception)
+        }
+    }
+
     /**
      * Returns list of information about every patient in the system.
      *
