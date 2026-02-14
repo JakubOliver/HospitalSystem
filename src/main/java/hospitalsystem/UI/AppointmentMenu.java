@@ -4,12 +4,15 @@ import hospitalsystem.calendar.util.AppointmentData;
 import hospitalsystem.util.HospitalAPI;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 /**
  * Menu page containing options connected with appointments.
  */
 public class AppointmentMenu extends Submenu{
+
     /**
      * Creates appointment menu page.
      *
@@ -21,28 +24,18 @@ public class AppointmentMenu extends Submenu{
     }
 
     @Override
-    public void printMenu() {
-        System.out.println("1. Add new appointment");
-        System.out.println("2. List appointments");
-        System.out.println("3. Back"); //TODO: mozna spotit na volani s PetientMenu
-    }
-
-    @Override
-    public void processMenu() {
-        switch (getOption(scanner, 3)){
-            case 1:
-                addAppointment(); break;
-            case 2:
-                showCalendar(); break;
-            case 3:
-                end(); break;
-        }
+    public void defineMenu() {
+        addOption("Add new appointment", this::addAppointment);
+        addOption("Edit appointment", this::editAppointment);
+        addOption("Delete appointment", () -> {}); //TODO
+        addOption("List appointments", this::showCalendar);
+        addOption("Back", this::end);
     }
 
     /**
      * Processes input data and calls for creating of new appointment in hospital system.
      */
-    private void addAppointment(){
+    public void addAppointment(){
         //TODO: volba zda si vybrat (id nebo jmeno) nebo vytvořit noveho
 
         int patientsId;
@@ -73,7 +66,11 @@ public class AppointmentMenu extends Submenu{
         waitForEnter(scanner);
     }
 
-    private void showCalendar(){
+    public void editAppointment(){
+        int id = getInteger(scanner, "Appointment ID: ");
+    }
+
+    public void showCalendar(){
         api.showCalendar();
 
         waitForEnter(scanner);

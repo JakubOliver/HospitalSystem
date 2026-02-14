@@ -244,6 +244,7 @@ public class Calendar {
     }
 
     public void export(File destination) throws IOException {
+        //TODO: mozna export seradit podle id
         try (FileWriter writer = new FileWriter(destination)){
             for (Department department : departments.values()){
                 for (Appointment appointment : department.appointments){

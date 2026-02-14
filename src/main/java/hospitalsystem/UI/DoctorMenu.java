@@ -29,31 +29,13 @@ public class DoctorMenu extends Submenu implements PersonnelMenu {
     }
 
     @Override
-    public void printMenu() {
-        System.out.println("1. Add new doctor");
-        System.out.println("2. Edit existing doctor");
-        System.out.println("3. Delete existing doctor");
-        System.out.println("4. Find doctor by ID");
-        System.out.println("5. Show all doctors");
-        System.out.println("6. Back"); //TODO: mozna spotit na volani s PetientMenu
-    }
-
-    @Override
-    public void processMenu() {
-        switch (getOption(scanner, 6)){
-            case 1:
-                add(); break;
-            case 2:
-                edit(); break;
-            case 3:
-                delete(); break;
-            case 4:
-                findById(); break;
-            case 5:
-                all(); break;
-            case 6:
-                end(); break;
-        }
+    public void defineMenu() {
+        addOption("Add new doctor", this::add);
+        addOption("Edit existing doctor", this::edit);
+        addOption("Delete existing doctor", this::delete);
+        addOption("Find doctor by ID", this::findById);
+        addOption("Show all doctors", this::all);
+        addOption("Back", this::end);
     }
 
     /**

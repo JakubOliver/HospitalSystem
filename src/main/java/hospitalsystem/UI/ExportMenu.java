@@ -11,28 +11,12 @@ public class ExportMenu extends Submenu{
     }
 
     @Override
-    public void printMenu() {
-        System.out.println("1. Export patients");
-        System.out.println("2. Export doctors");
-        System.out.println("3. Export appointments");
-        System.out.println("4. Export all");
-        System.out.println("5. Back");
-    }
-
-    @Override
-    public void processMenu() {
-        switch (getOption(scanner, 5)){
-            case 1:
-                exportPatients(); break;
-            case 2:
-                exportDoctors(); break;
-            case 3:
-                exportAppointments(); break;
-            case 4:
-                exportAll(); break;
-            case 5:
-                end(); break;
-        }
+    public void defineMenu() {
+        addOption("Export patients", this::exportPatients);
+        addOption("Export doctors", this::exportDoctors);
+        addOption("Export appointments", this::exportAppointments);
+        addOption("Export all", this::exportAll);
+        addOption("Back", this::end);
     }
 
     public void exportPatients(){

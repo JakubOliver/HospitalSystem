@@ -8,24 +8,61 @@ import hospitalsystem.util.HospitalAPI;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
-import java.util.InputMismatchException;
-import java.util.Optional;
-import java.util.Scanner;
+import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.IntStream;
 
 /**
  * Abstract ancestor for menu pages. Implementing various methods with processing input data.
  */
 abstract class Menu implements Page{
     HospitalAPI api;
+    Scanner scanner;
+
+    List<MenuEntry> options = new ArrayList<>();
+    UIState state = UIState.RUN;
 
     /**
      * Abstract constructor used in the chain of construction.
      *
      * @param api HospitalAPI giving the menu options how to interact with hospital system.
      */
-    public Menu(HospitalAPI api) {
+    public Menu(HospitalAPI api, Scanner scanner) {
         this.api = api;
+        this.scanner = scanner;
+
+        defineMenu();
+
+        while (state == UIState.RUN){
+            printMenu();
+            processMenu();
+        }
+    }
+
+    @Override
+    public void printMenu(){
+        IntStream.range(0, options.size())
+                .mapToObj(i -> enumerateOption(i + 1, options.get(i).toString()))
+                .forEach(System.out::println);
+    }
+
+    @Override
+    public void processMenu(){
+        int idx = getOption(scanner, options.size());
+
+        options.get(idx).method().run();
+    }
+
+    private static String enumerateOption(int number, String option){
+        return number + ". " + option;
+    }
+
+    protected void addOption(String text, Runnable action){
+        options.add(new MenuEntry(text, action));
+    }
+
+    protected void end(){
+        state =  UIState.END;
     }
 
     /**
@@ -43,7 +80,7 @@ abstract class Menu implements Page{
             option = getInteger(scanner, "Select an option: ");
         }
 
-        return option;
+        return option - 1;
     }
 
     /**

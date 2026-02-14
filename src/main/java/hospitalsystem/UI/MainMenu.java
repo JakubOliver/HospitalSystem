@@ -8,9 +8,6 @@ import java.util.Scanner;
  * Menu page containing crossroad to other submenus.
  */
 public class MainMenu extends Menu{
-    UIState state = UIState.RUN;
-    Scanner scanner = new Scanner(System.in);
-
     private static final String header =
             """
             
@@ -32,7 +29,7 @@ public class MainMenu extends Menu{
      * @param api HospitalAPI providing the menu options how to interact with hospital system.
      */
     public MainMenu(HospitalAPI api) {
-        super(api);
+        super(api, new Scanner(System.in));
 
         while (state != UIState.END){
             printMenu();
@@ -41,33 +38,19 @@ public class MainMenu extends Menu{
     }
 
     @Override
-    public void printMenu() {
-        clearConsole();
-
-        System.out.println(header);
-
-        System.out.println("1. Patients");
-        System.out.println("2. Doctors");
-        System.out.println("3. Calendar");
-        System.out.println("4. Export");
-        System.out.println("5. End");
-
-
+    public void defineMenu() {
+        addOption("Patients", () -> new PatientMenu(api, scanner));
+        addOption("Doctors",  () -> new DoctorMenu(api, scanner));
+        addOption("Calendar",  () -> new AppointmentMenu(api, scanner));
+        addOption("Export", () -> new ExportMenu(api, scanner));
+        addOption("End", this::end);
     }
 
     @Override
-    public void processMenu(){
-        switch (getOption(scanner, 5)){
-            case 1:
-                new PatientMenu(api, scanner); break;
-            case 2:
-                new DoctorMenu(api, scanner); break;
-            case 3:
-                new AppointmentMenu(api, scanner); break;
-            case 4:
-                new ExportMenu(api, scanner); break;
-            case 5:
-                state =  UIState.END; break;
-        }
+    public void printMenu(){
+        clearConsole();
+        System.out.println(header);
+
+        super.printMenu();
     }
 }

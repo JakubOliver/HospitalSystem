@@ -4,6 +4,7 @@ package hospitalsystem.UI;
  * Denotes what every menu page has to offer.
  */
 public interface Page {
+    void defineMenu();
     /**
      * Shows menu options in terminal.
      */

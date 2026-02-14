@@ -8,9 +8,12 @@ import hospitalsystem.personnel.util.PatientData;
 import hospitalsystem.personnel.util.PatientsDetails;
 import hospitalsystem.personnel.util.PersonData;
 import hospitalsystem.util.HospitalAPI;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.IntStream;
 
 /**
  * Menu page containing options connected with patients.
@@ -27,32 +30,13 @@ public class PatientMenu extends Submenu implements PersonnelMenu {
     }
 
     @Override
-    public void printMenu() {
-        System.out.println(); //TODO: rozmyslet, zda dava u submenu odstup a opakovani
-        System.out.println("1. Add new patient");
-        System.out.println("2. Edit existing patient");
-        System.out.println("3. Delete existing patient");
-        System.out.println("4. Find patient by ID");
-        System.out.println("5. Show all patients");
-        System.out.println("6. Back");
-    }
-
-    @Override
-    public void processMenu() {
-        switch (getOption(scanner, 6)){ //TODO: generovat "dynamicky" nebo dat predka pro implemntace PersonnelMenu
-            case 1:
-                add(); break;
-            case 2:
-                edit(); break;
-            case 3:
-                delete(); break;
-            case 4:
-                findById(); break;
-            case 5:
-                all(); break;
-            case 6:
-                end(); break;
-        }
+    public void defineMenu() {
+        options.add(new MenuEntry("Add new patient", this::add));
+        options.add(new MenuEntry("Edit existing patient", this::edit));
+        options.add(new MenuEntry("Delete existing patient", this::delete));
+        options.add(new MenuEntry("Find patient byt ID", this::findById));
+        options.add(new MenuEntry("Show all patients", this::all));
+        options.add(new MenuEntry("Back", this::end));
     }
 
     /**
