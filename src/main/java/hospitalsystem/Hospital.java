@@ -6,6 +6,8 @@ import hospitalsystem.database.Database;
 import hospitalsystem.database.DatabaseException;
 import hospitalsystem.packet.GeneralPacket;
 import hospitalsystem.packet.PersonPacket;
+import hospitalsystem.packet.TextPacket;
+import hospitalsystem.personnel.Doctor;
 import hospitalsystem.personnel.Patient;
 import hospitalsystem.personnel.Person;
 import hospitalsystem.personnel.util.DoctorData;
@@ -109,6 +111,44 @@ public class Hospital {
             System.out.println("Success!");
         } catch (DatabaseException e){
             System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    public GeneralPacket getDoctor(int id){
+        try{
+            return new PersonPacket(database.getDoctor(id));
+        } catch (DatabaseException e) {
+            return new GeneralPacket(e);
+        }
+    }
+
+    public GeneralPacket updateDoctor(Doctor doctor){
+        try{
+            database.updateDoctor(doctor);
+
+            return new GeneralPacket();
+        } catch (DatabaseException e) {
+            return new GeneralPacket(e);
+        }
+    }
+
+    public GeneralPacket deleteDoctor(int id){
+        try{
+            database.deleteDoctor(id);
+
+            return new GeneralPacket();
+        } catch (DatabaseException e){
+            return new GeneralPacket(e);
+        }
+    }
+
+    public GeneralPacket findAllDoctors(){
+        try{
+            List<Doctor> doctors = database.allDoctors();
+
+            return new TextPacket(String.join("\n", doctors.stream().map(Doctor::toString).toList()));
+        } catch (DatabaseException e){
+            return new GeneralPacket(e);
         }
     }
 

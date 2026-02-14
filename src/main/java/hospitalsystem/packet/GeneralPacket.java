@@ -16,6 +16,11 @@ public class GeneralPacket {
         this.error = Optional.empty();
     }
 
+    public GeneralPacket(Exception exception){
+        this.successful = false;
+        this.error = Optional.of(exception.getMessage());
+    }
+
     public String resolveStatus(){
         if (successful) {
             return "Successful!";

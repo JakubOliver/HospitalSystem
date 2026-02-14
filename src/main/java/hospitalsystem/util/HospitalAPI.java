@@ -3,6 +3,7 @@ package hospitalsystem.util;
 import hospitalsystem.Hospital;
 import hospitalsystem.calendar.util.AppointmentData;
 import hospitalsystem.packet.GeneralPacket;
+import hospitalsystem.personnel.Doctor;
 import hospitalsystem.personnel.Patient;
 import hospitalsystem.personnel.util.DoctorData;
 import hospitalsystem.personnel.util.PatientData;
@@ -66,6 +67,22 @@ public class HospitalAPI {
      */
     public void addDoctor(DoctorData doctorData) {
         hospital.addDoctor(doctorData);
+    }
+
+    public GeneralPacket findDoctor(int id){
+        return hospital.getDoctor(id);
+    }
+
+    public GeneralPacket updateDoctor(Doctor doctor){
+        return hospital.updateDoctor(doctor);
+    }
+
+    public GeneralPacket deleteDoctor(int id) {
+        return hospital.deleteDoctor(id);
+    }
+
+    public GeneralPacket  findAllDoctors(){
+        return hospital.findAllDoctors();
     }
 
     /**

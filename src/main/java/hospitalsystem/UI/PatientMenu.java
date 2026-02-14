@@ -33,14 +33,13 @@ public class PatientMenu extends Submenu {
         System.out.println("2. Edit existing patient");
         System.out.println("3. Delete existing patient");
         System.out.println("4. Find patient by ID");
-        System.out.println("5. Find patient by name");
-        System.out.println("6. Show all patients");
-        System.out.println("7. Back");
+        System.out.println("5. Show all patients");
+        System.out.println("6. Back");
     }
 
     @Override
     public void processMenu() {
-        switch (getOption(scanner, 7)){
+        switch (getOption(scanner, 6)){
             case 1:
                 addPatient(); break;
             case 2:
@@ -49,9 +48,9 @@ public class PatientMenu extends Submenu {
                 deletePatient(); break;
             case 4:
                 findById(); break;
-            case 6:
+            case 5:
                 findAllPatient(); break;
-            case 7:
+            case 6:
                 end(); break;
         }
     }

@@ -6,7 +6,7 @@ import hospitalsystem.personnel.Person;
 import hospitalsystem.personnel.util.*;
 import hospitalsystem.calendar.*;
 
-import javax.print.Doc;
+import javax.swing.plaf.nimbus.State;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -28,15 +28,18 @@ public class Database {
 
     private static final String updatePerson = "UPDATE people SET firstname = ?, lastname = ?, birth_date = ? WHERE id = ?";
     private static final String updatePatientDetails = "UPDATE patients_details SET anamnesis = ? WHERE id = ?";
+    private static final String updateDoctorDetails = "UPDATE doctors_details SET specialization = ?, department = ? WHERE id = ?";
 
     private static final String deletePerson = "DELETE FROM people WHERE id = ?";
     private static final String deletePatientDetails = "DELETE FROM patients_details WHERE id = ?";
+    private static final String deleteDoctorsDetails = "DELETE FROM doctors_details WHERE id = ?";
 
     private static final String getPersonById = "SELECT * FROM people WHERE id = ?";
     private static final String getAllPeopleByType = "SELECT * FROM people, patients_details, doctors_details WHERE people.type = ?";
     private static final String getPatientDetailsById = "SELECT * FROM patients_details WHERE id = ?";
     private static final String getAllPatients = "SELECT * FROM people, patients_details WHERE people.id = patients_details.id";
     private static final String getDoctorDetailsById = "SELECT * FROM doctors_details WHERE id = ?";
+    private static final String getAllDoctors = "SELECT * FROM people, doctors_details WHERE people.id = doctors_details.id";
 
     private static final String getAllAppointments = "SELECT * FROM appointments";
 
@@ -433,6 +436,65 @@ public class Database {
             ); //TODO: vytvorit konstruktory, ktere budou lepe zpracovat tyto vstupy
         } catch  (SQLException e) {
             throw new DatabaseException(DatabaseException.doctorInsertDatabaseError, e.getMessage());
+        }
+    }
+
+    public void updateDoctorDetails(Connection connection, Doctor doctor) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(updateDoctorDetails)){
+            statement.setString(1, doctor.getSpecialization());
+            statement.setString(2, doctor.getDepartment());
+            statement.setInt(3, doctor.getId());
+
+            statement.executeUpdate();
+        }
+    }
+
+    public void updateDoctor(Doctor doctor) throws DatabaseException {
+        try (Connection connection = DriverManager.getConnection(url)){
+            updatePerson(connection, doctor);
+            updateDoctorDetails(connection, doctor);
+        } catch (SQLException e){
+            throw new DatabaseException(DatabaseException.doctorGetDatabaseError, e.getMessage()); //TODO: custom message
+        }
+    }
+
+    private void deleteDoctorsDetails(Connection connection, int id) throws SQLException{
+        try (PreparedStatement statement = connection.prepareStatement(deleteDoctorsDetails)){
+            statement.setInt(1, id);
+
+            statement.executeUpdate();
+        }
+    }
+
+    public void deleteDoctor(int id) throws DatabaseException {
+        try (Connection connection = DriverManager.getConnection(url)){
+            deletePerson(connection, id);
+            deleteDoctorsDetails(connection, id);
+        } catch (SQLException e){
+            throw new DatabaseException(DatabaseException.patientGetDatabaseError, e.getMessage()); //TODO: custom message
+        }
+    }
+
+    public List<Doctor> allDoctors() throws DatabaseException {
+        try(Connection connection = DriverManager.getConnection(url); PreparedStatement statement = connection.prepareStatement(getAllDoctors)){
+            ResultSet result = statement.executeQuery();
+
+            List<Doctor> doctors = new ArrayList<>();
+
+            while (result.next()){
+                doctors.add(new Doctor(
+                        result.getInt("id"),
+                        result.getString("firstname"),
+                        result.getString("lastname"),
+                        LocalDate.parse(result.getString("birth_date")),
+                        result.getString("specialization"),
+                        result.getString("department")
+                ));
+            }
+
+            return doctors;
+        } catch (SQLException e) {
+            throw new DatabaseException("Dodat", e.getMessage()); //TODO: custom message
         }
     }
 
