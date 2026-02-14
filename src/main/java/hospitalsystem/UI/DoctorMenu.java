@@ -17,7 +17,7 @@ import java.util.Scanner;
 /**
  * Menu page containing options connected with doctors.
  */
-public class DoctorMenu extends Submenu {
+public class DoctorMenu extends Submenu implements PersonnelMenu {
     /**
      * Creates doctor menu page.
      *
@@ -42,15 +42,15 @@ public class DoctorMenu extends Submenu {
     public void processMenu() {
         switch (getOption(scanner, 6)){
             case 1:
-                addDoctor(); break;
+                add(); break;
             case 2:
-                editDoctor(); break;
+                edit(); break;
             case 3:
-                deleteDoctor(); break;
+                delete(); break;
             case 4:
                 findById(); break;
             case 5:
-                allDoctors(); break;
+                all(); break;
             case 6:
                 end(); break;
         }
@@ -59,7 +59,8 @@ public class DoctorMenu extends Submenu {
     /**
      * Processes input data and calls for creating of new doctor in hospital system.
      */
-    private void addDoctor(){
+    @Override
+    public void add(){
         PersonData personData = getPersonData(scanner);
 
         String specialization = getString(scanner, "Specialization: ");
@@ -73,7 +74,8 @@ public class DoctorMenu extends Submenu {
         scanner.nextLine();
     }
 
-    private void editDoctor(){
+    @Override
+    public void edit(){
         int id = getInteger(scanner, "ID: ");
 
         GeneralPacket packet = api.findDoctor(id);
@@ -122,7 +124,8 @@ public class DoctorMenu extends Submenu {
         waitForEnter(scanner);
     }
 
-    private void deleteDoctor(){
+    @Override
+    public void delete(){
         int id = getInteger(scanner, "ID: ");
 
         GeneralPacket packet = api.deleteDoctor(id);
@@ -131,7 +134,8 @@ public class DoctorMenu extends Submenu {
         waitForEnter(scanner);
     }
 
-    private void findById(){
+    @Override
+    public void findById(){
         int id = getInteger(scanner, "ID: ");
 
         GeneralPacket packet = api.findDoctor(id);
@@ -149,7 +153,8 @@ public class DoctorMenu extends Submenu {
         waitForEnter(scanner);
     }
 
-    private void allDoctors(){
+    @Override
+    public void all(){
         GeneralPacket packet = api.findAllDoctors();
 
         if (!packet.successful){

@@ -15,7 +15,7 @@ import java.util.Scanner;
 /**
  * Menu page containing options connected with patients.
  */
-public class PatientMenu extends Submenu {
+public class PatientMenu extends Submenu implements PersonnelMenu {
     /**
      * Creates patient menu page.
      *
@@ -39,17 +39,17 @@ public class PatientMenu extends Submenu {
 
     @Override
     public void processMenu() {
-        switch (getOption(scanner, 6)){
+        switch (getOption(scanner, 6)){ //TODO: generovat "dynamicky" nebo dat predka pro implemntace PersonnelMenu
             case 1:
-                addPatient(); break;
+                add(); break;
             case 2:
-                editPatient(); break;
+                edit(); break;
             case 3:
-                deletePatient(); break;
+                delete(); break;
             case 4:
                 findById(); break;
             case 5:
-                findAllPatient(); break;
+                all(); break;
             case 6:
                 end(); break;
         }
@@ -58,7 +58,8 @@ public class PatientMenu extends Submenu {
     /**
      * Processes input data and calls for creating of new patient in hospital system.
      */
-    private void addPatient(){
+    @Override
+    public void add(){
         PersonData personData = getPersonData(scanner);
 
         String anamnesis = getString(scanner, "Anamnesis: ");
@@ -70,7 +71,8 @@ public class PatientMenu extends Submenu {
         waitForEnter(scanner);
     }
 
-    private void editPatient(){
+    @Override
+    public void edit(){
         int id = getInteger(scanner, "ID: ");
 
         GeneralPacket packet = api.findPatient(id);
@@ -114,7 +116,8 @@ public class PatientMenu extends Submenu {
         waitForEnter(scanner);
     }
 
-    private void deletePatient(){
+    @Override
+    public void delete(){
         int id = getInteger(scanner, "ID: ");
 
         GeneralPacket packet = api.deletePatient(id);
@@ -128,7 +131,8 @@ public class PatientMenu extends Submenu {
      * <p>
      * ID is provided via input data in class scanner.
      */
-    private void findById(){
+    @Override
+    public void findById(){
         int id = getInteger(scanner, "ID: ");
 
         //System.out.println(api.findPatient(id));
@@ -150,7 +154,8 @@ public class PatientMenu extends Submenu {
     /**
      * Prints all patients in the hospital system.
      */
-    private void findAllPatient(){
+    @Override
+    public void all(){
         List<String> patients = api.findAllPatients();
 
         for(String patient : patients){
