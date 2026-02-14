@@ -2,7 +2,10 @@ package hospitalsystem.UI;
 
 import hospitalsystem.calendar.util.AppointmentData;
 import hospitalsystem.packet.GeneralPacket;
+import hospitalsystem.packet.PersonPacket;
 import hospitalsystem.packet.TextPacket;
+import hospitalsystem.personnel.Doctor;
+import hospitalsystem.personnel.util.*;
 import hospitalsystem.util.HospitalAPI;
 
 import java.time.LocalDateTime;
@@ -40,16 +43,38 @@ public class AppointmentMenu extends Submenu{
 
         int patientsId;
         if (createNew(scanner, "patient")){
-            //TODO: dodelat pres packety
-            patientsId = getInteger(scanner, "Patient's ID: ");
+            PersonData personData = getPersonData(scanner);
+            PatientsDetails patientDetails = getPatientDetails(scanner);
+
+            GeneralPacket packet = api.addPatient(new PatientData(personData, patientDetails));
+
+            if(!processPacketStatusInSilence(scanner, packet)) return; //TODO: mozna udelat metodu check person (dost se to opakuje)
+
+            if (!(packet instanceof PersonPacket personPacket)){
+                printAndWait(scanner, GeneralPacket.Msg.invalidPacket);
+                return;
+            }
+
+            patientsId = personPacket.person.getId();
         } else {
             patientsId = getInteger(scanner, "Patient's ID: ");
         }
 
         int doctorsId;
         if (createNew(scanner, "doctor")){
-            //TODO: dodelat pres packety
-            doctorsId = getInteger(scanner, "Doctor's ID: ");
+            PersonData personData = getPersonData(scanner);
+            DoctorDetails patientDetails = getDoctorDetails(scanner);
+
+            GeneralPacket packet = api.addDoctor(new DoctorData(personData, patientDetails));
+
+            if(!processPacketStatusInSilence(scanner, packet)) return;
+
+            if (!(packet instanceof PersonPacket personPacket)){
+                printAndWait(scanner, GeneralPacket.Msg.invalidPacket);
+                return;
+            }
+
+            doctorsId = personPacket.person.getId();
         } else {
             doctorsId = getInteger(scanner, "Doctor's ID: ");
         }

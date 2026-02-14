@@ -1,7 +1,11 @@
 package hospitalsystem.UI;
 
 import hospitalsystem.packet.GeneralPacket;
+import hospitalsystem.personnel.Doctor;
+import hospitalsystem.personnel.Patient;
 import hospitalsystem.personnel.Person;
+import hospitalsystem.personnel.util.DoctorDetails;
+import hospitalsystem.personnel.util.PatientsDetails;
 import hospitalsystem.personnel.util.PersonData;
 import hospitalsystem.util.HospitalAPI;
 
@@ -28,14 +32,20 @@ abstract class Menu implements Page{
      * @param api HospitalAPI giving the menu options how to interact with hospital system.
      */
     public Menu(HospitalAPI api, Scanner scanner) {
+        this(api, scanner, false);
+    }
+
+    public Menu(HospitalAPI api, Scanner scanner, boolean dummy) {
         this.api = api;
         this.scanner = scanner;
 
-        defineMenu();
+        if (!dummy) {
+            defineMenu();
 
-        while (state == UIState.RUN){
-            printMenu();
-            processMenu();
+            while (state == UIState.RUN){
+                printMenu();
+                processMenu();
+            }
         }
     }
 
@@ -113,6 +123,42 @@ abstract class Menu implements Page{
 
     public static PersonData getPersonData(Scanner scanner){
         return getPersonData(scanner, null);
+    }
+
+    //TODO: zvazit zda neprehodit tyto metody jako metody trid jako details atd. pomoci nejake motady jako of
+
+    public static PatientsDetails getPatientDetails(Scanner scanner, Patient patient){
+        String anamnesis = getString(
+                scanner,
+                getQuestion("Anamnesis", patient != null ? patient.getAnamnesis() : ""),
+                patient != null ? patient.getAnamnesis() : null
+        );
+
+        return new PatientsDetails(anamnesis);
+    }
+
+    public static PatientsDetails getPatientDetails(Scanner scanner){
+        return getPatientDetails(scanner, null);
+    }
+
+    public static DoctorDetails getDoctorDetails(Scanner scanner, Doctor doctor){
+        String specialization = getString(
+                scanner,
+                getQuestion("Specialization", doctor != null ? doctor.getSpecialization() : ""),
+                doctor != null ? doctor.getSpecialization() : null
+        );
+
+        String department = getString(
+                scanner,
+                getQuestion("Department", doctor != null ? doctor.getDepartment() : ""),
+                doctor != null ? doctor.getDepartment() : null
+        );
+
+        return new DoctorDetails(specialization, department);
+    }
+
+    public static DoctorDetails getDoctorDetails(Scanner scanner){
+        return getDoctorDetails(scanner, null);
     }
 
     public static String getQuestion(String question){
@@ -254,8 +300,6 @@ abstract class Menu implements Page{
         }
 
         return date;
-
-        //throw new InputMismatchException("Scanner run out of lines and did not found valid date."); //TODO: const
     }
 
     public static LocalDate getDate(Scanner scanner, String question){
@@ -291,8 +335,6 @@ abstract class Menu implements Page{
         }
 
         return date;
-
-        //throw new InputMismatchException("Scanner run out of lines and did not found valid date and time."); //TODO: const
     }
 
     /**
@@ -333,7 +375,7 @@ abstract class Menu implements Page{
      * @return Whether the user wants to create new object.
      */
     public static boolean createNew(Scanner scanner, String what){
-        String question = "Use existing " + what + " (Yes/No) : ";
+        String question = "Create new " + what + " (Yes/No) : ";
 
         String line = getString(scanner, question);
 

@@ -27,6 +27,10 @@ public class PatientMenu extends Submenu implements PersonnelMenu {
         super(api, scanner);
     }
 
+    public PatientMenu(HospitalAPI api, Scanner scanner, boolean dummy) {
+        super(api, scanner, dummy);
+    }
+
     @Override
     public void defineMenu() {
         addOption("Add new patient", this::add);

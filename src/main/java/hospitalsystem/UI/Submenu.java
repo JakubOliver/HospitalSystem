@@ -17,4 +17,8 @@ abstract class Submenu extends Menu{
     public Submenu(HospitalAPI api, Scanner scanner) {
         super(api, scanner);
     }
+
+    public Submenu(HospitalAPI api, Scanner scanner, boolean dummy) {
+        super(api, scanner, dummy);
+    }
 }
