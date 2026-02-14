@@ -76,6 +76,11 @@ public class Doctor extends Person{
 
     @Override
     public String toString() {
-        return super.toString() + ", specialization: " + specialization;
+        return super.toString() + ", specialization: " + specialization + ", department: " + department;
+    }
+
+    @Override
+    public String export(){
+        return super.export() + "," + specialization + "," + department;
     }
 }

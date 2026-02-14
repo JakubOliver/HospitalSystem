@@ -70,4 +70,9 @@ public class Patient extends Person{
     public String toString() {
         return super.toString() + ", anamnesis: " + anamnesis;
     }
+
+    @Override
+    public String export(){
+        return super.export() + "," + anamnesis;
+    }
 }

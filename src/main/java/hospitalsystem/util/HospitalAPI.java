@@ -97,4 +97,8 @@ public class HospitalAPI {
     public void showCalendar(){
         hospital.showCalendar();
     }
+
+    public GeneralPacket export(){
+        return hospital.export();
+    }
 }

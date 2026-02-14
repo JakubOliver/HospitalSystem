@@ -1,5 +1,8 @@
 package hospitalsystem.calendar;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.Duration;
@@ -238,5 +241,15 @@ public class Calendar {
         }
 
         return sb.toString();
+    }
+
+    public void export(File destination) throws IOException {
+        try (FileWriter writer = new FileWriter(destination)){
+            for (Department department : departments.values()){
+                for (Appointment appointment : department.appointments){
+                    writer.write(appointment.export() + "\n");
+                }
+            }
+        }
     }
 }

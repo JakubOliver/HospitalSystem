@@ -110,4 +110,9 @@ public class Appointment implements Comparable<Appointment> {
 
         return digits;
     }
+
+    //TODO: pouzit stringbuilder
+    public String export(){
+        return id + "," +  patientId + "," + doctorId + "," + department  + "," + startTime.toString() + "," + endTime.toString();
+    }
 }

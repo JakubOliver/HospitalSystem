@@ -105,4 +105,8 @@ public class Person {
     public String toString() {
         return "id: " + id + ", firstname: " + firstName + ", lastname: " + lastName + ", age: " + getAge();
     }
+
+    public String export(){
+        return id + "," + firstName + "," + lastName + "," + getAge();
+    }
 }

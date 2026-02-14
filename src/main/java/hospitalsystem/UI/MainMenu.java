@@ -49,14 +49,15 @@ public class MainMenu extends Menu{
         System.out.println("1. Patients");
         System.out.println("2. Doctors");
         System.out.println("3. Calendar");
-        System.out.println("4. End");
+        System.out.println("4. Export");
+        System.out.println("5. End");
 
 
     }
 
     @Override
     public void processMenu(){
-        switch (getOption(scanner, 4)){
+        switch (getOption(scanner, 5)){
             case 1:
                 new PatientMenu(api, scanner); break;
             case 2:
@@ -64,6 +65,8 @@ public class MainMenu extends Menu{
             case 3:
                 new AppointmentMenu(api, scanner); break;
             case 4:
+                new ExportMenu(api, scanner); break;
+            case 5:
                 state =  UIState.END; break;
         }
     }
