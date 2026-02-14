@@ -8,12 +8,9 @@ import hospitalsystem.personnel.util.PatientData;
 import hospitalsystem.personnel.util.PatientsDetails;
 import hospitalsystem.personnel.util.PersonData;
 import hospitalsystem.util.HospitalAPI;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.stream.IntStream;
 
 /**
  * Menu page containing options connected with patients.
@@ -31,12 +28,12 @@ public class PatientMenu extends Submenu implements PersonnelMenu {
 
     @Override
     public void defineMenu() {
-        options.add(new MenuEntry("Add new patient", this::add));
-        options.add(new MenuEntry("Edit existing patient", this::edit));
-        options.add(new MenuEntry("Delete existing patient", this::delete));
-        options.add(new MenuEntry("Find patient byt ID", this::findById));
-        options.add(new MenuEntry("Show all patients", this::all));
-        options.add(new MenuEntry("Back", this::end));
+        addOption("Add new patient", this::add);
+        addOption("Edit existing patient", this::edit);
+        addOption("Delete existing patient", this::delete);
+        addOption("Find patient by ID", this::findById);
+        addOption("Show all patients", this::all);
+        addOption("Back", this::end);
     }
 
     /**
