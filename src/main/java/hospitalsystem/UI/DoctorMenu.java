@@ -4,11 +4,9 @@ import hospitalsystem.packet.GeneralPacket;
 import hospitalsystem.packet.PersonPacket;
 import hospitalsystem.packet.TextPacket;
 import hospitalsystem.personnel.Doctor;
-import hospitalsystem.personnel.Patient;
 import hospitalsystem.personnel.Person;
 import hospitalsystem.personnel.util.DoctorData;
 import hospitalsystem.personnel.util.DoctorDetails;
-import hospitalsystem.personnel.util.PatientsDetails;
 import hospitalsystem.personnel.util.PersonData;
 import hospitalsystem.util.HospitalAPI;
 
@@ -48,9 +46,12 @@ public class DoctorMenu extends Submenu implements PersonnelMenu {
         String specialization = getString(scanner, "Specialization: ");
         String department = getString(scanner, "Department: ");
 
-        DoctorData  doctorData = new DoctorData(personData, new DoctorDetails(specialization, department));
+        DoctorData  doctorData = new DoctorData(
+                personData,
+                new DoctorDetails(specialization, department)
+        );
 
-        api.addDoctor(doctorData);
+        api.addDoctor(doctorData); //TODO: na packety
 
         System.out.print("Press enter to continue...");
         scanner.nextLine();
@@ -62,33 +63,22 @@ public class DoctorMenu extends Submenu implements PersonnelMenu {
 
         GeneralPacket packet = api.findDoctor(id);
 
-        if (!packet.successful){ //TODO: dat spolecnet do menu metody at nemusi se opakovat kod
-            System.out.println(packet.resolveStatus());
-            waitForEnter(scanner);
+        if (!processPacketStatusInSilence(scanner, packet)) return;
 
-            return;
-        }
-
-        if (!(packet instanceof PersonPacket personPacket)){
-            System.out.println("Invalid packet"); //TODO: nejak lepe vyresit
-            waitForEnter(scanner);
-
-            return;
-        }
-
-        if (!(personPacket.person instanceof Doctor doctor)){
-            System.out.println("Invalid packet"); //TODO: nejak lepe vyresit
-            waitForEnter(scanner);
+        if (!(packet instanceof PersonPacket personPacket) || !(personPacket.person instanceof Doctor doctor)){
+            printAndWait(scanner, GeneralPacket.Msg.invalidPacket);
 
             return;
         }
 
         PersonData personData = getPersonData(scanner, personPacket.person);
+
         String  specialization = getString(
                 scanner,
                 getQuestion("Specialization", doctor.getSpecialization()),
                 doctor.getSpecialization()
         );
+
         String department = getString(
                 scanner,
                 getQuestion("Department", doctor.getDepartment()),
@@ -102,8 +92,7 @@ public class DoctorMenu extends Submenu implements PersonnelMenu {
 
         GeneralPacket response = api.updateDoctor(updateDoctor);
 
-        System.out.println(response.resolveStatus());
-        waitForEnter(scanner);
+        processPacketStatus(scanner, response);
     }
 
     @Override
@@ -112,8 +101,7 @@ public class DoctorMenu extends Submenu implements PersonnelMenu {
 
         GeneralPacket packet = api.deleteDoctor(id);
 
-        System.out.println(packet.resolveStatus());
-        waitForEnter(scanner);
+        processPacketStatus(scanner, packet);
     }
 
     @Override
@@ -122,14 +110,12 @@ public class DoctorMenu extends Submenu implements PersonnelMenu {
 
         GeneralPacket packet = api.findDoctor(id);
 
-        System.out.println(packet.resolveStatus());
+        if (!processPacketStatusInSilence(scanner, packet)) return;
 
-        if (packet.successful){
-            if (packet instanceof PersonPacket personPacket){
-                System.out.println(personPacket.person);
-            } else {
-                System.out.println("Invalid packet");
-            }
+        if (packet instanceof PersonPacket personPacket){
+            System.out.println(personPacket.person);
+        } else {
+            System.out.println(GeneralPacket.Msg.invalidPacket);
         }
 
         waitForEnter(scanner);
@@ -139,16 +125,14 @@ public class DoctorMenu extends Submenu implements PersonnelMenu {
     public void all(){
         GeneralPacket packet = api.findAllDoctors();
 
-        if (!packet.successful){
-            System.out.println(packet.resolveStatus());
-            waitForEnter(scanner);
+        if (!processPacketStatusInSilence(scanner, packet)) return;
+
+        if (!(packet instanceof TextPacket textPacket)){
+            printAndWait(scanner, GeneralPacket.Msg.invalidPacket);
             return;
         }
 
-        if (packet instanceof TextPacket textPacket){
-            System.out.println(textPacket.text);
-        }
-
+        System.out.println(textPacket.text);
         waitForEnter(scanner);
     }
 }

@@ -1,5 +1,6 @@
 package hospitalsystem.UI;
 
+import hospitalsystem.packet.GeneralPacket;
 import hospitalsystem.personnel.Person;
 import hospitalsystem.personnel.util.PersonData;
 import hospitalsystem.util.HospitalAPI;
@@ -353,5 +354,30 @@ abstract class Menu implements Page{
     public static void waitForEnter(Scanner scanner){
         System.out.print("Press enter to continue...");
         scanner.nextLine();
+    }
+
+    public static void printAndWait(Scanner scanner, String text){
+        System.out.print(text);
+        waitForEnter(scanner);
+    }
+
+    private static boolean processPacketStatus(Scanner scanner, GeneralPacket packet, boolean silence){
+        if (!silence || !packet.successful){
+            System.out.println(packet.resolveStatus());
+
+            waitForEnter(scanner);
+
+            return packet.successful;
+        }
+
+        return true;
+    }
+
+    public static boolean processPacketStatus(Scanner scanner, GeneralPacket packet){
+        return processPacketStatus(scanner, packet, false);
+    }
+
+    public static boolean processPacketStatusInSilence(Scanner scanner, GeneralPacket packet){
+        return processPacketStatus(scanner, packet, true);
     }
 }

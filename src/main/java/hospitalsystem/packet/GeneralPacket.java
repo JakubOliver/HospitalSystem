@@ -21,9 +21,15 @@ public class GeneralPacket {
 
     public String resolveStatus(){
         if (successful) {
-            return "Successful!";
+            return Msg.successfulPacket;
         }
 
         return "Error: " + error;
     }
+
+    public static class Msg {
+        public static final String invalidPacket = "Invalid packet";
+        public static final String successfulPacket = "Successful!";
+    }
+
 }

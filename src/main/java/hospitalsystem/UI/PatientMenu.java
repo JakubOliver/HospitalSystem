@@ -65,16 +65,8 @@ public class PatientMenu extends Submenu implements PersonnelMenu {
             return;
         }
 
-        if (!(packet instanceof PersonPacket personPacket)){
-            System.out.println("Invalid packet"); //TODO: nejak lepe vyresit
-            waitForEnter(scanner);
-
-            return;
-        }
-
-        if (!(personPacket.person instanceof Patient patient)){
-            System.out.println("Invalid packet"); //TODO: nejak lepe vyresit
-            waitForEnter(scanner);
+        if (!(packet instanceof PersonPacket personPacket) || !(personPacket.person instanceof Patient patient)){
+            printAndWait(scanner, GeneralPacket.Msg.invalidPacket);
 
             return;
         }
@@ -116,18 +108,18 @@ public class PatientMenu extends Submenu implements PersonnelMenu {
     public void findById(){
         int id = getInteger(scanner, "ID: ");
 
-        //System.out.println(api.findPatient(id));
         GeneralPacket packet = api.findPatient(id);
 
         System.out.println(packet.resolveStatus());
 
-        if (packet.successful){
-            if (packet instanceof PersonPacket){
-                System.out.println(((PersonPacket) packet).person);
-            } else {
-                System.out.println("Invalid packet"); //TODO: nejak lepe vyresit
-            }
+        if (!processPacketStatusInSilence(scanner, packet)) return;
+
+        if (!(packet instanceof PersonPacket personPacket)){
+            printAndWait(scanner, GeneralPacket.Msg.invalidPacket);
+            return;
         }
+
+        System.out.println(personPacket.person);
 
         waitForEnter(scanner);
     }
@@ -137,7 +129,7 @@ public class PatientMenu extends Submenu implements PersonnelMenu {
      */
     @Override
     public void all(){
-        List<String> patients = api.findAllPatients();
+        List<String> patients = api.findAllPatients(); //TODO: packety
 
         for(String patient : patients){
             System.out.println(patient);
