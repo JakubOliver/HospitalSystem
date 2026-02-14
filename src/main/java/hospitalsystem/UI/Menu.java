@@ -1,6 +1,5 @@
 package hospitalsystem.UI;
 
-import hospitalsystem.packet.GeneralPacket;
 import hospitalsystem.personnel.Person;
 import hospitalsystem.personnel.util.PersonData;
 import hospitalsystem.util.HospitalAPI;
@@ -302,7 +301,7 @@ abstract class Menu implements Page{
      * @return Whether the input can be classified as true.
      */
     private static boolean isValidBoolTrue(String answer){
-        return answer.equals("Yes") || answer.equals("Y");
+        return answer.equals("Yes") || answer.equals("Y") || answer.equals("yes") || answer.equals("y");
     }
 
     /**
@@ -312,7 +311,7 @@ abstract class Menu implements Page{
      * @return Whether the input can be classified as false.
      */
     private static boolean isValidBoolFalse(String answer){
-        return answer.equals("No") || answer.equals("N");
+        return answer.equals("No") || answer.equals("N") || answer.equals("no") || answer.equals("n");
     }
 
     /**
