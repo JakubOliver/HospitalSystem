@@ -8,6 +8,8 @@ import java.sql.SQLException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
+import static hospitalsystem.util.Math.numberOfDigits;
+
 /**
  * Appointment of patient and doctor in specific time and length.
  */
@@ -98,21 +100,13 @@ public class Appointment implements Comparable<Appointment> {
         }
     }
 
-    //TODO: dat do util
-    private int numberOfDigits(int number){
-        int digits = 0;
-        number = Math.abs(number);
-
-        while (number > 0) {
-            digits++;
-            number = number / 10;
-        }
-
-        return digits;
-    }
-
-    //TODO: pouzit stringbuilder
     public String export(){
-        return id + "," +  patientId + "," + doctorId + "," + department  + "," + startTime.toString() + "," + endTime.toString();
+        return String.join(",",
+                String.valueOf(id),
+                String.valueOf(patientId),
+                String.valueOf(doctorId),
+                department,
+                startTime.toString(),
+                endTime.toString());
     }
 }
