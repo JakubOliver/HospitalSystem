@@ -56,7 +56,7 @@ public class HospitalAPI {
      * Returns list information about every patient in hospital system.
      * @return List of information about every patient in hospital system.
      */
-    public List<String> findAllPatients(){
+    public GeneralPacket findAllPatients(){
         return hospital.findAllPatient();
     }
 
@@ -65,8 +65,8 @@ public class HospitalAPI {
      *
      * @param doctorData Doctor data that will be used for doctor creation.
      */
-    public void addDoctor(DoctorData doctorData) {
-        hospital.addDoctor(doctorData);
+    public GeneralPacket addDoctor(DoctorData doctorData) {
+        return hospital.addDoctor(doctorData);
     }
 
     public GeneralPacket findDoctor(int id){
@@ -90,12 +90,12 @@ public class HospitalAPI {
      *
      * @param appointmentData Calendar Entry data that will be used for creation of new appointment.
      */
-    public void addAppointment(AppointmentData appointmentData) {
-        hospital.addAppointment(appointmentData);
+    public GeneralPacket addAppointment(AppointmentData appointmentData) {
+        return hospital.addAppointment(appointmentData);
     }
 
-    public void showCalendar(){
-        hospital.showCalendar();
+    public GeneralPacket showCalendar(){
+        return hospital.showCalendar();
     }
 
     public GeneralPacket export(){

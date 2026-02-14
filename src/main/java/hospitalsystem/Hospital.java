@@ -90,16 +90,16 @@ public class Hospital {
      *
      * @return list of information about every patient in the system.
      */
-    public List<String> findAllPatient(){
+    public GeneralPacket findAllPatient(){
         try{
             List<Patient> patients = database.getAllPatients();
 
-            return patients.stream().map(Patient::toString).toList();
+            return new TextPacket(
+                    String.join("\n", patients.stream().map(Patient::toString).toList())
+            );
         } catch (DatabaseException e){
-            System.out.println("Error: " + e.getMessage());
+            return new GeneralPacket(e);
         }
-
-        return new ArrayList<>();
     }
 
     /**
@@ -107,14 +107,12 @@ public class Hospital {
      *
      * @param doctorData Doctor data that describes the new doctor.
      */
-    public void addDoctor(DoctorData doctorData) {
+    public GeneralPacket addDoctor(DoctorData doctorData) {
         //TODO: validate
         try {
-            database.addDoctor(doctorData);
-
-            System.out.println("Success!");
+            return new PersonPacket(database.addDoctor(doctorData));
         } catch (DatabaseException e){
-            System.out.println("Error: " + e.getMessage());
+            return new GeneralPacket(e);
         }
     }
 
@@ -161,8 +159,8 @@ public class Hospital {
      *
      * @param appointmentData Calendar Entry data that describes the new appointment.
      */
-    public void addAppointment(AppointmentData appointmentData) {
-        //TODO: validate
+    public GeneralPacket addAppointment(AppointmentData appointmentData) {
+        //TODO: validate if patient is patient and doctor is doctor
 
         try {
             database.addAppointment(
@@ -172,21 +170,21 @@ public class Hospital {
                     appointmentData.endTime()
             );
 
-            System.out.println("Success!");
+            return new GeneralPacket();
         } catch (DatabaseException e){
-            System.out.println("Error: " + e.getMessage());
+            return new GeneralPacket(e);
         }
     }
 
     //TODO: edit and delete appointment
 
-    public void showCalendar(){
+    public GeneralPacket showCalendar(){
         try {
             Calendar calendar = database.getCalendar();
 
-            System.out.print(calendar);
+            return new TextPacket(calendar.toString());
         } catch (DatabaseException e) {
-            throw new RuntimeException(e);
+            return new GeneralPacket(e);
         }
     }
 

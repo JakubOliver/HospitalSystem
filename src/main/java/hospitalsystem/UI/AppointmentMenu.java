@@ -1,6 +1,8 @@
 package hospitalsystem.UI;
 
 import hospitalsystem.calendar.util.AppointmentData;
+import hospitalsystem.packet.GeneralPacket;
+import hospitalsystem.packet.TextPacket;
 import hospitalsystem.util.HospitalAPI;
 
 import java.time.LocalDateTime;
@@ -51,26 +53,39 @@ public class AppointmentMenu extends Submenu{
         } else {
             doctorsId = getInteger(scanner, "Doctor's ID: ");
         }
+
         LocalDateTime startTime = getDateTime(scanner, "Start Time: ");
         LocalDateTime endTime = getDateTime(scanner, "End Time: ");
 
-        api.addAppointment(new AppointmentData(
+        GeneralPacket packet = api.addAppointment(new AppointmentData(
                 patientsId,
                 doctorsId,
                 startTime,
                 endTime
         ));
 
-        waitForEnter(scanner);
+
+        processPacketStatus(scanner, packet);
     }
 
     public void editAppointment(){
         int id = getInteger(scanner, "Appointment ID: ");
     }
 
-    public void showCalendar(){
-        api.showCalendar();
+    //TODO: calendar per deparmtne
+    //TODO: calendar per week
+    //TODO: showCalender from today
 
-        waitForEnter(scanner);
+    public void showCalendar(){
+        GeneralPacket packet = api.showCalendar();
+
+        if (!processPacketStatusInSilence(scanner, packet)) return;
+
+        if (!(packet instanceof TextPacket textPacket)){
+            printAndWait(scanner, GeneralPacket.Msg.invalidPacket);
+            return;
+        }
+
+        printAndWait(scanner, textPacket.text); //TODO: vymyslet trošku lepší způsub mozna aby i kalendář vypisovat, poněvadž mi přijde zvlášní, že se to ukládá to jednoho stringu, ale zas to v calendar je také
     }
 }

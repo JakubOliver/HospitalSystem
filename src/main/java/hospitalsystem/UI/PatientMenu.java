@@ -2,6 +2,7 @@ package hospitalsystem.UI;
 
 import hospitalsystem.packet.GeneralPacket;
 import hospitalsystem.packet.PersonPacket;
+import hospitalsystem.packet.TextPacket;
 import hospitalsystem.personnel.Patient;
 import hospitalsystem.personnel.Person;
 import hospitalsystem.personnel.util.PatientData;
@@ -129,11 +130,16 @@ public class PatientMenu extends Submenu implements PersonnelMenu {
      */
     @Override
     public void all(){
-        List<String> patients = api.findAllPatients(); //TODO: packety
+        GeneralPacket packet = api.findAllPatients();
 
-        for(String patient : patients){
-            System.out.println(patient);
+        if (!processPacketStatusInSilence(scanner, packet)) return;
+
+        if (!(packet instanceof TextPacket textPacket)) {
+            printAndWait(scanner, GeneralPacket.Msg.invalidPacket);
+            return;
         }
+
+        System.out.println(textPacket.text);
 
         waitForEnter(scanner);
     }

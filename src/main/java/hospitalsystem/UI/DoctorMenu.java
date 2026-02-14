@@ -51,10 +51,9 @@ public class DoctorMenu extends Submenu implements PersonnelMenu {
                 new DoctorDetails(specialization, department)
         );
 
-        api.addDoctor(doctorData); //TODO: na packety
+        GeneralPacket packet = api.addDoctor(doctorData);
 
-        System.out.print("Press enter to continue...");
-        scanner.nextLine();
+        processPacketStatus(scanner, packet);
     }
 
     @Override
