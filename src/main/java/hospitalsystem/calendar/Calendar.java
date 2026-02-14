@@ -9,6 +9,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 class Department{
@@ -130,17 +131,29 @@ class Department{
             sb.append("\n");
 
             if (lastIdx != sortedAppointments.size()){
-                for (int empty = 0; empty < Period.between(sortedAppointments.get(startIdx).startTime.toLocalDate(), sortedAppointments.get(lastIdx).startTime.toLocalDate()).getDays() - 1; empty++){
-                    time = time.plusDays(1);
+                long daysToNext = ChronoUnit.DAYS.between(sortedAppointments.get(startIdx).startTime, sortedAppointments.get(lastIdx).startTime);
 
-                    //TODO: whole at ones
+                if (daysToNext > 3){
                     for (int part = 0; part < 3; part++){
-                        sb.append(printDate(time, part));
-                        sb.append("-".repeat((16 - 8) * 2 * 6));
+                        sb.append(printDate(time,part));
+                        sb.append(printEmpty(part));
+                    }
+                    sb.append("\n");
+
+                    //TODO: hezci kdyz nic neni ať to vypise nothing between
+                } else {
+                    for (int empty = 0; empty < daysToNext - 1; empty++){
+                        time = time.plusDays(1);
+
+                        //TODO: whole at ones
+                        for (int part = 0; part < 3; part++){
+                            sb.append(printDate(time, part));
+                            sb.append("-".repeat((16 - 8) * 2 * 6));
+                            sb.append("\n");
+                        }
+
                         sb.append("\n");
                     }
-
-                    sb.append("\n");
                 }
             }
 

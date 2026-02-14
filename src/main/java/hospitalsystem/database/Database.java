@@ -23,8 +23,6 @@ public class Database {
     private static final String insertPatientDetail = "INSERT INTO patients_details(id, anamnesis) VALUES (?, ?)";
     private static final String insertDoctorDetail = "INSERT INTO doctors_details(id, specialization, department) VALUES (?, ?, ?)";
     private static final String insertAppointment = "INSERT INTO appointments(patient_id, doctor_id, department, start_time, end_time) VALUES (?, ?, ?, ?, ?)";
-    private static final String insertPatient = "INSERT INTO patients(firstname, lastname, birth_date, anamnesis) VALUES (?, ?, ?, ?)";
-    private static final String insertDoctor = "INSERT INTO patients(firstname, lastname, birth_date, specialization) VALUES (?, ?, ?, ?)";
 
     private static final String updatePerson = "UPDATE people SET firstname = ?, lastname = ?, birth_date = ? WHERE id = ?";
     private static final String updatePatientDetails = "UPDATE patients_details SET anamnesis = ? WHERE id = ?";
@@ -40,7 +38,6 @@ public class Database {
     private static final String getAllPatients = "SELECT * FROM people, patients_details WHERE people.id = patients_details.id";
     private static final String getDoctorDetailsById = "SELECT * FROM doctors_details WHERE id = ?";
     private static final String getAllDoctors = "SELECT * FROM people, doctors_details WHERE people.id = doctors_details.id";
-
     private static final String getAllAppointments = "SELECT * FROM appointments";
 
     private static final String getLastUsedIdError = "Unable to get generated key!";
