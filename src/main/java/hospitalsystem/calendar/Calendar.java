@@ -5,11 +5,18 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Calendar {
     private final Map<String, Department> departments;
+
+    public static int minimumLengthOfAppointment = 60;
+    public static int alignmentOfAppointment = 30;
+    public static int minStartingTime = 8;
+    public static int maxEndingTime = 16;
 
     //TODO: validate times, isPatient, isDoctor etc.
     public Calendar() {
@@ -34,6 +41,26 @@ public class Calendar {
         for (Department department : departments.values()) {
             department.computeLayers();
         }
+    }
+
+    public static boolean timeIsValid(LocalDateTime start, LocalDateTime end) throws CalendarException {
+        if (end.isBefore(start))
+            throw new CalendarException(CalendarException.invalidOrdering);
+
+        if (Duration.between(start, end).toMinutes() < minimumLengthOfAppointment)
+            throw new CalendarException(CalendarException.toShort);
+
+        return startAtHalves(start) && startAtHalves(end);
+    }
+
+    public static boolean startAtHalves(LocalDateTime time) throws CalendarException {
+        if (time.getMinute() % alignmentOfAppointment != 0)
+            throw new CalendarException(CalendarException.invalidAlignment);
+
+        if (!(minStartingTime <= time.getHour() && time.getHour() <= maxEndingTime))
+            throw new CalendarException(CalendarException.invalidTimes);
+
+        return true;
     }
 
     @Override

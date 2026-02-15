@@ -101,6 +101,10 @@ public class Appointment implements Comparable<Appointment>, Exportable {
         }
     }
 
+    public boolean inConflict(LocalDateTime start, LocalDateTime end){
+        return (start.isAfter(startTime) && start.isBefore(endTime)) || (end.isAfter(startTime) && end.isBefore(endTime));
+    }
+
     @Override
     public String export(){
         return String.join(",",

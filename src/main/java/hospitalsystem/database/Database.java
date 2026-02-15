@@ -7,6 +7,7 @@ import hospitalsystem.personnel.util.*;
 import hospitalsystem.calendar.*;
 
 import java.sql.*;
+import java.text.MessageFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -40,6 +41,7 @@ public class Database {
     private static final String getDoctorDetailsById = "SELECT * FROM doctors_details WHERE id = ?";
     private static final String getAllDoctors = "SELECT * FROM people, doctors_details WHERE people.id = doctors_details.id";
     private static final String getAppointmentById = "SELECT * FROM appointments WHERE id = ?";
+    private static final String getAppointmentBySomeId = "SELECT * FROM appointments where {0} = ?";
     private static final String getAllAppointments = "SELECT * FROM appointments";
 
     private static final String getLastUsedIdError = "Unable to get generated key!";
@@ -623,6 +625,31 @@ public class Database {
         } catch (SQLException e) {
             throw new DatabaseException(DatabaseException.appointmentUpdateDatabaseError, e.getMessage());
         }
+    }
+
+    private List<Appointment> getAppointmentsForPersonnel(int id, String column) throws DatabaseException {
+        try(Connection connection = DriverManager.getConnection(url); PreparedStatement statement = connection.prepareStatement(MessageFormat.format(getAppointmentBySomeId, column))) {
+            statement.setInt(1, id);
+
+            ResultSet result = statement.executeQuery();
+            List<Appointment> appointments = new ArrayList<>();
+
+            while (result.next()) {
+                appointments.add(new Appointment(result));
+            }
+
+            return appointments;
+        } catch (SQLException e) {
+            throw new DatabaseException(e.getMessage()); //TODO:
+        }
+    }
+
+    public List<Appointment> getAppointmentsForPatient(int id) throws DatabaseException {
+        return getAppointmentsForPersonnel(id, "patient_id");
+    }
+
+    public List<Appointment> getAppointmentsForDoctor(int id) throws DatabaseException {
+        return getAppointmentsForPersonnel(id, "doctor_id");
     }
 
     public Calendar getCalendar() throws DatabaseException {

@@ -138,9 +138,7 @@ public class Department{
                 sb.append(processEmptyDays(appointments, day));
             } else {
                 LocalDateTime last = appointments.getLast().startTime;
-                System.out.println("--");
-                System.out.println(last.plusDays(1));
-                System.out.println("--");
+
                 sb.append(processEmptyDays(
                         last.plusDays(1),
                         last.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY)).plusDays(1)
@@ -178,11 +176,9 @@ public class Department{
 
     private String processEmptyDays(LocalDateTime start, LocalDateTime end){
         StringBuilder sb = new StringBuilder();
-        //long daysToNext = ChronoUnit.DAYS.between(appointments.get(info.start).startTime.toLocalDate(), appointments.get(info.end).startTime.toLocalDate());
 
         long daysToNext = ChronoUnit.DAYS.between(start.toLocalDate(), end.toLocalDate());
 
-        //LocalDateTime dayTime = appointments.get(info.start).startTime;
         LocalDateTime dayTime = start;
 
         /*
@@ -195,17 +191,8 @@ public class Department{
         System.out.println("____________");
         //TODO: dodrzovat tydny at sedi nazvy, doplnit zacatky tydnu
         for (int empty = 0; empty < daysToNext; empty++){
-
-            System.out.println(start);
-            System.out.println(start.getDayOfWeek());
-            System.out.println(start.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR));
-            System.out.println(dayTime);
-            System.out.println(dayTime.getDayOfWeek());
-            System.out.println(dayTime.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR));
-
             int weekDif = start.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR) - dayTime.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
-            System.out.println(weekDif);
-            if (!(weekDif == 0)) break;
+            if (weekDif != 0) break;
 
             for (int part = 0; part < numberOfParts; part++){
                 sb.append(printDate(dayTime, part));
