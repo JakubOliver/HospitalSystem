@@ -16,7 +16,7 @@ import java.util.Scanner;
 /**
  * Menu page containing options connected with appointments.
  */
-public class AppointmentMenu extends Submenu{
+public class AppointmentMenu extends Menu{
 
     /**
      * Creates appointment menu page.

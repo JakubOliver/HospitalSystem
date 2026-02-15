@@ -15,7 +15,7 @@ import java.util.Scanner;
 /**
  * Menu page containing options connected with patients.
  */
-public class PatientMenu extends Submenu implements PersonnelMenu {
+public class PatientMenu extends Menu implements PersonnelMenu {
     /**
      * Creates patient menu page.
      *

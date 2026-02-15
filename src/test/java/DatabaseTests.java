@@ -43,9 +43,9 @@ public class DatabaseTests extends Tests{
     void addPatientApi() {
         api.addPatient(samplePatientData);
 
-        api.findPatient(1);
+        api.getPatient(1);
 
-        assertEquals(new Patient(1, "Pepa", "Novak", 1, 1, 2001, "Broken leg").toString(), api.findPatient(1));
+        assertEquals(new Patient(1, "Pepa", "Novak", 1, 1, 2001, "Broken leg").toString(), api.getPatient(1).data.toString());
     }
 
     @Test

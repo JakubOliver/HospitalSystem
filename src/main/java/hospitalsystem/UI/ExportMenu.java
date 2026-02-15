@@ -5,7 +5,7 @@ import hospitalsystem.packet.GeneralPacket;
 
 import java.util.Scanner;
 
-public class ExportMenu extends Submenu{
+public class ExportMenu extends Menu{
     public ExportMenu(Hospital api, Scanner scanner) {
         super(api, scanner);
     }
