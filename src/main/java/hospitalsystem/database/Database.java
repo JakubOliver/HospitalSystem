@@ -546,37 +546,6 @@ public class Database {
     ////////////////////////////////
 
     /**
-     * Stores new appointment in the database.
-     *
-     * @param connection Connection to the database.
-     * @param patientId Patients identifier.
-     * @param doctorId Doctors identifier.
-     * @param startTime Starting time of appointment.
-     * @param endTime Ending time of appointment.
-     * @return Identifier of appointment.
-     * @throws SQLException Error connected to the failure of storing new appointment into database or retrieving identifier from database.
-     */
-    private int pushAppointmentIntoDatabase(Connection connection, int patientId, int doctorId, String department, LocalDateTime startTime, LocalDateTime endTime) throws SQLException {
-        try (PreparedStatement statement = connection.prepareStatement(insertAppointment)){
-            statement.setInt(1, patientId);
-            statement.setInt(2, doctorId);
-            statement.setString(3, department);
-            statement.setString(4, startTime.toString());
-            statement.setString(5, endTime.toString());
-
-            statement.executeUpdate();
-
-            try {
-                return getLastUsedId(statement);
-            } catch (SQLException e) {
-                connection.rollback();
-
-                throw e;
-            }
-        }
-    }
-
-    /**
      * Adds new appointment to the database.
      *
      * @param patientId Patients identifier.
@@ -586,8 +555,14 @@ public class Database {
      * @throws DatabaseException Error connected to the failure of storing new appointment.
      */
     public void addAppointment(int patientId, int doctorId, String department, LocalDateTime startTime, LocalDateTime endTime) throws DatabaseException {
-        try (Connection connection = DriverManager.getConnection(url)) {
-            int appointmentId = pushAppointmentIntoDatabase(connection, patientId, doctorId, department, startTime, endTime);
+        try (Connection connection = DriverManager.getConnection(url); PreparedStatement statement = connection.prepareStatement(insertAppointment)) {
+            statement.setInt(1, patientId);
+            statement.setInt(2, doctorId);
+            statement.setString(3, department);
+            statement.setString(4, startTime.toString());
+            statement.setString(5, endTime.toString());
+
+            statement.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             throw new DatabaseException(DatabaseException.appointmentInsertDatabaseError);
@@ -652,7 +627,6 @@ public class Database {
 
     public Calendar getCalendar() throws DatabaseException {
         try (Connection connection = DriverManager.getConnection(url); PreparedStatement statement = connection.prepareStatement(getAllAppointments)){
-
             ResultSet result = statement.executeQuery();
 
             Calendar calendar = new Calendar();
