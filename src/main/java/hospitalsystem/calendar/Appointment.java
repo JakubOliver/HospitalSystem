@@ -1,6 +1,5 @@
 package hospitalsystem.calendar;
 
-import hospitalsystem.calendar.util.AppointmentData;
 import hospitalsystem.personnel.Doctor;
 import hospitalsystem.personnel.Patient;
 import hospitalsystem.util.Exportable;

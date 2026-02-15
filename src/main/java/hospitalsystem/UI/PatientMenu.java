@@ -49,7 +49,10 @@ public class PatientMenu extends Menu implements PersonnelMenu {
 
         String anamnesis = getString(scanner, "Anamnesis: ");
 
-        DataPacket<Patient> packet = api.addPatient(new PatientData(personData, new PatientsDetails(anamnesis)));
+        DataPacket<Patient> packet = api.addPatient(new PatientData(
+                personData,
+                new PatientsDetails(anamnesis)
+        ));
 
         processPacketStatus(scanner, packet);
     }
