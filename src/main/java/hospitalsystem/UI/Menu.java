@@ -1,5 +1,6 @@
 package hospitalsystem.UI;
 
+import hospitalsystem.Hospital;
 import hospitalsystem.packet.GeneralPacket;
 import hospitalsystem.personnel.Doctor;
 import hospitalsystem.personnel.Patient;
@@ -7,7 +8,6 @@ import hospitalsystem.personnel.Person;
 import hospitalsystem.personnel.util.DoctorDetails;
 import hospitalsystem.personnel.util.PatientsDetails;
 import hospitalsystem.personnel.util.PersonData;
-import hospitalsystem.util.HospitalAPI;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -20,7 +20,7 @@ import java.util.stream.IntStream;
  * Abstract ancestor for menu pages. Implementing various methods with processing input data.
  */
 abstract class Menu implements Page{
-    HospitalAPI api;
+    Hospital api;
     Scanner scanner;
 
     List<MenuEntry> options = new ArrayList<>();
@@ -31,11 +31,11 @@ abstract class Menu implements Page{
      *
      * @param api HospitalAPI giving the menu options how to interact with hospital system.
      */
-    public Menu(HospitalAPI api, Scanner scanner) {
+    public Menu(Hospital api, Scanner scanner) {
         this(api, scanner, false);
     }
 
-    public Menu(HospitalAPI api, Scanner scanner, boolean dummy) {
+    public Menu(Hospital api, Scanner scanner, boolean dummy) {
         this.api = api;
         this.scanner = scanner;
 

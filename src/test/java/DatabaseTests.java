@@ -3,11 +3,9 @@ import hospitalsystem.UI.PatientMenu;
 import hospitalsystem.calendar.util.AppointmentData;
 import hospitalsystem.personnel.Patient;
 import hospitalsystem.personnel.util.*;
-import hospitalsystem.util.HospitalAPI;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Scanner;
@@ -15,7 +13,7 @@ import java.util.Scanner;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DatabaseTests extends Tests{
-    HospitalAPI api;
+    Hospital api;
 
     ///////////////
     /// SAMPLES ///
@@ -31,7 +29,7 @@ public class DatabaseTests extends Tests{
 
     @BeforeEach
     public void setup() {
-        api = new HospitalAPI(new Hospital("jdbc:sqlite:memory:"));
+        api = new Hospital("jdbc:sqlite:memory:");
     }
 
     @Test

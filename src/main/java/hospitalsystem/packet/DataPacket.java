@@ -1,20 +1,20 @@
 package hospitalsystem.packet;
 
-public class GeneralTypePacket<T> extends GeneralPacket{
+public class DataPacket<T> extends GeneralPacket{
     public final T data;
 
-    public GeneralTypePacket(boolean successful, String error) {
+    public DataPacket(boolean successful, String error) {
         super(successful, error);
         data = null;
     }
 
-    public GeneralTypePacket(T data) {
+    public DataPacket(T data) {
         this.data = data;
 
         super();
     }
 
-    public GeneralTypePacket(Exception exception){
+    public DataPacket(Exception exception){
         super(exception);
         data = null;
     }

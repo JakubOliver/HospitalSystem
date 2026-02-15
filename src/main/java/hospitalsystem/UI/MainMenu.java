@@ -1,6 +1,6 @@
 package hospitalsystem.UI;
 
-import hospitalsystem.util.HospitalAPI;
+import hospitalsystem.Hospital;
 
 import java.util.Scanner;
 
@@ -28,7 +28,7 @@ public class MainMenu extends Menu{
      *
      * @param api HospitalAPI providing the menu options how to interact with hospital system.
      */
-    public MainMenu(HospitalAPI api) {
+    public MainMenu(Hospital api) {
         super(api, new Scanner(System.in));
 
         while (state != UIState.END){

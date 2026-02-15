@@ -1,12 +1,12 @@
 package hospitalsystem.UI;
 
+import hospitalsystem.Hospital;
 import hospitalsystem.packet.GeneralPacket;
-import hospitalsystem.util.HospitalAPI;
 
 import java.util.Scanner;
 
 public class ExportMenu extends Submenu{
-    public ExportMenu(HospitalAPI api, Scanner scanner) {
+    public ExportMenu(Hospital api, Scanner scanner) {
         super(api, scanner);
     }
 

@@ -1,14 +1,13 @@
 package hospitalsystem.UI;
 
+import hospitalsystem.Hospital;
+import hospitalsystem.packet.DataPacket;
 import hospitalsystem.packet.GeneralPacket;
-import hospitalsystem.packet.PersonPacket;
-import hospitalsystem.packet.TextPacket;
 import hospitalsystem.personnel.Patient;
 import hospitalsystem.personnel.Person;
 import hospitalsystem.personnel.util.PatientData;
 import hospitalsystem.personnel.util.PatientsDetails;
 import hospitalsystem.personnel.util.PersonData;
-import hospitalsystem.util.HospitalAPI;
 
 import java.util.List;
 import java.util.Scanner;
@@ -23,11 +22,11 @@ public class PatientMenu extends Submenu implements PersonnelMenu {
      * @param api HospitalAPI giving the menu options how to interact with hospital system.
      * @param scanner Scanner pointing to the input data.
      */
-    public PatientMenu(HospitalAPI api, Scanner scanner) {
+    public PatientMenu(Hospital api, Scanner scanner) {
         super(api, scanner);
     }
 
-    public PatientMenu(HospitalAPI api, Scanner scanner, boolean dummy) {
+    public PatientMenu(Hospital api, Scanner scanner, boolean dummy) {
         super(api, scanner, dummy);
     }
 
@@ -50,33 +49,22 @@ public class PatientMenu extends Submenu implements PersonnelMenu {
 
         String anamnesis = getString(scanner, "Anamnesis: ");
 
-        GeneralPacket packet = api.addPatient(new PatientData(personData, new PatientsDetails(anamnesis)));
+        DataPacket<Patient> packet = api.addPatient(new PatientData(personData, new PatientsDetails(anamnesis)));
 
-        System.out.println(packet.resolveStatus());
-
-        waitForEnter(scanner);
+        processPacketStatus(scanner, packet);
     }
 
     @Override
     public void edit(){
         int id = getInteger(scanner, "ID: ");
 
-        GeneralPacket packet = api.findPatient(id);
+        DataPacket<Patient> packet = api.getPatient(id);
 
-        if (!packet.successful){
-            System.out.println(packet.resolveStatus());
-            waitForEnter(scanner);
+        if (!processPacketStatusInSilence(scanner, packet)) return;
 
-            return;
-        }
+        Patient patient = packet.data;
 
-        if (!(packet instanceof PersonPacket personPacket) || !(personPacket.person instanceof Patient patient)){
-            printAndWait(scanner, GeneralPacket.Msg.invalidPacket);
-
-            return;
-        }
-
-        PersonData personData = getPersonData(scanner, personPacket.person);
+        PersonData personData = getPersonData(scanner, patient);
         String  anamnesis = getString(
                 scanner,
                 getQuestion("Anamnesis", patient.getAnamnesis()),
@@ -84,14 +72,13 @@ public class PatientMenu extends Submenu implements PersonnelMenu {
         );
 
         Patient updatePatient = new Patient(
-                new Person(personPacket.person.getId(), personData),
+                new Person(patient.getId(), personData),
                 new PatientsDetails(anamnesis)
         );
 
         GeneralPacket response = api.updatePatient(updatePatient);
 
-        System.out.println(response.resolveStatus());
-        waitForEnter(scanner);
+        processPacketStatus(scanner, response);
     }
 
     @Override
@@ -100,8 +87,7 @@ public class PatientMenu extends Submenu implements PersonnelMenu {
 
         GeneralPacket packet = api.deletePatient(id);
 
-        System.out.println(packet.resolveStatus());
-        waitForEnter(scanner);
+        processPacketStatus(scanner, packet);
     }
 
     /**
@@ -113,20 +99,11 @@ public class PatientMenu extends Submenu implements PersonnelMenu {
     public void findById(){
         int id = getInteger(scanner, "ID: ");
 
-        GeneralPacket packet = api.findPatient(id);
-
-        System.out.println(packet.resolveStatus());
+        DataPacket<Patient> packet = api.getPatient(id);
 
         if (!processPacketStatusInSilence(scanner, packet)) return;
 
-        if (!(packet instanceof PersonPacket personPacket)){
-            printAndWait(scanner, GeneralPacket.Msg.invalidPacket);
-            return;
-        }
-
-        System.out.println(personPacket.person);
-
-        waitForEnter(scanner);
+        printAndWait(scanner, packet.data.toString());
     }
 
     /**
@@ -134,16 +111,13 @@ public class PatientMenu extends Submenu implements PersonnelMenu {
      */
     @Override
     public void all(){
-        GeneralPacket packet = api.findAllPatients();
+        DataPacket<List<String>> packet = api.allPatients();
 
         if (!processPacketStatusInSilence(scanner, packet)) return;
 
-        if (!(packet instanceof TextPacket textPacket)) {
-            printAndWait(scanner, GeneralPacket.Msg.invalidPacket);
-            return;
+        for (String text : packet.data){
+            System.out.println(text);
         }
-
-        System.out.println(textPacket.text);
 
         waitForEnter(scanner);
     }

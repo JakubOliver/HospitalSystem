@@ -1,15 +1,15 @@
 package hospitalsystem.UI;
 
+import hospitalsystem.Hospital;
+import hospitalsystem.packet.DataPacket;
 import hospitalsystem.packet.GeneralPacket;
-import hospitalsystem.packet.PersonPacket;
-import hospitalsystem.packet.TextPacket;
 import hospitalsystem.personnel.Doctor;
 import hospitalsystem.personnel.Person;
 import hospitalsystem.personnel.util.DoctorData;
 import hospitalsystem.personnel.util.DoctorDetails;
 import hospitalsystem.personnel.util.PersonData;
-import hospitalsystem.util.HospitalAPI;
 
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -22,7 +22,7 @@ public class DoctorMenu extends Submenu implements PersonnelMenu {
      * @param api HospitalAPI giving the menu options how to interact with hospital system.
      * @param scanner Scanner pointing to the input data.
      */
-    public DoctorMenu(HospitalAPI api, Scanner scanner) {
+    public DoctorMenu(Hospital api, Scanner scanner) {
         super(api, scanner);
     }
 
@@ -60,17 +60,13 @@ public class DoctorMenu extends Submenu implements PersonnelMenu {
     public void edit(){
         int id = getInteger(scanner, "ID: ");
 
-        GeneralPacket packet = api.findDoctor(id);
+        DataPacket<Doctor> packet = api.getDoctor(id);
 
         if (!processPacketStatusInSilence(scanner, packet)) return;
 
-        if (!(packet instanceof PersonPacket personPacket) || !(personPacket.person instanceof Doctor doctor)){
-            printAndWait(scanner, GeneralPacket.Msg.invalidPacket);
+        Doctor doctor = packet.data;
 
-            return;
-        }
-
-        PersonData personData = getPersonData(scanner, personPacket.person);
+        PersonData personData = getPersonData(scanner, doctor);
 
         String  specialization = getString(
                 scanner,
@@ -85,7 +81,7 @@ public class DoctorMenu extends Submenu implements PersonnelMenu {
         );
 
         Doctor updateDoctor = new Doctor(
-                new Person(personPacket.person.getId(), personData),
+                new Person(doctor.getId(), personData),
                 new DoctorDetails(specialization, department)
         );
 
@@ -107,31 +103,25 @@ public class DoctorMenu extends Submenu implements PersonnelMenu {
     public void findById(){
         int id = getInteger(scanner, "ID: ");
 
-        GeneralPacket packet = api.findDoctor(id);
+        DataPacket<Doctor> packet = api.getDoctor(id);
 
         if (!processPacketStatusInSilence(scanner, packet)) return;
 
-        if (packet instanceof PersonPacket personPacket){
-            System.out.println(personPacket.person);
-        } else {
-            System.out.println(GeneralPacket.Msg.invalidPacket);
-        }
+        System.out.print(packet.data);
 
         waitForEnter(scanner);
     }
 
     @Override
     public void all(){
-        GeneralPacket packet = api.findAllDoctors();
+        DataPacket<List<String>> packet = api.allDoctors();
 
         if (!processPacketStatusInSilence(scanner, packet)) return;
 
-        if (!(packet instanceof TextPacket textPacket)){
-            printAndWait(scanner, GeneralPacket.Msg.invalidPacket);
-            return;
+        for (String text : packet.data) {
+            System.out.print(text);
         }
 
-        System.out.println(textPacket.text);
         waitForEnter(scanner);
     }
 }

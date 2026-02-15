@@ -1,7 +1,6 @@
 package hospitalsystem;
 
 import hospitalsystem.UI.MainMenu;
-import hospitalsystem.util.HospitalAPI;
 
 /**
  * Contains main entry point of the program.
@@ -17,6 +16,6 @@ public class Main {
     public static void main(String[] args) {
         Hospital hospital = new Hospital(databasePath);
 
-        MainMenu mainMenu = new MainMenu(new HospitalAPI(hospital));
+        MainMenu mainMenu = new MainMenu(hospital);
     }
 }

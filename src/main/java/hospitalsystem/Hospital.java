@@ -6,9 +6,7 @@ import hospitalsystem.calendar.util.AppointmentData;
 import hospitalsystem.database.Database;
 import hospitalsystem.database.DatabaseException;
 import hospitalsystem.packet.GeneralPacket;
-import hospitalsystem.packet.GeneralTypePacket;
-import hospitalsystem.packet.PersonPacket;
-import hospitalsystem.packet.TextPacket;
+import hospitalsystem.packet.DataPacket;
 import hospitalsystem.personnel.Doctor;
 import hospitalsystem.personnel.Patient;
 import hospitalsystem.personnel.util.DoctorData;
@@ -18,7 +16,6 @@ import hospitalsystem.util.Exportable;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URI;
 import java.util.List;
 
 /**
@@ -41,13 +38,11 @@ public class Hospital {
      *
      * @param patientData Patients data which describes new patient.
      */
-    public GeneralPacket addPatient(PatientData patientData) {
-        //TODO: validate
-
+    public DataPacket<Patient> addPatient(PatientData patientData) {
         try {
-            return new PersonPacket(database.addPatient(patientData));
+            return new DataPacket<>(database.addPatient(patientData));
         } catch (DatabaseException e){
-            return new GeneralPacket(false, e.getMessage());
+            return new DataPacket<>(e);
         }
     }
 
@@ -57,22 +52,21 @@ public class Hospital {
      * @param id Id that identifies patient.
      * @return info about patient.
      */
-    public GeneralPacket getPatientInfo(int id){
+    public DataPacket<Patient> getPatient(int id){
         try{
-            return new PersonPacket(database.getPatient(id));
+            return new DataPacket<>(database.getPatient(id));
         } catch (DatabaseException e){
-            return new GeneralPacket(false, e.getMessage());
-            //return "Error: " + e.getMessage();
+            return new DataPacket<>(e);
         }
     }
 
-    public GeneralPacket updatePatientInfo(Patient patient){
+    public GeneralPacket updatePatient(Patient patient){
         try{
             database.updatePatient(patient);
 
             return new GeneralPacket();
         } catch (DatabaseException e) {
-            return new GeneralPacket(false, e.getMessage());
+            return new GeneralPacket(e);
         }
     }
 
@@ -82,7 +76,7 @@ public class Hospital {
 
             return new GeneralPacket();
         } catch (DatabaseException e) {
-            return new GeneralPacket(false, e.getMessage()); //TODO: udelat Packet konstruktor ne z stringu ale z DatabaseException (nebo exception)
+            return new GeneralPacket(e);
         }
     }
 
@@ -91,15 +85,15 @@ public class Hospital {
      *
      * @return list of information about every patient in the system.
      */
-    public GeneralPacket findAllPatient(){
+    public DataPacket<List<String>> allPatients(){
         try{
             List<Patient> patients = database.getAllPatients();
 
-            return new TextPacket(
-                    String.join("\n", patients.stream().map(Patient::toString).toList())
+            return new DataPacket<>(
+                    patients.stream().map(Patient::toString).toList()
             );
         } catch (DatabaseException e){
-            return new GeneralPacket(e);
+            return new DataPacket<>(e);
         }
     }
 
@@ -108,20 +102,20 @@ public class Hospital {
      *
      * @param doctorData Doctor data that describes the new doctor.
      */
-    public GeneralPacket addDoctor(DoctorData doctorData) {
+    public DataPacket<Doctor> addDoctor(DoctorData doctorData) {
         //TODO: validate
         try {
-            return new PersonPacket(database.addDoctor(doctorData));
+            return new DataPacket<>(database.addDoctor(doctorData));
         } catch (DatabaseException e){
-            return new GeneralPacket(e);
+            return new DataPacket<>(e);
         }
     }
 
-    public GeneralPacket getDoctor(int id){
+    public DataPacket<Doctor> getDoctor(int id){
         try{
-            return new PersonPacket(database.getDoctor(id));
+            return new DataPacket<>(database.getDoctor(id));
         } catch (DatabaseException e) {
-            return new GeneralPacket(e);
+            return new DataPacket<>(e);
         }
     }
 
@@ -145,13 +139,15 @@ public class Hospital {
         }
     }
 
-    public GeneralPacket findAllDoctors(){
+    public DataPacket<List<String>> allDoctors(){
         try{
             List<Doctor> doctors = database.getAllDoctors();
 
-            return new TextPacket(String.join("\n", doctors.stream().map(Doctor::toString).toList()));
+            return new DataPacket<>(
+                    doctors.stream().map(Doctor::toString).toList()
+            );
         } catch (DatabaseException e){
-            return new GeneralPacket(e);
+            return new DataPacket<>(e);
         }
     }
 
@@ -161,12 +157,16 @@ public class Hospital {
      * @param appointmentData Calendar Entry data that describes the new appointment.
      */
     public GeneralPacket addAppointment(AppointmentData appointmentData) {
-        //TODO: validate if patient is patient and doctor is doctor
-
         try {
+            //Validate whether the patient and doctor exists and have correct type
+            Patient patient = database.getPatient(appointmentData.patientsId());
+            Doctor doctor = database.getDoctor(appointmentData.patientsId());
+
+            //TODO: validate whether the doctor or patient have time for the appointment (or at least doctor)
+
             database.addAppointment(
-                    appointmentData.patientsId(),
-                    appointmentData.doctorsId(),
+                    patient,
+                    doctor,
                     appointmentData.starTime(),
                     appointmentData.endTime()
             );
@@ -177,12 +177,13 @@ public class Hospital {
         }
     }
 
-    public GeneralTypePacket<Appointment> getAppointment(int id){
+    public DataPacket<Appointment> getAppointment(int id){
         try{
             Appointment appointment = database.getAppointment(id);
-            return new GeneralTypePacket<>(appointment);
+
+            return new DataPacket<>(appointment);
         } catch (DatabaseException e) {
-            return new GeneralTypePacket<>(e);
+            return new DataPacket<>(e);
         }
     }
 
@@ -207,14 +208,16 @@ public class Hospital {
     }
 
     //TODO: edit and delete appointment
+    //TODO: appointment where patientId or doctorId (maybe like some general search, where the user provide data and get all appointments satisfying this query)
 
-    public GeneralPacket showCalendar(){
+    public DataPacket<String> showCalendar(){
         try {
+            //TODO: mozna vracet Calendar a vypsat to aby se nemuselo vytvaret obrovsky string
             Calendar calendar = database.getCalendar();
 
-            return new TextPacket(calendar.toString());
+            return new DataPacket<>(calendar.toString());
         } catch (DatabaseException e) {
-            return new GeneralPacket(e);
+            return new DataPacket<>(e);
         }
     }
 
@@ -248,7 +251,7 @@ public class Hospital {
         }
     }
 
-    public GeneralPacket exportDoctor(){
+    public GeneralPacket exportDoctors(){
         try {
             File destination = new File(createExportDirectory(), "doctors.csv");
 

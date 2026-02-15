@@ -1,6 +1,6 @@
 package hospitalsystem.UI;
 
-import hospitalsystem.util.HospitalAPI;
+import hospitalsystem.Hospital;
 
 import java.util.Scanner;
 
@@ -14,11 +14,11 @@ abstract class Submenu extends Menu{
      * @param api HospitalAPI providing the menu options how to interact with hospital system.
      * @param scanner Scanner pointing to the input data.
      */
-    public Submenu(HospitalAPI api, Scanner scanner) {
+    public Submenu(Hospital api, Scanner scanner) {
         super(api, scanner);
     }
 
-    public Submenu(HospitalAPI api, Scanner scanner, boolean dummy) {
+    public Submenu(Hospital api, Scanner scanner, boolean dummy) {
         super(api, scanner, dummy);
     }
 }
