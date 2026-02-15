@@ -1,7 +1,9 @@
 package hospitalsystem.calendar;
 
+import hospitalsystem.calendar.util.AppointmentData;
 import hospitalsystem.personnel.Doctor;
 import hospitalsystem.personnel.Patient;
+import hospitalsystem.util.Exportable;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,7 +15,7 @@ import static hospitalsystem.util.Math.numberOfDigits;
 /**
  * Appointment of patient and doctor in specific time and length.
  */
-public class Appointment implements Comparable<Appointment> {
+public class Appointment implements Comparable<Appointment>, Exportable {
     public final int id;
 
     public final int patientId;
@@ -100,6 +102,7 @@ public class Appointment implements Comparable<Appointment> {
         }
     }
 
+    @Override
     public String export(){
         return String.join(",",
                 String.valueOf(id),

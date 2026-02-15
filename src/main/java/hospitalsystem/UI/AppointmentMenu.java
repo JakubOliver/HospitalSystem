@@ -1,14 +1,18 @@
 package hospitalsystem.UI;
 
+import hospitalsystem.calendar.Appointment;
 import hospitalsystem.calendar.util.AppointmentData;
 import hospitalsystem.packet.GeneralPacket;
+import hospitalsystem.packet.GeneralTypePacket;
 import hospitalsystem.packet.PersonPacket;
 import hospitalsystem.packet.TextPacket;
 import hospitalsystem.personnel.Doctor;
+import hospitalsystem.personnel.Patient;
 import hospitalsystem.personnel.util.*;
 import hospitalsystem.util.HospitalAPI;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.Scanner;
 
 /**
@@ -35,12 +39,8 @@ public class AppointmentMenu extends Submenu{
         addOption("Back", this::end);
     }
 
-    /**
-     * Processes input data and calls for creating of new appointment in hospital system.
-     */
-    public void addAppointment(){
-        //TODO: volba zda si vybrat (id nebo jmeno) nebo vytvořit noveho
-
+    //TODO: pridat update appointment z default hodnotama
+    private Optional<AppointmentData> getAppointmentData(){
         int patientsId;
         if (createNew(scanner, "patient")){
             PersonData personData = getPersonData(scanner);
@@ -48,11 +48,11 @@ public class AppointmentMenu extends Submenu{
 
             GeneralPacket packet = api.addPatient(new PatientData(personData, patientDetails));
 
-            if(!processPacketStatusInSilence(scanner, packet)) return; //TODO: mozna udelat metodu check person (dost se to opakuje)
+            if(!processPacketStatusInSilence(scanner, packet)) return Optional.empty(); //TODO: mozna udelat metodu check person (dost se to opakuje)
 
             if (!(packet instanceof PersonPacket personPacket)){
                 printAndWait(scanner, GeneralPacket.Msg.invalidPacket);
-                return;
+                return Optional.empty();
             }
 
             patientsId = personPacket.person.getId();
@@ -67,11 +67,11 @@ public class AppointmentMenu extends Submenu{
 
             GeneralPacket packet = api.addDoctor(new DoctorData(personData, patientDetails));
 
-            if(!processPacketStatusInSilence(scanner, packet)) return;
+            if(!processPacketStatusInSilence(scanner, packet)) return Optional.empty();
 
             if (!(packet instanceof PersonPacket personPacket)){
                 printAndWait(scanner, GeneralPacket.Msg.invalidPacket);
-                return;
+                return Optional.empty();
             }
 
             doctorsId = personPacket.person.getId();
@@ -82,19 +82,62 @@ public class AppointmentMenu extends Submenu{
         LocalDateTime startTime = getDateTime(scanner, "Start Time: ");
         LocalDateTime endTime = getDateTime(scanner, "End Time: ");
 
-        GeneralPacket packet = api.addAppointment(new AppointmentData(
+        return Optional.of(new AppointmentData(
                 patientsId,
                 doctorsId,
                 startTime,
                 endTime
         ));
+    }
 
+    /**
+     * Processes input data and calls for creating of new appointment in hospital system.
+     */
+    public void addAppointment(){
+        //TODO: volba zda si vybrat (id nebo jmeno) nebo vytvořit noveho
 
-        processPacketStatus(scanner, packet);
+        Optional<AppointmentData> appointmentData = getAppointmentData();
+
+        if (appointmentData.isPresent()){
+            GeneralPacket packet = api.addAppointment(appointmentData.get());
+
+            processPacketStatus(scanner, packet);
+        }
     }
 
     public void editAppointment(){
         int id = getInteger(scanner, "Appointment ID: ");
+
+        GeneralTypePacket<Appointment> packet = api.getAppointment(id);
+
+        if (!processPacketStatusInSilence(scanner, packet)) return;
+
+        Appointment appointment = packet.data;
+        Optional<AppointmentData> appointmentData = getAppointmentData();
+
+        if (appointmentData.isEmpty()) return;
+
+        //TODO: pomoci genericType
+        AppointmentData data = appointmentData.get();
+        GeneralPacket doctorPacket = api.findDoctor(data.doctorsId());
+
+        if (!processPacketStatusInSilence(scanner, doctorPacket)) return;
+        if (!(doctorPacket instanceof PersonPacket personPacket) || !(personPacket.person instanceof Doctor doctor)) return;
+
+        GeneralPacket patientPacket = api.findPatient(data.patientsId());
+
+        if (!processPacketStatusInSilence(scanner, patientPacket)) return;
+        if (!(patientPacket instanceof PersonPacket personPacket2) || !(personPacket2.person instanceof Patient patient)) return;
+
+        GeneralPacket finalPacket = api.updateAppointment(new Appointment(
+                appointment.id,
+                patient,
+                doctor,
+                appointment.startTime,
+                appointment.endTime
+        ));
+
+        processPacketStatus(scanner, finalPacket);
     }
 
     //TODO: calendar per deparmtne

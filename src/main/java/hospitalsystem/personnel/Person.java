@@ -1,6 +1,7 @@
 package hospitalsystem.personnel;
 
 import hospitalsystem.personnel.util.PersonData;
+import hospitalsystem.util.Exportable;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -8,7 +9,7 @@ import java.time.Period;
 /**
  * Represents generic person in hospital system.
  */
-public class Person {
+public class Person implements Exportable {
     private final int id;
     private String firstName;
     private String lastName;
@@ -106,6 +107,7 @@ public class Person {
         return "id: " + id + ", firstname: " + firstName + ", lastname: " + lastName + ", age: " + getAge();
     }
 
+    @Override
     public String export(){
         return id + "," + firstName + "," + lastName + "," + getAge();
     }

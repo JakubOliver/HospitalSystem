@@ -20,25 +20,26 @@ public class ExportMenu extends Submenu{
     }
 
     public void exportPatients(){
+        GeneralPacket packet = api.exportPatients();
 
+        printAndWait(scanner, packet.resolveStatus());
     }
 
     public void exportDoctors(){
+        GeneralPacket packet = api.exportDoctors();
 
+        printAndWait(scanner, packet.resolveStatus());
     }
 
     public void exportAppointments(){
+        GeneralPacket packet = api.exportAppointments();
 
+        printAndWait(scanner, packet.resolveStatus());
     }
 
     public void exportAll(){
-        //exportPatients();
-        //exportDoctors();
-        //exportAppointments();
-
         GeneralPacket packet = api.export();
 
-        System.out.println(packet.resolveStatus());
-        waitForEnter(scanner);
+        printAndWait(scanner, packet.resolveStatus());
     }
 }

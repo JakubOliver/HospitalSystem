@@ -1,8 +1,10 @@
 package hospitalsystem.util;
 
 import hospitalsystem.Hospital;
+import hospitalsystem.calendar.Appointment;
 import hospitalsystem.calendar.util.AppointmentData;
 import hospitalsystem.packet.GeneralPacket;
+import hospitalsystem.packet.GeneralTypePacket;
 import hospitalsystem.personnel.Doctor;
 import hospitalsystem.personnel.Patient;
 import hospitalsystem.personnel.util.DoctorData;
@@ -94,8 +96,32 @@ public class HospitalAPI {
         return hospital.addAppointment(appointmentData);
     }
 
+    public GeneralTypePacket<Appointment> getAppointment(int id){
+        return hospital.getAppointment(id);
+    }
+
+    public GeneralPacket updateAppointment(Appointment appointment){
+        return hospital.updateAppointment(appointment);
+    }
+
+    public GeneralPacket deleteAppointment(int id) {
+        return hospital.deleteAppointment(id);
+    }
+
     public GeneralPacket showCalendar(){
         return hospital.showCalendar();
+    }
+
+    public GeneralPacket exportPatients(){
+        return hospital.exportPatients();
+    }
+
+    public GeneralPacket exportDoctors(){
+        return hospital.exportDoctor();
+    }
+
+    public GeneralPacket exportAppointments(){
+        return hospital.exportAppointments();
     }
 
     public GeneralPacket export(){

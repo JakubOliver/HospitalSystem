@@ -6,7 +6,6 @@ import hospitalsystem.personnel.Person;
 import hospitalsystem.personnel.util.*;
 import hospitalsystem.calendar.*;
 
-import javax.swing.plaf.nimbus.State;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -27,10 +26,12 @@ public class Database {
     private static final String updatePerson = "UPDATE people SET firstname = ?, lastname = ?, birth_date = ? WHERE id = ?";
     private static final String updatePatientDetails = "UPDATE patients_details SET anamnesis = ? WHERE id = ?";
     private static final String updateDoctorDetails = "UPDATE doctors_details SET specialization = ?, department = ? WHERE id = ?";
+    private static final String updateAppointment = "UPDATE appointments SET patient_id = ?, doctor_id = ?, department = ?, start_time = ?, end_time = ? WHERE id = ?";
 
     private static final String deletePerson = "DELETE FROM people WHERE id = ?";
     private static final String deletePatientDetails = "DELETE FROM patients_details WHERE id = ?";
     private static final String deleteDoctorsDetails = "DELETE FROM doctors_details WHERE id = ?";
+    private static final String deleteAppointments = "DELETE FROM appointments WHERE id = ?";
 
     private static final String getPersonById = "SELECT * FROM people WHERE id = ?";
     private static final String getAllPeopleByType = "SELECT * FROM people, patients_details, doctors_details WHERE people.type = ?";
@@ -38,6 +39,7 @@ public class Database {
     private static final String getAllPatients = "SELECT * FROM people, patients_details WHERE people.id = patients_details.id";
     private static final String getDoctorDetailsById = "SELECT * FROM doctors_details WHERE id = ?";
     private static final String getAllDoctors = "SELECT * FROM people, doctors_details WHERE people.id = doctors_details.id";
+    private static final String getAppointmentById = "SELECT * FROM appointments WHERE id = ?";
     private static final String getAllAppointments = "SELECT * FROM appointments";
 
     private static final String getLastUsedIdError = "Unable to get generated key!";
@@ -472,7 +474,7 @@ public class Database {
         }
     }
 
-    public List<Doctor> allDoctors() throws DatabaseException {
+    public List<Doctor> getAllDoctors() throws DatabaseException {
         try(Connection connection = DriverManager.getConnection(url); PreparedStatement statement = connection.prepareStatement(getAllDoctors)){
             ResultSet result = statement.executeQuery();
 
@@ -609,6 +611,43 @@ public class Database {
         Doctor doctor = getDoctor(doctorId);
 
         addAppointment(patientId, doctorId, doctor.getDepartment(), startTime, endTime);
+    }
+
+    public Appointment getAppointment(int id) throws DatabaseException {
+        try(Connection connection = DriverManager.getConnection(url); PreparedStatement statement = connection.prepareStatement(getAppointmentById)){
+            statement.setInt(1, id);
+
+            ResultSet result = statement.executeQuery();
+
+            return new Appointment(result);
+        } catch (SQLException e) {
+            throw new DatabaseException(DatabaseException.doctorGetDatabaseError, e.getMessage()); //TODO:
+        }
+    }
+
+    public void deleteAppointment(int id) throws DatabaseException {
+        try(Connection connection = DriverManager.getConnection(url); PreparedStatement statement = connection.prepareStatement(deleteAppointments)){
+            statement.setInt(1, id);
+
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new DatabaseException(DatabaseException.doctorGetDatabaseError, e.getMessage()); //TODO:
+        }
+    }
+
+    public void updateAppointment(Appointment appointment) throws DatabaseException {
+        try(Connection connection = DriverManager.getConnection(url); PreparedStatement statement = connection.prepareStatement(updateAppointment)){
+            statement.setInt(1, appointment.patientId);
+            statement.setInt(2, appointment.doctorId);
+            statement.setString(3, appointment.department);
+            statement.setString(4, appointment.startTime.toString());
+            statement.setString(5, appointment.endTime.toString());
+            statement.setInt(6, appointment.id);
+
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new DatabaseException(DatabaseException.doctorGetDatabaseError, e.getMessage()); //TODO:
+        }
     }
 
     public Calendar getCalendar() throws DatabaseException {

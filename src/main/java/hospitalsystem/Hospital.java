@@ -6,18 +6,19 @@ import hospitalsystem.calendar.util.AppointmentData;
 import hospitalsystem.database.Database;
 import hospitalsystem.database.DatabaseException;
 import hospitalsystem.packet.GeneralPacket;
+import hospitalsystem.packet.GeneralTypePacket;
 import hospitalsystem.packet.PersonPacket;
 import hospitalsystem.packet.TextPacket;
 import hospitalsystem.personnel.Doctor;
 import hospitalsystem.personnel.Patient;
-import hospitalsystem.personnel.Person;
 import hospitalsystem.personnel.util.DoctorData;
 import hospitalsystem.personnel.util.PatientData;
+import hospitalsystem.util.Exportable;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.net.URI;
 import java.util.List;
 
 /**
@@ -146,7 +147,7 @@ public class Hospital {
 
     public GeneralPacket findAllDoctors(){
         try{
-            List<Doctor> doctors = database.allDoctors();
+            List<Doctor> doctors = database.getAllDoctors();
 
             return new TextPacket(String.join("\n", doctors.stream().map(Doctor::toString).toList()));
         } catch (DatabaseException e){
@@ -176,6 +177,35 @@ public class Hospital {
         }
     }
 
+    public GeneralTypePacket<Appointment> getAppointment(int id){
+        try{
+            Appointment appointment = database.getAppointment(id);
+            return new GeneralTypePacket<>(appointment);
+        } catch (DatabaseException e) {
+            return new GeneralTypePacket<>(e);
+        }
+    }
+
+    public GeneralPacket updateAppointment(Appointment appointment){
+        try {
+            database.updateAppointment(appointment);
+        } catch (DatabaseException e) {
+            return new GeneralPacket(e);
+        }
+
+        return new GeneralPacket();
+    }
+
+    public  GeneralPacket deleteAppointment(int id){
+        try{
+            database.deleteAppointment(id);
+        } catch (DatabaseException e){
+            return new GeneralPacket(e);
+        }
+
+        return new GeneralPacket();
+    }
+
     //TODO: edit and delete appointment
 
     public GeneralPacket showCalendar(){
@@ -198,42 +228,68 @@ public class Hospital {
         return directory;
     }
 
-    public GeneralPacket export(){
+    private void writeExport(File destination, List<? extends Exportable> data) throws IOException{
+        try (FileWriter writer = new FileWriter(destination)){
+            for (Exportable entry : data) {
+                writer.write(entry.export() + "\n");
+            }
+        }
+    }
+
+    public GeneralPacket exportPatients(){
         try {
-            List<Patient> patients = database.getAllPatients();
-            List<Doctor> doctors = database.allDoctors();
+            File destination = new File(createExportDirectory(), "patients.csv");
+
+            writeExport(destination, database.getAllPatients());
+
+            return new GeneralPacket();
+        } catch (DatabaseException | IOException e) {
+            return new GeneralPacket(e);
+        }
+    }
+
+    public GeneralPacket exportDoctor(){
+        try {
+            File destination = new File(createExportDirectory(), "doctors.csv");
+
+            writeExport(destination, database.getAllDoctors());
+
+            return new GeneralPacket();
+        } catch (DatabaseException | IOException e) {
+            return new GeneralPacket(e);
+        }
+    }
+
+    public GeneralPacket exportAppointments(){
+        try{
+            File destination = new File(createExportDirectory(), "appointments.csv");
             Calendar calendar = database.getCalendar();
 
-            File directory;
+            calendar.export(destination);
 
-            try {
-                directory = createExportDirectory();
-            } catch (IOException e){
-                return new GeneralPacket(e);
-            }
+            return new GeneralPacket();
+        } catch (DatabaseException | IOException e) {
+            return new GeneralPacket(e);
+        }
+    }
 
-            try (FileWriter writer = new FileWriter(new File(directory, "patients.csv"))) {
-                for (Patient patient : patients) {
-                    writer.write(patient.export() + "\n");
-                }
-            } catch (IOException e) {
-                return new GeneralPacket(e);
-            }
+    public GeneralPacket export(){
+        try {
+            File directory = createExportDirectory();
 
-            try (FileWriter writer = new FileWriter(new File(directory, "doctors.csv"))){
-                for (Doctor doctor : doctors) {
-                    writer.write(doctor.export() + "\n");
-                }
-            } catch (IOException e){
-                return new GeneralPacket(e);
-            }
+            writeExport(
+                    new File(directory, "patients.csv"),
+                    database.getAllPatients()
+            );
 
-            try {
-                calendar.export(new File(directory, "appointments.csv"));
-            } catch (IOException e) {
-                return new GeneralPacket(e);
-            }
-        } catch (DatabaseException e){
+            writeExport(
+                    new File(directory, "doctors.csv"),
+                    database.getAllDoctors()
+            );
+
+            Calendar calendar = database.getCalendar();
+            calendar.export(new File(directory, "appointments.csv"));
+        } catch (DatabaseException | IOException e){
             return new GeneralPacket(e);
         }
 

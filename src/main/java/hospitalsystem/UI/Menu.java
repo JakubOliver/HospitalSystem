@@ -399,7 +399,7 @@ abstract class Menu implements Page{
     }
 
     public static void printAndWait(Scanner scanner, String text){
-        System.out.print(text);
+        System.out.println(text);
         waitForEnter(scanner);
     }
 
