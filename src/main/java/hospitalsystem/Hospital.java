@@ -162,6 +162,26 @@ public class Hospital {
         return true;
     }
 
+    private void validateAppointmentData(AppointmentData appointmentData) throws CalendarException, DatabaseException {
+        //Validate whether the patient and doctor exists and have correct type
+        database.getPatient(appointmentData.patientsId());
+        database.getDoctor(appointmentData.patientsId());
+
+        Calendar.timeIsValid(appointmentData.starTime(), appointmentData.endTime());
+
+        if (!haveTime(
+                database.getAppointmentsForPatient(appointmentData.patientsId()),
+                appointmentData.starTime(),
+                appointmentData.endTime()
+        )) throw new CalendarException(CalendarException.timeCollisionWithPatient);
+
+        if (!haveTime(
+                database.getAppointmentsForDoctor(appointmentData.doctorsId()),
+                appointmentData.starTime(),
+                appointmentData.endTime()
+        )) throw new CalendarException(CalendarException.timeCollisionWIthDoctor);
+    }
+
     /**
      * Adds new appointment into the system.
      *
@@ -169,27 +189,11 @@ public class Hospital {
      */
     public GeneralPacket addAppointment(AppointmentData appointmentData) {
         try {
-            Calendar.timeIsValid(appointmentData.starTime(), appointmentData.endTime());
-
-            //Validate whether the patient and doctor exists and have correct type
-            Patient patient = database.getPatient(appointmentData.patientsId());
-            Doctor doctor = database.getDoctor(appointmentData.patientsId());
-
-            if (!haveTime(
-                    database.getAppointmentsForPatient(appointmentData.patientsId()),
-                    appointmentData.starTime(),
-                    appointmentData.endTime()
-            )) return new GeneralPacket(new CalendarException(CalendarException.timeCollisionWithPatient));
-
-            if (!haveTime(
-                    database.getAppointmentsForDoctor(appointmentData.doctorsId()),
-                    appointmentData.starTime(),
-                    appointmentData.endTime()
-            )) return new GeneralPacket(new CalendarException(CalendarException.timeCollisionWIthDoctor));
+            validateAppointmentData(appointmentData);
 
             database.addAppointment(
-                    patient,
-                    doctor,
+                    appointmentData.patientsId(),
+                    appointmentData.doctorsId(),
                     appointmentData.starTime(),
                     appointmentData.endTime()
             );
@@ -212,9 +216,15 @@ public class Hospital {
 
     public GeneralPacket updateAppointment(Appointment appointment){
         try {
-            //todo: validate
+            validateAppointmentData(new AppointmentData(
+                    appointment.patientId,
+                    appointment.doctorId,
+                    appointment.startTime,
+                    appointment.endTime
+            ));
+
             database.updateAppointment(appointment);
-        } catch (DatabaseException e) {
+        } catch (DatabaseException | CalendarException e) {
             return new GeneralPacket(e);
         }
 
