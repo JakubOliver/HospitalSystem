@@ -283,7 +283,7 @@ public class Database {
 
             //TODO promislet znad nevracet
         }catch  (SQLException e) {
-            throw new DatabaseException(DatabaseException.patientInsertDatabaseError, e.getMessage()); //todo: vlastni expression
+            throw new DatabaseException(DatabaseException.patientUpdateDatabaseError, e.getMessage());
         }
     }
 
@@ -300,7 +300,7 @@ public class Database {
             deletePatientsDetails(connection, id);
             deletePerson(connection, id);
         } catch (SQLException e) {
-            throw new DatabaseException(DatabaseException.patientGetDatabaseError, e.getMessage()); //TODO: vlastni sprava
+            throw new DatabaseException(DatabaseException.patientDeleteDatabaseError, e.getMessage());
         }
     }
 
@@ -453,7 +453,7 @@ public class Database {
             updatePerson(connection, doctor);
             updateDoctorDetails(connection, doctor);
         } catch (SQLException e){
-            throw new DatabaseException(DatabaseException.doctorGetDatabaseError, e.getMessage()); //TODO: custom message
+            throw new DatabaseException(DatabaseException.doctorUpdateDatabaseError, e.getMessage());
         }
     }
 
@@ -470,7 +470,7 @@ public class Database {
             deletePerson(connection, id);
             deleteDoctorsDetails(connection, id);
         } catch (SQLException e){
-            throw new DatabaseException(DatabaseException.patientGetDatabaseError, e.getMessage()); //TODO: custom message
+            throw new DatabaseException(DatabaseException.doctorDeleteDatabaseError, e.getMessage());
         }
     }
 
@@ -493,7 +493,7 @@ public class Database {
 
             return doctors;
         } catch (SQLException e) {
-            throw new DatabaseException("Dodat", e.getMessage()); //TODO: custom message
+            throw new DatabaseException(DatabaseException.doctorGetDatabaseError, e.getMessage());
         }
     }
 
@@ -621,7 +621,7 @@ public class Database {
 
             return new Appointment(result);
         } catch (SQLException e) {
-            throw new DatabaseException(DatabaseException.doctorGetDatabaseError, e.getMessage()); //TODO:
+            throw new DatabaseException(DatabaseException.appointmentGetDatabaseError, e.getMessage());
         }
     }
 
@@ -631,7 +631,7 @@ public class Database {
 
             statement.executeUpdate();
         } catch (SQLException e) {
-            throw new DatabaseException(DatabaseException.doctorGetDatabaseError, e.getMessage()); //TODO:
+            throw new DatabaseException(DatabaseException.appointmentDeleteDatabaseError, e.getMessage());
         }
     }
 
@@ -646,7 +646,7 @@ public class Database {
 
             statement.executeUpdate();
         } catch (SQLException e) {
-            throw new DatabaseException(DatabaseException.doctorGetDatabaseError, e.getMessage()); //TODO:
+            throw new DatabaseException(DatabaseException.appointmentUpdateDatabaseError, e.getMessage());
         }
     }
 
@@ -660,7 +660,7 @@ public class Database {
 
             return calendar;
         } catch (SQLException e){
-            throw new DatabaseException("Doplnit");
+            throw new DatabaseException(DatabaseException.appointmentGetDatabaseError, e.getMessage());
         }
     }
 }
