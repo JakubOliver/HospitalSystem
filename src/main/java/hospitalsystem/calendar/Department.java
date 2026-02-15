@@ -2,11 +2,14 @@ package hospitalsystem.calendar;
 
 import hospitalsystem.calendar.util.AppointmentCompare;
 
+import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.IsoFields;
+import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 
 public class Department{
@@ -117,6 +120,12 @@ public class Department{
         StringBuilder sb = new StringBuilder();
         int active = info.start;
 
+        LocalDateTime startOfWeek = appointments.get(active).startTime.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+
+        sb.append(startOfWeek.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR)).append(". week \n");
+
+        sb.append(processEmptyDays(startOfWeek, appointments.get(active).startTime));
+
         while (active < info.end){
             PeriodInfo day = getLastIdxOfSameDay(appointments, info.start);
             active = day.end;
@@ -127,6 +136,15 @@ public class Department{
 
             if (active != appointments.size()){
                 sb.append(processEmptyDays(appointments, day));
+            } else {
+                LocalDateTime last = appointments.getLast().startTime;
+                System.out.println("--");
+                System.out.println(last.plusDays(1));
+                System.out.println("--");
+                sb.append(processEmptyDays(
+                        last.plusDays(1),
+                        last.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY)).plusDays(1)
+                ));
             }
         }
 
@@ -151,20 +169,43 @@ public class Department{
     }
 
     private String processEmptyDays(List<Appointment> appointments, PeriodInfo info){
+        if (appointments.get(info.start).startTime.getDayOfWeek() == DayOfWeek.SUNDAY){
+            return "";
+        }
+
+        return processEmptyDays(appointments.get(info.start).startTime.plusDays(1), appointments.get(info.end).startTime);
+    }
+
+    private String processEmptyDays(LocalDateTime start, LocalDateTime end){
         StringBuilder sb = new StringBuilder();
-        long daysToNext = ChronoUnit.DAYS.between(appointments.get(info.start).startTime.toLocalDate(), appointments.get(info.end).startTime.toLocalDate());
+        //long daysToNext = ChronoUnit.DAYS.between(appointments.get(info.start).startTime.toLocalDate(), appointments.get(info.end).startTime.toLocalDate());
 
-        LocalDateTime dayTime = appointments.get(info.start).startTime;
+        long daysToNext = ChronoUnit.DAYS.between(start.toLocalDate(), end.toLocalDate());
 
+        //LocalDateTime dayTime = appointments.get(info.start).startTime;
+        LocalDateTime dayTime = start;
+
+        /*
         if (daysToNext > 3000){
             //TODO: neco specl
 
             return sb.toString();
         }
-
+         */
+        System.out.println("____________");
         //TODO: dodrzovat tydny at sedi nazvy, doplnit zacatky tydnu
-        for (int empty = 0; empty < daysToNext - 1; empty++){
-            dayTime = dayTime.plusDays(1);
+        for (int empty = 0; empty < daysToNext; empty++){
+
+            System.out.println(start);
+            System.out.println(start.getDayOfWeek());
+            System.out.println(start.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR));
+            System.out.println(dayTime);
+            System.out.println(dayTime.getDayOfWeek());
+            System.out.println(dayTime.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR));
+
+            int weekDif = start.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR) - dayTime.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
+            System.out.println(weekDif);
+            if (!(weekDif == 0)) break;
 
             for (int part = 0; part < numberOfParts; part++){
                 sb.append(printDate(dayTime, part));
@@ -173,6 +214,7 @@ public class Department{
             }
 
             sb.append("\n");
+            dayTime = dayTime.plusDays(1);
         }
 
         return sb.toString();
@@ -215,7 +257,7 @@ public class Department{
         }
     }
 
-    private PeriodInfo getLastIdxOfSameDay(List<Appointment> sortedAppointments, int startIdx){
+    private PeriodInfo getLastIdxOfSameWeek(List<Appointment> sortedAppointments, int startIdx){
         AppointmentCompare sameWeek = (a1, a2) -> {
             return a1.startTime.toLocalDate().get(IsoFields.WEEK_OF_WEEK_BASED_YEAR) == a2.startTime.toLocalDate().get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
         };
@@ -223,7 +265,7 @@ public class Department{
         return getLastIdxOfSame(sortedAppointments, startIdx, sameWeek);
     }
 
-    private PeriodInfo getLastIdxOfSameWeek(List<Appointment> sortedAppointments, int startIdx){
+    private PeriodInfo getLastIdxOfSameDay(List<Appointment> sortedAppointments, int startIdx){
         AppointmentCompare sameDay = (a1, a2) -> {return a1.startTime.toLocalDate().equals(a2.startTime.toLocalDate());};
 
         return getLastIdxOfSame(sortedAppointments, startIdx, sameDay);
