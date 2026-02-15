@@ -11,8 +11,8 @@ import java.time.Period;
  */
 public class Person implements Exportable {
     private final int id;
-    private String firstName;
-    private String lastName;
+    private final String firstName;
+    private final String lastName;
     private final LocalDate dateOfBirth;
 
     /**
@@ -24,7 +24,7 @@ public class Person implements Exportable {
      * @param dateOfBirth date of birth of person
      */
     public Person(int id, String firstName, String lastName, LocalDate dateOfBirth) {
-        this.id = id; //TODO: changed to the system, that the ID is computed from database
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;

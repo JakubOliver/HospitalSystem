@@ -1,11 +1,17 @@
 package hospitalsystem.calendar;
 
+import hospitalsystem.calendar.util.AppointmentCompare;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.IsoFields;
 import java.util.*;
 
 public class Department{
+    record PeriodInfo(int start, int end, int layers){}
+    record RowInfo(int layer, int part, LocalDateTime day){}
 
     static class LowestEmpty{
         PriorityQueue<Integer> heap;
@@ -37,6 +43,17 @@ public class Department{
     private final Map<Integer, List<Appointment>> layers;
     private final Map<Appointment, Integer> layerOfAppointment;
 
+    int prefixSize = 10;
+    int sizeOfSlot = 6;
+    int lengthOfSlotInMinutes = 30;
+    int numberOfSlotsInHour = 60 / lengthOfSlotInMinutes;
+    int numberOfParts = 3;
+
+    LocalTime startTime = LocalTime.of(8, 0,0);
+    LocalTime endTime = LocalTime.of(16,0,0);
+
+    int sizeOfCalendar = (endTime.getHour() - startTime.getHour()) * numberOfSlotsInHour * sizeOfSlot;
+
     Department(String name){
         this.name = name;
 
@@ -48,8 +65,6 @@ public class Department{
     public void addAppointment(Appointment appointment){
         appointments.add(appointment);
     }
-
-    //TODO: ukl8dat si cas poslednich zmen, ať to nemusím porad pocitat
 
     public void computeLayers(){
         PriorityQueue<Appointment> heap = new PriorityQueue<>();
@@ -78,93 +93,82 @@ public class Department{
 
     @Override
     public String toString(){
+
         StringBuilder sb = new StringBuilder();
 
         sb.append(name).append("\n");
 
         List<Appointment> sortedAppointments = new ArrayList<>(appointments);
 
-        LocalDateTime time = sortedAppointments.getFirst().startTime.withHour(8).withMinute(0).withSecond(0).withNano(0);
-
         int startIdx = 0;
-        int lastIdx;
 
         while (startIdx < sortedAppointments.size()){
-            lastIdx = getLastSameIdx(sortedAppointments, startIdx);
+            PeriodInfo week = getLastIdxOfSameWeek(sortedAppointments, startIdx);
 
-            for (int layer = 0; layer < layers.size(); layer++){
-                for (int part = 0; part < 3; part++){
-                    time = sortedAppointments.get(startIdx).startTime.withHour(8).withMinute(0).withSecond(0).withNano(0);
+            sb.append(processWeek(sortedAppointments, week));
 
-                    if (layer == 0) {
-                        sb.append(printDate(time, part));
-                    } else {
-                        sb.append(" ".repeat(10));
-                    }
-
-                    for (int idx = startIdx; idx < lastIdx; idx++){
-                        if (layerOfAppointment.get(sortedAppointments.get(idx)) == layer){
-                            for (int i = 0; i < (Duration.between(time, sortedAppointments.get(idx).startTime).toMinutes()) / 30; i++){
-                                sb.append("-".repeat(6));
-                            }
-
-                            sb.append(sortedAppointments.get(idx).getStringForPart(part));
-                            time = sortedAppointments.get(idx).endTime;
-                        }
-                    }
-
-                    for (int i = 0; i < (Duration.between(time, time.withHour(16).withMinute(0).withSecond(0)).toMinutes()) / 30; i++){
-                        sb.append("-".repeat(6));
-                    }
-
-                    sb.append("\n");
-                }
-            }
-
-            sb.append("\n");
-
-            if (lastIdx != sortedAppointments.size()){
-                long daysToNext = ChronoUnit.DAYS.between(sortedAppointments.get(startIdx).startTime, sortedAppointments.get(lastIdx).startTime);
-
-                if (daysToNext > 3){
-                    for (int part = 0; part < 3; part++){
-                        sb.append(printDate(time,part));
-                        sb.append(printEmpty(part));
-                    }
-                    sb.append("\n");
-
-                    //TODO: hezci kdyz nic neni ať to vypise nothing between
-                } else {
-                    for (int empty = 0; empty < daysToNext - 1; empty++){
-                        time = time.plusDays(1);
-
-                        //TODO: whole at ones
-                        for (int part = 0; part < 3; part++){
-                            sb.append(printDate(time, part));
-                            sb.append("-".repeat((16 - 8) * 2 * 6));
-                            sb.append("\n");
-                        }
-
-                        sb.append("\n");
-                    }
-                }
-            }
-
-            startIdx = lastIdx;
+            startIdx = week.end;
         }
 
         return sb.toString();
     }
 
-    private String processEmptyDays(int days, LocalDateTime time){
+    private String processWeek(List<Appointment> appointments, PeriodInfo info){
         StringBuilder sb = new StringBuilder();
+        int active = info.start;
 
-        for (int empty = 0; empty < days; empty++){
-            time = time.plusDays(1);
+        while (active < info.end){
+            PeriodInfo day = getLastIdxOfSameDay(appointments, info.start);
+            active = day.end;
 
-            for (int part = 0; part < 3; part++){
-                sb.append(printDate(time, part));
-                sb.append("-".repeat((16 - 8) * 2 * 6));
+            sb.append(processDay(appointments, day));
+
+            sb.append("\n");
+
+            if (active != appointments.size()){
+                sb.append(processEmptyDays(appointments, day));
+            }
+        }
+
+        return sb.toString();
+    }
+
+    private String processDay(List<Appointment> appointments, PeriodInfo info){
+        StringBuilder sb = new StringBuilder();
+        int active = info.start;
+
+        LocalDateTime dayTime = appointments.get(active).startTime;
+
+        for (int layer = 0; layer <= info.layers(); layer++){
+            for (int part = 0; part < numberOfParts; part++){
+                sb.append(processLayerPrefix(layer, part, dayTime));
+
+                sb.append(processAppointments(appointments, info, new RowInfo(layer, part, dayTime)));
+            }
+        }
+
+        return sb.toString();
+    }
+
+    private String processEmptyDays(List<Appointment> appointments, PeriodInfo info){
+        StringBuilder sb = new StringBuilder();
+        long daysToNext = ChronoUnit.DAYS.between(appointments.get(info.start).startTime.toLocalDate(), appointments.get(info.end).startTime.toLocalDate());
+
+        LocalDateTime dayTime = appointments.get(info.start).startTime;
+
+        if (daysToNext > 3000){
+            //TODO: neco specl
+
+            return sb.toString();
+        }
+
+        //TODO: dodrzovat tydny at sedi nazvy, doplnit zacatky tydnu
+        for (int empty = 0; empty < daysToNext - 1; empty++){
+            dayTime = dayTime.plusDays(1);
+
+            for (int part = 0; part < numberOfParts; part++){
+                sb.append(printDate(dayTime, part));
+                sb.append("-".repeat(sizeOfCalendar));
                 sb.append("\n");
             }
 
@@ -174,14 +178,67 @@ public class Department{
         return sb.toString();
     }
 
-    private int getLastSameIdx(List<Appointment> appointments, int startIdx){
-        int idx = startIdx;
+    private String processAppointments(List<Appointment> appointments, PeriodInfo info, RowInfo row){
+        StringBuilder sb = new StringBuilder();
+        LocalDateTime time = row.day.withHour(8).withMinute(0).withSecond(0).withNano(0);
 
-        while (idx < appointments.size() && appointments.get(startIdx).startTime.toLocalDate().equals(appointments.get(idx).startTime.toLocalDate())){
+        for (int idx = info.start; idx < info.end; idx++){
+            if (layerOfAppointment.get(appointments.get(idx)) != row.layer) continue;
+
+            sb.append(processTimeBetweenAppointments(time, appointments.get(idx)));
+            sb.append(appointments.get(idx).getStringForPart(row.part));
+            time = appointments.get(idx).endTime;
+        }
+
+        sb.append(processTimeBetweenAppointments(time, time.withHour(16).withMinute(0).withSecond(0)));
+
+        sb.append("\n");
+
+        return sb.toString();
+    }
+
+    private String processTimeBetweenAppointments(LocalDateTime time, Appointment appointment){
+        return processTimeBetweenAppointments(time, appointment.startTime);
+    }
+
+    private String processTimeBetweenAppointments(LocalDateTime start, LocalDateTime end){
+        int emptySlots = Math.toIntExact(Duration.between(start, end).toMinutes() / 30);
+
+        return "-".repeat(emptySlots * sizeOfSlot);
+    }
+
+    private String processLayerPrefix(int layer, int part, LocalDateTime time){
+        if (layer == 0) {
+            return printDate(time, part);
+        } else {
+            return " ".repeat(prefixSize);
+        }
+    }
+
+    private PeriodInfo getLastIdxOfSameDay(List<Appointment> sortedAppointments, int startIdx){
+        AppointmentCompare sameWeek = (a1, a2) -> {
+            return a1.startTime.toLocalDate().get(IsoFields.WEEK_OF_WEEK_BASED_YEAR) == a2.startTime.toLocalDate().get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
+        };
+
+        return getLastIdxOfSame(sortedAppointments, startIdx, sameWeek);
+    }
+
+    private PeriodInfo getLastIdxOfSameWeek(List<Appointment> sortedAppointments, int startIdx){
+        AppointmentCompare sameDay = (a1, a2) -> {return a1.startTime.toLocalDate().equals(a2.startTime.toLocalDate());};
+
+        return getLastIdxOfSame(sortedAppointments, startIdx, sameDay);
+    }
+
+    private PeriodInfo getLastIdxOfSame(List<Appointment> appointments, int startIdx, AppointmentCompare dateCompare){
+        int idx = startIdx;
+        int layers = 0;
+
+        while (idx <  appointments.size() && dateCompare.compare(appointments.get(startIdx), appointments.get(idx))){
+            layers = Math.max(layers, layerOfAppointment.get(appointments.get(idx)));
             idx++;
         }
 
-        return idx;
+        return new PeriodInfo(startIdx, idx, layers);
     }
 
     private String printDate(LocalDateTime time, int part){
