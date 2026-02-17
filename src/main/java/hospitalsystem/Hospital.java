@@ -63,6 +63,12 @@ public class Hospital {
         }
     }
 
+    /**
+     * Updates information about patient with provided id and based on provided new data.
+     *
+     * @param patient State to which will be patient changed.
+     * @return General packet which provide caller with information about successfulness of the update.
+     */
     public GeneralPacket updatePatient(Patient patient){
         try{
             database.updatePatient(patient);
@@ -73,6 +79,12 @@ public class Hospital {
         }
     }
 
+    /**
+     * Deletes patient with provided id.
+     *
+     * @param id Identifier of the patient that will be removed from the system.
+     * @return General packet which provide caller with information about successfulness of delete.
+     */
     public GeneralPacket deletePatient(int id){
         try{
             database.deletePatient(id);
@@ -86,7 +98,7 @@ public class Hospital {
     /**
      * Returns list of information about every patient in the system.
      *
-     * @return list of information about every patient in the system.
+     * @return Data packet that provide caller with information about successfulness of the query and provides array of data strings about every patient.
      */
     public DataPacket<List<String>> allPatients(){
         try{
@@ -104,6 +116,7 @@ public class Hospital {
      * Adds new doctor into the system.
      *
      * @param doctorData Doctor data that describes the new doctor.
+     * @return Data packet that provide caller with information about successfulness of the addition of doctor into the system. And also provides doctor object representing the same doctor.
      */
     public DataPacket<Doctor> addDoctor(DoctorData doctorData) {
         //TODO: validate
@@ -114,6 +127,12 @@ public class Hospital {
         }
     }
 
+    /**
+     * Returns object representing doctor with provided id.
+     *
+     * @param id Identification number of the required doctor.
+     * @return Data packet that provide caller with information about successfulness of the query of doctor. And also provides doctor object.
+     */
     public DataPacket<Doctor> getDoctor(int id){
         try{
             return new DataPacket<>(database.getDoctor(id));
@@ -122,6 +141,12 @@ public class Hospital {
         }
     }
 
+    /**
+     * Updates information about doctor with provided id and based on provided new data.
+     *
+     * @param doctor State to which will be doctor changed.
+     * @return General packet which provide caller with information about successfulness of the update.
+     */
     public GeneralPacket updateDoctor(Doctor doctor){
         try{
             database.updateDoctor(doctor);
@@ -132,6 +157,12 @@ public class Hospital {
         }
     }
 
+    /**
+     * Deletes doctor with provided id.
+     *
+     * @param id Identifier of the doctor that will be removed from the system.
+     * @return General packet which provide caller with information about successfulness of delete.
+     */
     public GeneralPacket deleteDoctor(int id){
         try{
             database.deleteDoctor(id);
@@ -142,6 +173,11 @@ public class Hospital {
         }
     }
 
+    /**
+     * Returns list of information about every doctor in the system.
+     *
+     * @return Data packet that provide caller with information about successfulness of the query and provides array of data strings about every doctor.
+     */
     public DataPacket<List<String>> allDoctors(){
         try{
             List<Doctor> doctors = database.getAllDoctors();
@@ -154,6 +190,14 @@ public class Hospital {
         }
     }
 
+    /**
+     * Decides whether the time interval [start, end] is in the conflict (have overlap) with some appointment.
+     *
+     * @param appointments List of appointments that we want to check.
+     * @param start Start of the time interval.
+     * @param end End of the time interval.
+     * @return Whether the time interval is not in the conflict with the appointments.
+     */
     private boolean haveTime(List<Appointment> appointments, LocalDateTime start, LocalDateTime end){
         for (Appointment appointment : appointments){
             if (appointment.inConflict(start, end)) return false;
@@ -162,6 +206,15 @@ public class Hospital {
         return true;
     }
 
+    /**
+     * Checks whether the data from which will be new appointment created satisfy criteria.
+     * <p>
+     * Such as: valid doctor and patient id, time interval does not collide with doctor or patient other appointments, time interval is in the correct form (starts and ends at full or half hour and is long at least 1 hour)
+     *
+     * @param appointmentData Appointment data which we want to validate whether satisfy criteria.
+     * @throws CalendarException Time interval is in the conflict or is not in correct form.
+     * @throws DatabaseException Error occurs while working with the database (mostly invalid id or general connection fault).
+     */
     private void validateAppointmentData(AppointmentData appointmentData) throws CalendarException, DatabaseException {
         //Validate whether the patient and doctor exists and have correct type
         database.getPatient(appointmentData.patientsId());
@@ -186,6 +239,7 @@ public class Hospital {
      * Adds new appointment into the system.
      *
      * @param appointmentData Calendar Entry data that describes the new appointment.
+     * @return General packet that provide caller with the information whether the addition of the appointment into the system was successful.
      */
     public GeneralPacket addAppointment(AppointmentData appointmentData) {
         try {
@@ -204,6 +258,12 @@ public class Hospital {
         }
     }
 
+    /**
+     * Returns appointment with the provided id.
+     *
+     * @param id Identifier of the appointment.
+     * @return General packet which provides caller with the information about successfulness of the query. And provides the object of the appointment.
+     */
     public DataPacket<Appointment> getAppointment(int id){
         try{
             Appointment appointment = database.getAppointment(id);
@@ -214,6 +274,12 @@ public class Hospital {
         }
     }
 
+    /**
+     * Updates information about appointment with provided id and based on provided new data.
+     *
+     * @param appointment State to which will be appointment changed.
+     * @return General packet which provide caller with information about successfulness of the update.
+     */
     public GeneralPacket updateAppointment(Appointment appointment){
         try {
             validateAppointmentData(new AppointmentData(
@@ -231,6 +297,12 @@ public class Hospital {
         return new GeneralPacket();
     }
 
+    /**
+     * Deletes appointment with provided id.
+     *
+     * @param id Identifier of the appointment that will be removed from the system.
+     * @return General packet which provide caller with information about successfulness of delete.
+     */
     public  GeneralPacket deleteAppointment(int id){
         try{
             database.deleteAppointment(id);
@@ -244,6 +316,11 @@ public class Hospital {
     //TODO: edit and delete appointment
     //TODO: appointment where patientId or doctorId (maybe like some general search, where the user provide data and get all appointments satisfying this query)
 
+    /**
+     * Returns string representing the calendar of the whole hospital.
+     *
+     * @return string representing the calendar of the whole hospital.
+     */
     public DataPacket<String> showCalendar(){
         try {
             //TODO: mozna vracet Calendar a vypsat to aby se nemuselo vytvaret obrovsky string
@@ -255,6 +332,12 @@ public class Hospital {
         }
     }
 
+    /**
+     * Prepares folder where hospital data could be exported.
+     *
+     * @return File object representing the prepared directory.
+     * @throws IOException Error occurs while creating or checking directory.
+     */
     private File createExportDirectory() throws IOException {
         File directory = new File("exports");
 
@@ -265,6 +348,15 @@ public class Hospital {
         return directory;
     }
 
+    /**
+     * Exports array of object into destination file.
+     * <p>
+     * The format of the export is based on how the object implemented required export method.
+     *
+     * @param destination File which will be used for exporting.
+     * @param data List of objects that will be exported.
+     * @throws IOException Error that occurs while opening/writing into the file.
+     */
     private void writeExport(File destination, List<? extends Exportable> data) throws IOException{
         try (FileWriter writer = new FileWriter(destination)){
             for (Exportable entry : data) {
@@ -273,6 +365,11 @@ public class Hospital {
         }
     }
 
+    /**
+     * Exports patients into file in CSV format
+     *
+     * @return General packet providing caller with the information about successfulness of the export.
+     */
     public GeneralPacket exportPatients(){
         try {
             File destination = new File(createExportDirectory(), "patients.csv");
@@ -285,6 +382,11 @@ public class Hospital {
         }
     }
 
+    /**
+     * Exports doctors into file in CSV format.
+     *
+     * @return General packet providing caller with the information about successfulness of the export.
+     */
     public GeneralPacket exportDoctors(){
         try {
             File destination = new File(createExportDirectory(), "doctors.csv");
@@ -297,6 +399,11 @@ public class Hospital {
         }
     }
 
+    /**
+     * Exports appointments into file in CSV format.
+     *
+     * @return General packet providing caller with the information about successfulness of  the export.
+     */
     public GeneralPacket exportAppointments(){
         try{
             File destination = new File(createExportDirectory(), "appointments.csv");
@@ -310,6 +417,11 @@ public class Hospital {
         }
     }
 
+    /**
+     * Exports all hospital system into CSV files (patients, doctors, appointments - one file for each)
+     *
+     * @return General packet providing caller with the information about successfulness of the export.
+     */
     public GeneralPacket export(){
         try {
             File directory = createExportDirectory();
