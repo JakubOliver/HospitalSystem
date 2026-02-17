@@ -57,6 +57,9 @@ public class PatientMenu extends Menu implements PersonnelMenu {
         processPacketStatus(scanner, packet);
     }
 
+    /**
+     * Processes input about patient and updates data for the patient with the provided id.
+     */
     @Override
     public void edit(){
         int id = getInteger(scanner, "ID: ");
@@ -84,6 +87,9 @@ public class PatientMenu extends Menu implements PersonnelMenu {
         processPacketStatus(scanner, response);
     }
 
+    /**
+     * Delete patient based on provided ID.
+     */
     @Override
     public void delete(){
         int id = getInteger(scanner, "ID: ");

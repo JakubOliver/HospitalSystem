@@ -26,7 +26,7 @@ public class MainMenu extends Menu{
     /**
      * Creates main menu page and runs the IU cycle.
      *
-     * @param api HospitalAPI providing the menu options how to interact with hospital system.
+     * @param api Hospital providing the menu options how to interact with hospital system.
      */
     public MainMenu(Hospital api) {
         super(api, new Scanner(System.in));
