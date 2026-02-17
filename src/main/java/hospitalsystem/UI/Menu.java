@@ -63,14 +63,30 @@ abstract class Menu implements Page{
         options.get(idx).method().run();
     }
 
+    /**
+     * Contacts number and text of option.
+     *
+     * @param number Number of option.
+     * @param option Text of option.
+     * @return concatenated number nad text of option.
+     */
     private static String enumerateOption(int number, String option){
         return number + ". " + option;
     }
 
+    /**
+     * Adds new option into the menu.
+     *
+     * @param text Text of the option.
+     * @param action Action that will be called every time the option is selected.
+     */
     protected void addOption(String text, Runnable action){
         options.add(new MenuEntry(text, action));
     }
 
+    /**
+     * Sets state of the menu to the end.
+     */
     protected void end(){
         state =  UIState.END;
     }
@@ -78,7 +94,6 @@ abstract class Menu implements Page{
     /**
      * Processes input and returns extracted option.
      *
-     * @param scanner Scanner pointing to the input data.
      * @param range Upper bound for not zero positive range of options, thus (0, range]
      * @return First valid option in the input stream.
      */
@@ -96,7 +111,6 @@ abstract class Menu implements Page{
     /**
      * Processes input and extracts valid information into Person data wrapper.
      *
-     * @param scanner Scanner pointing to the input data.
      * @return Wrapper containing data for Person creating (without id)
      */
     public PersonData getPersonData(Person person){
@@ -118,12 +132,23 @@ abstract class Menu implements Page{
         return new PersonData(firstName, lastName, dateOfBirth);
     }
 
+    /**
+     * Processes input and extracts valid information into Person data wrapper.
+     *
+     * @return Person data wrapper containing data for person creation.
+     */
     public PersonData getPersonData(){
         return getPersonData(null);
     }
 
     //TODO: zvazit zda neprehodit tyto metody jako metody trid jako details atd. pomoci nejake motady jako of
 
+    /**
+     * Processes input and extracts valid information into patient details data wrapper.
+     *
+     * @param patient Patient object that will be used as default values.
+     * @return Patient details data wrapper.
+     */
     public PatientsDetails getPatientDetails(Patient patient){
         String anamnesis = getString(
                 getQuestion("Anamnesis", patient != null ? patient.getAnamnesis() : ""),
@@ -133,10 +158,21 @@ abstract class Menu implements Page{
         return new PatientsDetails(anamnesis);
     }
 
+    /**
+     * Processes input and extracts valid information into patient details data wrapper.
+     *
+     * @return Patient details data wrapper.
+     */
     public PatientsDetails getPatientDetails(){
         return getPatientDetails(null);
     }
 
+    /**
+     * Processes input and extracts valid information into doctors details data wrapper.
+     *
+     * @param doctor Doctor object that will be used as default values.
+     * @return Doctors details data wrapper.
+     */
     public DoctorDetails getDoctorDetails(Doctor doctor){
         String specialization = getString(
                 getQuestion("Specialization", doctor != null ? doctor.getSpecialization() : ""),
@@ -151,14 +187,32 @@ abstract class Menu implements Page{
         return new DoctorDetails(specialization, department);
     }
 
+    /**
+     * Processes input and extracts valid information into doctors details data wrapper.
+     *
+     * @return Doctor details data wrapper.
+     */
     public DoctorDetails getDoctorDetails(){
         return getDoctorDetails(null);
     }
 
+    /**
+     * Returns question, where the default value is not present.
+     *
+     * @param question Text of the question.
+     * @return question, where the default value is not present.
+     */
     public String getQuestion(String question){
         return getQuestion(question, "");
     }
 
+    /**
+     * Returns question, where will be displayed default value.
+     *
+     * @param question Text of the question.
+     * @param defaultValue Default value for the question.
+     * @return Question, where will be displayed default value.
+     */
     public String getQuestion(String question, String defaultValue){
         StringBuilder fullQuestion = new  StringBuilder();
         fullQuestion.append(question);
@@ -198,7 +252,6 @@ abstract class Menu implements Page{
     /**
      * Processes input and extracts first valid integer.
      *
-     * @param scanner Scanner pointing to the input data.
      * @param question Question with which will be user prompted.
      * @return Valid integer.
      */
@@ -224,7 +277,6 @@ abstract class Menu implements Page{
     /**
      * Processes input and extracts first not empty line.
      *
-     * @param scanner Scanner pointing to the input data.
      * @param question Question with which will be user prompted.
      * @return Not empty string.
      */
@@ -255,7 +307,6 @@ abstract class Menu implements Page{
     /**
      * Processes input and extracts first line satisfying regular expression.
      *
-     * @param scanner Scanner pointing to the input data.
      * @param question Question with which will be user prompted.
      * @param regex Regular expression which has to be satisfied.
      * @return Not empty string satisfying provided regular expression.
@@ -275,7 +326,6 @@ abstract class Menu implements Page{
     /**
      * Processes input and extracts first line containing valid date (in format YYYY-MM-DD)
      *
-     * @param scanner Scanner pointing to the input data.
      * @param question Question with which will be user prompted.
      * @return LocalDate object containing valid date.
      */
@@ -296,6 +346,12 @@ abstract class Menu implements Page{
         return date;
     }
 
+    /**
+     * Processes input and extracts first line containing valid date (int format YYYY-MM-DD)
+     *
+     * @param question Question with which will be user prompted.
+     * @return LocalDate object containing valid date.
+     */
     public LocalDate getDate(String question){
         return getDate(question, null);
     }
@@ -305,7 +361,6 @@ abstract class Menu implements Page{
      * <p>
      * (in format YYYY-MM-DDTHH:MM or YYYY-MM-DD HH:MM)
      *
-     * @param scanner Scanner pointing to the input data.
      * @param question Question with which will be user prompted.
      * @return LocalDateTime object containing valid date and time.
      */
@@ -364,7 +419,6 @@ abstract class Menu implements Page{
     /**
      * Checks whether the user wants to create new object.
      *
-     * @param scanner Scanner pointing to the input data.
      * @param what The object in question.
      * @return Whether the user wants to create new object.
      */
@@ -384,19 +438,29 @@ abstract class Menu implements Page{
 
     /**
      * Show waiting text and prompts user into pressing any key.
-     *
-     * @param scanner Scanner pointing to the input data.
      */
     public void waitForEnter(){
         System.out.print("Press enter to continue...");
         scanner.nextLine();
     }
 
+    /**
+     * Prints text and wait for the confirmation action from the user.
+     *
+     * @param text Text that will be displayed.
+     */
     public void printAndWait(String text){
         System.out.println(text);
         waitForEnter();
     }
 
+    /**
+     * Processes packet status and prints the resolved status.
+     *
+     * @param packet Packet that will be processed.
+     * @param silence Whether we do not want to display text when the packet does not contain exception.
+     * @return Whether the packet came from successful API request.
+     */
     private boolean processPacketStatus(GeneralPacket packet, boolean silence){
         if (!silence || !packet.successful){
             System.out.println(packet.resolveStatus());
@@ -409,10 +473,22 @@ abstract class Menu implements Page{
         return true;
     }
 
+    /**
+     * Processes packet status and prints the resolved status.
+     *
+     * @param packet Packet that will be processed.
+     * @return Whether the packet came from successful API request.
+     */
     public boolean processPacketStatus(GeneralPacket packet){
         return processPacketStatus(packet, false);
     }
 
+    /**
+     * Processes packet status and prints the status if the API request was not successful.
+     *
+     * @param packet Packet that will be processed.
+     * @return Whether the packet came from successful API request.
+     */
     public boolean processPacketStatusInSilence(GeneralPacket packet){
         return processPacketStatus(packet, true);
     }

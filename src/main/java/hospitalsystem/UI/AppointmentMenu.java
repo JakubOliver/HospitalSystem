@@ -93,6 +93,9 @@ public class AppointmentMenu extends Menu{
         }
     }
 
+    /**
+     * Processes input data from scanner and edits appointment with the provided ID.
+     */
     public void editAppointment(){
         int id = getInteger("Appointment ID: ");
 
@@ -130,6 +133,9 @@ public class AppointmentMenu extends Menu{
     //TODO: calendar per week
     //TODO: showCalender from today
 
+    /**
+     * Prints whole calendar for the hospital.
+     */
     public void showCalendar(){
         DataPacket<String> packet = api.showCalendar();
 

@@ -30,11 +30,6 @@ public class MainMenu extends Menu{
      */
     public MainMenu(Hospital api) {
         super(api, new Scanner(System.in));
-
-        while (state != UIState.END){
-            printMenu();
-            processMenu();
-        }
     }
 
     @Override

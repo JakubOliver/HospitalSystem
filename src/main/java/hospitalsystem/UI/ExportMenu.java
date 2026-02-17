@@ -19,24 +19,36 @@ public class ExportMenu extends Menu{
         addOption("Back", this::end);
     }
 
+    /**
+     * Exports patients data into file.
+     */
     public void exportPatients(){
         GeneralPacket packet = api.exportPatients();
 
         printAndWait(packet.resolveStatus());
     }
 
+    /**
+     * Exports doctors data into file.
+     */
     public void exportDoctors(){
         GeneralPacket packet = api.exportDoctors();
 
         printAndWait(packet.resolveStatus());
     }
 
+    /**
+     * Exports appointment data into file.
+     */
     public void exportAppointments(){
         GeneralPacket packet = api.exportAppointments();
 
         printAndWait(packet.resolveStatus());
     }
 
+    /**
+     * Exports all hospital data into file.
+     */
     public void exportAll(){
         GeneralPacket packet = api.export();
 

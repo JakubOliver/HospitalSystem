@@ -56,6 +56,9 @@ public class DoctorMenu extends Menu implements PersonnelMenu {
         processPacketStatus(packet);
     }
 
+    /**
+     * Processes input data and edits doctor with the provided ID.
+     */
     @Override
     public void edit(){
         int id = getInteger("ID: ");
@@ -88,6 +91,9 @@ public class DoctorMenu extends Menu implements PersonnelMenu {
         processPacketStatus(response);
     }
 
+    /**
+     * Processes scanner input for identification number and afterward deletes doctor with this id.
+     */
     @Override
     public void delete(){
         int id = getInteger("ID: ");
@@ -97,6 +103,9 @@ public class DoctorMenu extends Menu implements PersonnelMenu {
         processPacketStatus(packet);
     }
 
+    /**
+     * Processes scanner input for identification number and afterward prints data about this doctor.
+     */
     @Override
     public void findById(){
         int id = getInteger("ID: ");
@@ -110,6 +119,9 @@ public class DoctorMenu extends Menu implements PersonnelMenu {
         waitForEnter();
     }
 
+    /**
+     * Prints data about every doctor in hospital system.
+     */
     @Override
     public void all(){
         DataPacket<List<String>> packet = api.allDoctors();
