@@ -13,6 +13,7 @@ import hospitalsystem.personnel.Patient;
 import hospitalsystem.personnel.util.DoctorData;
 import hospitalsystem.personnel.util.PatientData;
 import hospitalsystem.util.Exportable;
+import hospitalsystem.util.ExportsUtil;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -339,10 +340,10 @@ public class Hospital {
      * @throws IOException Error occurs while creating or checking directory.
      */
     private File createExportDirectory() throws IOException {
-        File directory = new File("exports");
+        File directory = new File(ExportsUtil.exportDirectoryDestination);
 
         if (!directory.isDirectory() && !directory.mkdirs()) {
-            throw new IOException("Unable to create directory for exports");
+            throw new IOException(ExportsUtil.unableToPrepareExportsDirectoryErrMsg);
         }
 
         return directory;
@@ -372,7 +373,7 @@ public class Hospital {
      */
     public GeneralPacket exportPatients(){
         try {
-            File destination = new File(createExportDirectory(), "patients.csv");
+            File destination = new File(createExportDirectory(), ExportsUtil.patientExportDestination);
 
             writeExport(destination, database.getAllPatients());
 
@@ -389,7 +390,7 @@ public class Hospital {
      */
     public GeneralPacket exportDoctors(){
         try {
-            File destination = new File(createExportDirectory(), "doctors.csv");
+            File destination = new File(createExportDirectory(), ExportsUtil.doctorExportDestination);
 
             writeExport(destination, database.getAllDoctors());
 
@@ -406,7 +407,7 @@ public class Hospital {
      */
     public GeneralPacket exportAppointments(){
         try{
-            File destination = new File(createExportDirectory(), "appointments.csv");
+            File destination = new File(createExportDirectory(), ExportsUtil.appointmentExportDestination);
             Calendar calendar = database.getCalendar();
 
             calendar.export(destination);
@@ -427,17 +428,17 @@ public class Hospital {
             File directory = createExportDirectory();
 
             writeExport(
-                    new File(directory, "patients.csv"),
+                    new File(directory, ExportsUtil.patientExportDestination),
                     database.getAllPatients()
             );
 
             writeExport(
-                    new File(directory, "doctors.csv"),
+                    new File(directory, ExportsUtil.doctorExportDestination),
                     database.getAllDoctors()
             );
 
             Calendar calendar = database.getCalendar();
-            calendar.export(new File(directory, "appointments.csv"));
+            calendar.export(new File(directory, ExportsUtil.appointmentExportDestination));
         } catch (DatabaseException | IOException e){
             return new GeneralPacket(e);
         }
