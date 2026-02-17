@@ -2,6 +2,8 @@ package hospitalsystem;
 
 import hospitalsystem.UI.MainMenu;
 
+//TODO: info na uvidni strance
+
 /**
  * Contains main entry point of the program.
  */

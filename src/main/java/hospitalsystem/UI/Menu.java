@@ -111,6 +111,7 @@ abstract class Menu implements Page{
     /**
      * Processes input and extracts valid information into Person data wrapper.
      *
+     * @param person Person whose data will be user as the default values.
      * @return Wrapper containing data for Person creating (without id)
      */
     public PersonData getPersonData(Person person){
@@ -278,6 +279,7 @@ abstract class Menu implements Page{
      * Processes input and extracts first not empty line.
      *
      * @param question Question with which will be user prompted.
+     * @param defaultValue Default value that will be suggested to the user.
      * @return Not empty string.
      */
     public String getString(String question, String defaultValue){
@@ -300,6 +302,12 @@ abstract class Menu implements Page{
         throw new InputMismatchException("Scanner run out of lines and no correct string found.");
     }
 
+    /**
+     * Processes input and extracts first not empty line.
+     *
+     * @param question Question with which will be user prompted.
+     * @return First not empty line.
+     */
     public String getString(String question){
         return getString(question, null);
     }
@@ -327,6 +335,7 @@ abstract class Menu implements Page{
      * Processes input and extracts first line containing valid date (in format YYYY-MM-DD)
      *
      * @param question Question with which will be user prompted.
+     * @param defaultValue Default value that will be suggested to the user.
      * @return LocalDate object containing valid date.
      */
     public LocalDate getDate(String question,LocalDate defaultValue){

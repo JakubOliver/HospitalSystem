@@ -15,14 +15,20 @@ import static hospitalsystem.util.Math.numberOfDigits;
  * Appointment of patient and doctor in specific time and length.
  */
 public class Appointment implements Comparable<Appointment>, Exportable {
+    /** Identification number of appointment */
     public final int id;
 
+    /** Identification number of the patient connected with this appointment. */
     public final int patientId;
+    /** Identification number of the doctor connected with this appointment. */
     public final int doctorId;
 
+    /** Name of the department in which the appointment is taking place */
     public final String department;
 
+    /** Starting time of the appointment */
     public LocalDateTime startTime;
+    /** Ending time of the appointment */
     public LocalDateTime endTime;
 
     /**
@@ -31,6 +37,7 @@ public class Appointment implements Comparable<Appointment>, Exportable {
      * @param id Identifier of appointment.
      * @param patientId Patients identifier.
      * @param DoctorId Doctors identifier.
+     * @param department Department in which the appointment is taking place.
      * @param startTime Starting time of the appointment.
      * @param endTime Ending time of the appointment.
      */
@@ -59,6 +66,12 @@ public class Appointment implements Comparable<Appointment>, Exportable {
         this(id, patient.getId(), doctor.getId(), doctor.getDepartment(), startTime, endTime);
     }
 
+    /**
+     * Creates appointment from SQL result set.
+     *
+     * @param result SQL result set containing data for appointment creation.
+     * @throws SQLException Error connected with the invalid columns in result set or failure of retrieving data from result set.
+     */
     public Appointment(ResultSet result) throws SQLException {
         this.id = result.getInt("id");
         this.patientId = result.getInt("patient_id");
@@ -81,6 +94,12 @@ public class Appointment implements Comparable<Appointment>, Exportable {
 
     //TODO: konstruktor s delkou
 
+    /**
+     * Returns info about appointment for the calendar diagram based on provided required part.
+     *
+     * @param part Part that is required for drawing calendar diagram.
+     * @return Info about appointment for the calendar diagram based on provided required part.
+     */
     public String getStringForPart(int part){
         String prefix = "";
         int length = Math.toIntExact((Duration.between(startTime, endTime).toMinutes() / 30) * 6);
@@ -101,6 +120,13 @@ public class Appointment implements Comparable<Appointment>, Exportable {
         }
     }
 
+    /**
+     * Decided whether the time interval is in conflict, if the overlap.
+     *
+     * @param start Starting time of the interval.
+     * @param end Ending time of the interval.
+     * @return Whether the time interval is overlaping with the appointment.
+     */
     public boolean inConflict(LocalDateTime start, LocalDateTime end){
         return (start.isAfter(startTime) && start.isBefore(endTime)) || (end.isAfter(startTime) && end.isBefore(endTime));
     }
