@@ -58,7 +58,7 @@ abstract class Menu implements Page{
 
     @Override
     public void processMenu(){
-        int idx = getOption(scanner, options.size());
+        int idx = getOption(options.size());
 
         options.get(idx).method().run();
     }
@@ -82,12 +82,12 @@ abstract class Menu implements Page{
      * @param range Upper bound for not zero positive range of options, thus (0, range]
      * @return First valid option in the input stream.
      */
-    public static int getOption(Scanner scanner, int range){
-        int option = getInteger(scanner, "Select an option: ");
+    public int getOption(int range){
+        int option = getInteger("Select an option: ");
 
         while (option > range || option <= 0){
             System.out.println("Invalid option: out of range");
-            option = getInteger(scanner, "Select an option: ");
+            option = getInteger("Select an option: ");
         }
 
         return option - 1;
@@ -99,21 +99,18 @@ abstract class Menu implements Page{
      * @param scanner Scanner pointing to the input data.
      * @return Wrapper containing data for Person creating (without id)
      */
-    public static PersonData getPersonData(Scanner scanner, Person person){
+    public PersonData getPersonData(Person person){
         String firstName = getString(
-                scanner,
                 getQuestion("First name", person != null ? person.getFirstName() : ""),
                 person != null ? person.getFirstName() : null
         );
 
         String lastName = getString(
-                scanner,
                 getQuestion("Last name", person != null ? person.getLastName() : ""),
                 person != null ? person.getLastName() : null
         );
 
         LocalDate dateOfBirth = getDate(
-                scanner,
                 getQuestion("Date of birth", person != null ? person.getDateOfBirth().toString() : ""),
                 person != null ? person.getDateOfBirth() : null
         );
@@ -121,15 +118,14 @@ abstract class Menu implements Page{
         return new PersonData(firstName, lastName, dateOfBirth);
     }
 
-    public static PersonData getPersonData(Scanner scanner){
-        return getPersonData(scanner, null);
+    public PersonData getPersonData(){
+        return getPersonData(null);
     }
 
     //TODO: zvazit zda neprehodit tyto metody jako metody trid jako details atd. pomoci nejake motady jako of
 
-    public static PatientsDetails getPatientDetails(Scanner scanner, Patient patient){
+    public PatientsDetails getPatientDetails(Patient patient){
         String anamnesis = getString(
-                scanner,
                 getQuestion("Anamnesis", patient != null ? patient.getAnamnesis() : ""),
                 patient != null ? patient.getAnamnesis() : null
         );
@@ -137,19 +133,17 @@ abstract class Menu implements Page{
         return new PatientsDetails(anamnesis);
     }
 
-    public static PatientsDetails getPatientDetails(Scanner scanner){
-        return getPatientDetails(scanner, null);
+    public PatientsDetails getPatientDetails(){
+        return getPatientDetails(null);
     }
 
-    public static DoctorDetails getDoctorDetails(Scanner scanner, Doctor doctor){
+    public DoctorDetails getDoctorDetails(Doctor doctor){
         String specialization = getString(
-                scanner,
                 getQuestion("Specialization", doctor != null ? doctor.getSpecialization() : ""),
                 doctor != null ? doctor.getSpecialization() : null
         );
 
         String department = getString(
-                scanner,
                 getQuestion("Department", doctor != null ? doctor.getDepartment() : ""),
                 doctor != null ? doctor.getDepartment() : null
         );
@@ -157,15 +151,15 @@ abstract class Menu implements Page{
         return new DoctorDetails(specialization, department);
     }
 
-    public static DoctorDetails getDoctorDetails(Scanner scanner){
-        return getDoctorDetails(scanner, null);
+    public DoctorDetails getDoctorDetails(){
+        return getDoctorDetails(null);
     }
 
-    public static String getQuestion(String question){
+    public String getQuestion(String question){
         return getQuestion(question, "");
     }
 
-    public static String getQuestion(String question, String defaultValue){
+    public String getQuestion(String question, String defaultValue){
         StringBuilder fullQuestion = new  StringBuilder();
         fullQuestion.append(question);
 
@@ -183,7 +177,7 @@ abstract class Menu implements Page{
     /**
      * Clears console with appropriate command based on OS
      */
-    public static void clearConsole()
+    public void clearConsole()
     {
         //TODO: rozhodnout OS na zacatku ať se to nemusi porad pocitat
         String os = System.getProperty("os.name");
@@ -208,7 +202,7 @@ abstract class Menu implements Page{
      * @param question Question with which will be user prompted.
      * @return Valid integer.
      */
-    public static int getInteger(Scanner scanner, String question){
+    public int getInteger(String question){
         String line;
         System.out.print(question);
 
@@ -234,7 +228,7 @@ abstract class Menu implements Page{
      * @param question Question with which will be user prompted.
      * @return Not empty string.
      */
-    public static String getString(Scanner scanner, String question, String defaultValue){
+    public String getString(String question, String defaultValue){
         String line;
         System.out.print(question);
 
@@ -254,8 +248,8 @@ abstract class Menu implements Page{
         throw new InputMismatchException("Scanner run out of lines and no correct string found.");
     }
 
-    public static String getString(Scanner scanner, String question){
-        return getString(scanner, question, null);
+    public String getString(String question){
+        return getString(question, null);
     }
 
     /**
@@ -266,13 +260,13 @@ abstract class Menu implements Page{
      * @param regex Regular expression which has to be satisfied.
      * @return Not empty string satisfying provided regular expression.
      */
-    public static String satisfyRegex(Scanner scanner, String question, String regex){
+    public String satisfyRegex(String question, String regex){
         Pattern pattern = Pattern.compile(regex);
 
-        String text = getString(scanner, question);
+        String text = getString(question);
 
         while (pattern.matcher(text).matches()){
-            text = getString(scanner, question);
+            text = getString(question);
         }
 
         return text;
@@ -285,12 +279,12 @@ abstract class Menu implements Page{
      * @param question Question with which will be user prompted.
      * @return LocalDate object containing valid date.
      */
-    public static LocalDate getDate(Scanner scanner, String question,LocalDate defaultValue){
+    public LocalDate getDate(String question,LocalDate defaultValue){
         boolean acquireCorrectDate = false;
         LocalDate date = null; // Even thought the value here is null, if we get to the return statement in the date variable will always be valid date.
 
         while (!acquireCorrectDate){
-            String line = getString(scanner, question, defaultValue != null ? defaultValue.toString() : null);
+            String line = getString(question, defaultValue != null ? defaultValue.toString() : null);
 
             try{
                 date = LocalDate.parse(line.trim());
@@ -302,8 +296,8 @@ abstract class Menu implements Page{
         return date;
     }
 
-    public static LocalDate getDate(Scanner scanner, String question){
-        return getDate(scanner, question, null);
+    public LocalDate getDate(String question){
+        return getDate(question, null);
     }
 
     /**
@@ -315,12 +309,12 @@ abstract class Menu implements Page{
      * @param question Question with which will be user prompted.
      * @return LocalDateTime object containing valid date and time.
      */
-    public static LocalDateTime getDateTime(Scanner scanner, String question){
+    public LocalDateTime getDateTime(String question){
         boolean acquireCorrectDateTime = false;
         LocalDateTime date = null;
 
         while (!acquireCorrectDateTime){
-            String line = getString(scanner, question);
+            String line = getString(question);
 
             if (line.contains(" ")){
                 String[] parts = line.split(" ");
@@ -343,7 +337,7 @@ abstract class Menu implements Page{
      * @param answer Input string.
      * @return Whether the input can be classified as true.
      */
-    private static boolean isValidBoolTrue(String answer){
+    private boolean isValidBoolTrue(String answer){
         return answer.equals("Yes") || answer.equals("Y") || answer.equals("yes") || answer.equals("y");
     }
 
@@ -353,7 +347,7 @@ abstract class Menu implements Page{
      * @param answer Input string.
      * @return Whether the input can be classified as false.
      */
-    private static boolean isValidBoolFalse(String answer){
+    private boolean isValidBoolFalse(String answer){
         return answer.equals("No") || answer.equals("N") || answer.equals("no") || answer.equals("n");
     }
 
@@ -363,7 +357,7 @@ abstract class Menu implements Page{
      * @param answer Input string.
      * @return Whether the input can be classified as boolean value.
      */
-    private static boolean isValidBoolAnswer(String answer){
+    private boolean isValidBoolAnswer(String answer){
         return isValidBoolTrue(answer) || isValidBoolFalse(answer);
     }
 
@@ -374,15 +368,15 @@ abstract class Menu implements Page{
      * @param what The object in question.
      * @return Whether the user wants to create new object.
      */
-    public static boolean createNew(Scanner scanner, String what){
+    public boolean createNew(String what){
         String question = "Create new " + what + " (Yes/No) : ";
 
-        String line = getString(scanner, question);
+        String line = getString(question);
 
         while (!isValidBoolAnswer(line)){
             System.out.println("Invalid input!");
 
-            line = getString(scanner, question);
+            line = getString(question);
         }
 
         return isValidBoolTrue(line);
@@ -393,21 +387,21 @@ abstract class Menu implements Page{
      *
      * @param scanner Scanner pointing to the input data.
      */
-    public static void waitForEnter(Scanner scanner){
+    public void waitForEnter(){
         System.out.print("Press enter to continue...");
         scanner.nextLine();
     }
 
-    public static void printAndWait(Scanner scanner, String text){
+    public void printAndWait(String text){
         System.out.println(text);
-        waitForEnter(scanner);
+        waitForEnter();
     }
 
-    private static boolean processPacketStatus(Scanner scanner, GeneralPacket packet, boolean silence){
+    private boolean processPacketStatus(GeneralPacket packet, boolean silence){
         if (!silence || !packet.successful){
             System.out.println(packet.resolveStatus());
 
-            waitForEnter(scanner);
+            waitForEnter();
 
             return packet.successful;
         }
@@ -415,11 +409,11 @@ abstract class Menu implements Page{
         return true;
     }
 
-    public static boolean processPacketStatus(Scanner scanner, GeneralPacket packet){
-        return processPacketStatus(scanner, packet, false);
+    public boolean processPacketStatus(GeneralPacket packet){
+        return processPacketStatus(packet, false);
     }
 
-    public static boolean processPacketStatusInSilence(Scanner scanner, GeneralPacket packet){
-        return processPacketStatus(scanner, packet, true);
+    public boolean processPacketStatusInSilence(GeneralPacket packet){
+        return processPacketStatus(packet, true);
     }
 }

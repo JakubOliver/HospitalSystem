@@ -45,16 +45,16 @@ public class PatientMenu extends Menu implements PersonnelMenu {
      */
     @Override
     public void add(){
-        PersonData personData = getPersonData(scanner);
+        PersonData personData = getPersonData();
 
-        String anamnesis = getString(scanner, "Anamnesis: ");
+        String anamnesis = getString("Anamnesis: ");
 
         DataPacket<Patient> packet = api.addPatient(new PatientData(
                 personData,
                 new PatientsDetails(anamnesis)
         ));
 
-        processPacketStatus(scanner, packet);
+        processPacketStatus(packet);
     }
 
     /**
@@ -62,17 +62,16 @@ public class PatientMenu extends Menu implements PersonnelMenu {
      */
     @Override
     public void edit(){
-        int id = getInteger(scanner, "ID: ");
+        int id = getInteger("ID: ");
 
         DataPacket<Patient> packet = api.getPatient(id);
 
-        if (!processPacketStatusInSilence(scanner, packet)) return;
+        if (!processPacketStatusInSilence(packet)) return;
 
         Patient patient = packet.data;
 
-        PersonData personData = getPersonData(scanner, patient);
+        PersonData personData = getPersonData(patient);
         String  anamnesis = getString(
-                scanner,
                 getQuestion("Anamnesis", patient.getAnamnesis()),
                 patient.getAnamnesis()
         );
@@ -84,7 +83,7 @@ public class PatientMenu extends Menu implements PersonnelMenu {
 
         GeneralPacket response = api.updatePatient(updatePatient);
 
-        processPacketStatus(scanner, response);
+        processPacketStatus(response);
     }
 
     /**
@@ -92,11 +91,11 @@ public class PatientMenu extends Menu implements PersonnelMenu {
      */
     @Override
     public void delete(){
-        int id = getInteger(scanner, "ID: ");
+        int id = getInteger("ID: ");
 
         GeneralPacket packet = api.deletePatient(id);
 
-        processPacketStatus(scanner, packet);
+        processPacketStatus(packet);
     }
 
     /**
@@ -106,13 +105,13 @@ public class PatientMenu extends Menu implements PersonnelMenu {
      */
     @Override
     public void findById(){
-        int id = getInteger(scanner, "ID: ");
+        int id = getInteger("ID: ");
 
         DataPacket<Patient> packet = api.getPatient(id);
 
-        if (!processPacketStatusInSilence(scanner, packet)) return;
+        if (!processPacketStatusInSilence(packet)) return;
 
-        printAndWait(scanner, packet.data.toString());
+        printAndWait(packet.data.toString());
     }
 
     /**
@@ -122,12 +121,12 @@ public class PatientMenu extends Menu implements PersonnelMenu {
     public void all(){
         DataPacket<List<String>> packet = api.allPatients();
 
-        if (!processPacketStatusInSilence(scanner, packet)) return;
+        if (!processPacketStatusInSilence(packet)) return;
 
         for (String text : packet.data){
             System.out.println(text);
         }
 
-        waitForEnter(scanner);
+        waitForEnter();
     }
 }

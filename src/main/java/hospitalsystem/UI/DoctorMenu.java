@@ -41,10 +41,10 @@ public class DoctorMenu extends Menu implements PersonnelMenu {
      */
     @Override
     public void add(){
-        PersonData personData = getPersonData(scanner);
+        PersonData personData = getPersonData();
 
-        String specialization = getString(scanner, "Specialization: ");
-        String department = getString(scanner, "Department: ");
+        String specialization = getString("Specialization: ");
+        String department = getString("Department: ");
 
         DoctorData  doctorData = new DoctorData(
                 personData,
@@ -53,29 +53,27 @@ public class DoctorMenu extends Menu implements PersonnelMenu {
 
         GeneralPacket packet = api.addDoctor(doctorData);
 
-        processPacketStatus(scanner, packet);
+        processPacketStatus(packet);
     }
 
     @Override
     public void edit(){
-        int id = getInteger(scanner, "ID: ");
+        int id = getInteger("ID: ");
 
         DataPacket<Doctor> packet = api.getDoctor(id);
 
-        if (!processPacketStatusInSilence(scanner, packet)) return;
+        if (!processPacketStatusInSilence(packet)) return;
 
         Doctor doctor = packet.data;
 
-        PersonData personData = getPersonData(scanner, doctor);
+        PersonData personData = getPersonData(doctor);
 
         String  specialization = getString(
-                scanner,
                 getQuestion("Specialization", doctor.getSpecialization()),
                 doctor.getSpecialization()
         );
 
         String department = getString(
-                scanner,
                 getQuestion("Department", doctor.getDepartment()),
                 doctor.getDepartment()
         );
@@ -87,41 +85,41 @@ public class DoctorMenu extends Menu implements PersonnelMenu {
 
         GeneralPacket response = api.updateDoctor(updateDoctor);
 
-        processPacketStatus(scanner, response);
+        processPacketStatus(response);
     }
 
     @Override
     public void delete(){
-        int id = getInteger(scanner, "ID: ");
+        int id = getInteger("ID: ");
 
         GeneralPacket packet = api.deleteDoctor(id);
 
-        processPacketStatus(scanner, packet);
+        processPacketStatus(packet);
     }
 
     @Override
     public void findById(){
-        int id = getInteger(scanner, "ID: ");
+        int id = getInteger("ID: ");
 
         DataPacket<Doctor> packet = api.getDoctor(id);
 
-        if (!processPacketStatusInSilence(scanner, packet)) return;
+        if (!processPacketStatusInSilence(packet)) return;
 
         System.out.print(packet.data);
 
-        waitForEnter(scanner);
+        waitForEnter();
     }
 
     @Override
     public void all(){
         DataPacket<List<String>> packet = api.allDoctors();
 
-        if (!processPacketStatusInSilence(scanner, packet)) return;
+        if (!processPacketStatusInSilence(packet)) return;
 
         for (String text : packet.data) {
             System.out.print(text);
         }
 
-        waitForEnter(scanner);
+        waitForEnter();
     }
 }

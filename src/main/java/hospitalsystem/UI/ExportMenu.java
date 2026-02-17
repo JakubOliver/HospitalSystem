@@ -22,24 +22,24 @@ public class ExportMenu extends Menu{
     public void exportPatients(){
         GeneralPacket packet = api.exportPatients();
 
-        printAndWait(scanner, packet.resolveStatus());
+        printAndWait(packet.resolveStatus());
     }
 
     public void exportDoctors(){
         GeneralPacket packet = api.exportDoctors();
 
-        printAndWait(scanner, packet.resolveStatus());
+        printAndWait(packet.resolveStatus());
     }
 
     public void exportAppointments(){
         GeneralPacket packet = api.exportAppointments();
 
-        printAndWait(scanner, packet.resolveStatus());
+        printAndWait(packet.resolveStatus());
     }
 
     public void exportAll(){
         GeneralPacket packet = api.export();
 
-        printAndWait(scanner, packet.resolveStatus());
+        printAndWait(packet.resolveStatus());
     }
 }

@@ -40,35 +40,35 @@ public class AppointmentMenu extends Menu{
     //TODO: pridat update appointment z default hodnotama
     private Optional<AppointmentData> getAppointmentData(){
         int patientsId;
-        if (createNew(scanner, "patient")){
-            PersonData personData = getPersonData(scanner);
-            PatientsDetails patientDetails = getPatientDetails(scanner);
+        if (createNew("patient")){
+            PersonData personData = getPersonData();
+            PatientsDetails patientDetails = getPatientDetails();
 
             DataPacket<Patient> packet = api.addPatient(new PatientData(personData, patientDetails));
 
-            if(!processPacketStatusInSilence(scanner, packet)) return Optional.empty(); //TODO: mozna udelat metodu check person (dost se to opakuje)
+            if(!processPacketStatusInSilence(packet)) return Optional.empty(); //TODO: mozna udelat metodu check person (dost se to opakuje)
 
             patientsId = packet.data.getId();
         } else {
-            patientsId = getInteger(scanner, "Patient's ID: ");
+            patientsId = getInteger("Patient's ID: ");
         }
 
         int doctorsId;
-        if (createNew(scanner, "doctor")){
-            PersonData personData = getPersonData(scanner);
-            DoctorDetails patientDetails = getDoctorDetails(scanner);
+        if (createNew("doctor")){
+            PersonData personData = getPersonData();
+            DoctorDetails patientDetails = getDoctorDetails();
 
             DataPacket<Doctor> packet = api.addDoctor(new DoctorData(personData, patientDetails));
 
-            if(!processPacketStatusInSilence(scanner, packet)) return Optional.empty();
+            if(!processPacketStatusInSilence(packet)) return Optional.empty();
 
             doctorsId = packet.data.getId();
         } else {
-            doctorsId = getInteger(scanner, "Doctor's ID: ");
+            doctorsId = getInteger("Doctor's ID: ");
         }
 
-        LocalDateTime startTime = getDateTime(scanner, "Start Time: ");
-        LocalDateTime endTime = getDateTime(scanner, "End Time: ");
+        LocalDateTime startTime = getDateTime("Start Time: ");
+        LocalDateTime endTime = getDateTime("End Time: ");
 
         return Optional.of(new AppointmentData(
                 patientsId,
@@ -89,16 +89,16 @@ public class AppointmentMenu extends Menu{
         if (appointmentData.isPresent()){
             GeneralPacket packet = api.addAppointment(appointmentData.get());
 
-            processPacketStatus(scanner, packet);
+            processPacketStatus(packet);
         }
     }
 
     public void editAppointment(){
-        int id = getInteger(scanner, "Appointment ID: ");
+        int id = getInteger("Appointment ID: ");
 
         DataPacket<Appointment> packet = api.getAppointment(id);
 
-        if (!processPacketStatusInSilence(scanner, packet)) return;
+        if (!processPacketStatusInSilence(packet)) return;
 
         Appointment appointment = packet.data;
         Optional<AppointmentData> appointmentData = getAppointmentData();
@@ -109,11 +109,11 @@ public class AppointmentMenu extends Menu{
         AppointmentData data = appointmentData.get();
         DataPacket<Doctor> doctorPacket = api.getDoctor(data.doctorsId());
 
-        if (!processPacketStatusInSilence(scanner, doctorPacket)) return;
+        if (!processPacketStatusInSilence(doctorPacket)) return;
 
         DataPacket<Patient> patientPacket = api.getPatient(data.patientsId());
 
-        if (!processPacketStatusInSilence(scanner, patientPacket)) return;
+        if (!processPacketStatusInSilence(patientPacket)) return;
 
         GeneralPacket finalPacket = api.updateAppointment(new Appointment(
                 appointment.id,
@@ -123,7 +123,7 @@ public class AppointmentMenu extends Menu{
                 appointment.endTime
         ));
 
-        processPacketStatus(scanner, finalPacket);
+        processPacketStatus(finalPacket);
     }
 
     //TODO: calendar per deparmtne
@@ -133,8 +133,8 @@ public class AppointmentMenu extends Menu{
     public void showCalendar(){
         DataPacket<String> packet = api.showCalendar();
 
-        if (!processPacketStatusInSilence(scanner, packet)) return;
+        if (!processPacketStatusInSilence(packet)) return;
 
-        printAndWait(scanner, packet.data); //TODO: vymyslet trošku lepší způsub mozna aby i kalendář vypisovat, poněvadž mi přijde zvlášní, že se to ukládá to jednoho stringu, ale zas to v calendar je také
+        printAndWait(packet.data); //TODO: vymyslet trošku lepší způsub mozna aby i kalendář vypisovat, poněvadž mi přijde zvlášní, že se to ukládá to jednoho stringu, ale zas to v calendar je také
     }
 }

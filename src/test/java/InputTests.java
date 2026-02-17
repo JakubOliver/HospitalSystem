@@ -1,3 +1,5 @@
+import hospitalsystem.Hospital;
+import hospitalsystem.UI.PatientMenu;
 import hospitalsystem.personnel.util.PersonData;
 import org.junit.jupiter.api.Test;
 
@@ -13,51 +15,46 @@ import java.util.Scanner;
 import hospitalsystem.UI.MainMenu;
 
 public class InputTests extends Tests{
+    Hospital hospital = new Hospital("jdbc:sqlite:memory:");
+
     @Test
     void correctOption(){
         Scanner scanner = getPrebuildInput("-1 \n 1000 \n 2");
+        PatientMenu menu = new PatientMenu(hospital, scanner);
 
-        assertEquals(2, MainMenu.getOption(scanner, 5));
+        assertEquals(2, menu.getOption(5));
     }
 
     @Test
     void correctParsingPerson(){
         Scanner scanner = getPrebuildInput("Tomas \n Novak \n 2001-01-01");
+        PatientMenu menu = new PatientMenu(hospital, scanner);
 
-        assertEquals(new PersonData("Tomas", "Novak", LocalDate.of(2001,1,1)), MainMenu.getPersonData(scanner));
+        assertEquals(new PersonData("Tomas", "Novak", LocalDate.of(2001,1,1)), menu.getPersonData());
     }
 
     @Test
     void correctDateCheck(){
-        String input = "2001-01-01 \n";
+        Scanner scanner = getPrebuildInput("2001-01-01 \n");
+        PatientMenu menu = new PatientMenu(hospital, scanner);
 
-        System.setIn(new ByteArrayInputStream(input.getBytes()));
-
-        Scanner scanner = new Scanner(System.in);
-
-        assertEquals(MainMenu.getDate(scanner, "Date: "), LocalDate.of(2001, 1, 1));
+        assertEquals(menu.getDate("Date: "), LocalDate.of(2001, 1, 1));
     }
 
     @Test
     void DateCheckRejectIncorrect(){
-        String input = "1999-45-34 \n 2001-01-01";
+        Scanner scanner = getPrebuildInput("1999-45-34 \n 2001-01-01");
+        PatientMenu menu = new PatientMenu(hospital, scanner);
 
-        System.setIn(new ByteArrayInputStream(input.getBytes()));
-
-        Scanner scanner = new Scanner(System.in);
-
-        assertEquals(MainMenu.getDate(scanner, "Date: "), LocalDate.of(2001, 1, 1));
+        assertEquals(menu.getDate("Date: "), LocalDate.of(2001, 1, 1));
     }
 
     @Test
     void DateCheckFailure(){
-        String input = "this is not correct date";
+        Scanner scanner = getPrebuildInput("this is not correct date");
+        PatientMenu menu = new PatientMenu(hospital, scanner);
 
-        System.setIn(new ByteArrayInputStream(input.getBytes()));
-
-        Scanner scanner = new Scanner(System.in);
-
-        InputMismatchException ex = assertThrows(InputMismatchException.class, () -> MainMenu.getDate(scanner, "Date: "));
+        InputMismatchException ex = assertThrows(InputMismatchException.class, () -> menu.getDate("Date: "));
 
         assertEquals("Scanner run out of lines and did not found valid date.", ex.getMessage());
     }
@@ -65,14 +62,16 @@ public class InputTests extends Tests{
     @Test
     void DateTimeCorrectCheck(){
         Scanner scanner = getPrebuildInput("2001-01-01T01:01");
+        PatientMenu menu = new PatientMenu(hospital, scanner);
 
-        assertEquals(LocalDateTime.of(2001, 1, 1, 1, 1), MainMenu.getDateTime(scanner, "Date: "));
+        assertEquals(LocalDateTime.of(2001, 1, 1, 1, 1), menu.getDateTime("Date: "));
     }
 
     @Test
     void DateTimeAlternativeCorrectCheck(){
         Scanner scanner = getPrebuildInput("2001-01-01 01:01");
+        PatientMenu menu = new PatientMenu(hospital, scanner);
 
-        assertEquals(LocalDateTime.of(2001, 1, 1, 1, 1), MainMenu.getDateTime(scanner, "Date: "));
+        assertEquals(LocalDateTime.of(2001, 1, 1, 1, 1), menu.getDateTime("Date: "));
     }
 }
