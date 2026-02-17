@@ -17,7 +17,6 @@ import hospitalsystem.util.Exportable;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -40,6 +39,7 @@ public class Hospital {
      * Adds new patient into hospital system.
      *
      * @param patientData Patients data which describes new patient.
+     * @return Data packet providing caller with information about successfulness of the query. And also contains object of the patient with provided ID.
      */
     public DataPacket<Patient> addPatient(PatientData patientData) {
         try {
@@ -53,7 +53,7 @@ public class Hospital {
      * Returns info about patient with provided id.
      *
      * @param id Id that identifies patient.
-     * @return info about patient.
+     * @return Data packet providing caller with information about successfulness of the query. And also contains object of the patient with provided ID.
      */
     public DataPacket<Patient> getPatient(int id){
         try{
