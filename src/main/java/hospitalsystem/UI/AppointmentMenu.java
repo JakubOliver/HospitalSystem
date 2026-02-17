@@ -21,7 +21,7 @@ public class AppointmentMenu extends Menu{
     /**
      * Creates appointment menu page.
      *
-     * @param api HospitalAPI giving the menu options how to interact with hospital system.
+     * @param api Hospital giving the menu options how to interact with hospital system.
      * @param scanner Scanner pointing to the input data.
      */
     AppointmentMenu(Hospital api, Scanner scanner) {

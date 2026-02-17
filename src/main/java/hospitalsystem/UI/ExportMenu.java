@@ -5,7 +5,16 @@ import hospitalsystem.packet.GeneralPacket;
 
 import java.util.Scanner;
 
+/**
+ * Menu page containing options connected with exporting of hospital data.
+ */
 public class ExportMenu extends Menu{
+    /**
+     * Creates exports menu page.
+     *
+     * @param api Hospital giving the menu options how to interact with hospital system.
+     * @param scanner Scanner pointing to the input data.
+     */
     public ExportMenu(Hospital api, Scanner scanner) {
         super(api, scanner);
     }

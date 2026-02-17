@@ -4,7 +4,9 @@ package hospitalsystem.packet;
  * Wrapper for status information transported via API between hospital system and TUI menu.
  */
 public class GeneralPacket {
+    /** Denotes whether the API request connected to the packet was successful */
     public final boolean successful;
+    /** Error message of the exception that occurs while processing API request */
     protected final String error;
 
     /**
@@ -46,7 +48,11 @@ public class GeneralPacket {
      * Wrapper class containing messages connected with the packets.
      */
     public static class Msg {
+        private Msg(){}
+
+        /** Informative message representing general error with the API request connected to the packet. */
         public static final String invalidPacket = "Invalid packet";
+        /** Informative message denoting that the API request connected to the packet was successful. */
         public static final String successfulPacket = "Successful!";
     }
 

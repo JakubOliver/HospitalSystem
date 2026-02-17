@@ -8,6 +8,8 @@ import hospitalsystem.UI.MainMenu;
 public class Main {
     private static final String databasePath = "jdbc:sqlite:database.db";
 
+    private Main(){}
+
     /**
      * Main entry point of the program.
      *

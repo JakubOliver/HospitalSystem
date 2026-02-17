@@ -57,6 +57,12 @@ public class Person implements Exportable {
         this.dateOfBirth = person.dateOfBirth;
     }
 
+    /**
+     * Creates person based on id and data wrapper for rest of needed parameters.
+     *
+     * @param id Identification number of the person.
+     * @param personData Data wrapper for the data needed for person creation.
+     */
     public Person(int id, PersonData personData){
         this(
             id,

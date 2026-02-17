@@ -8,8 +8,8 @@ import java.time.LocalDate;
  * Represents a doctor in the hospital system.
  */
 public class Doctor extends Person{
-    private String specialization;
-    private String department;
+    private final String specialization;
+    private final String department;
 
     /**
      * Creates doctor based on provided parameters.
@@ -66,6 +66,10 @@ public class Doctor extends Person{
      */
     public String getSpecialization() { return  specialization; }
 
+    /**
+     * Returns department where the doctor works.
+     * @return department where the doctor works.
+     */
     public String getDepartment() { return department; }
 
     /**
