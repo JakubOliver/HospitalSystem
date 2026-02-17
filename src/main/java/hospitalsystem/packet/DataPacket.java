@@ -6,6 +6,7 @@ package hospitalsystem.packet;
  * @param <T> Type of the data that will be attached to the API response.
  */
 public class DataPacket<T> extends GeneralPacket{
+    /** Data wrapper inside the data packet */
     public final T data;
 
     /**

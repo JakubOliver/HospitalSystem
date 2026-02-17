@@ -278,6 +278,12 @@ public class Database {
         }
     }
 
+    /**
+     * Updates patient data inside the database.
+     *
+     * @param patient Patient that will be updated.
+     * @throws DatabaseException Errors connected with the inability of update patient's data.
+     */
     public void updatePatient(Patient patient) throws DatabaseException {
         try (Connection connection = DriverManager.getConnection(url)){
             updatePerson(connection, patient);
@@ -297,6 +303,12 @@ public class Database {
         }
     }
 
+    /**
+     * Deletes patient from the database.
+     *
+     * @param id Identification number of patient.
+     * @throws DatabaseException Error connected with the inability of deleting patient from database. Such as ID does not exist or connection errors.
+     */
     public void deletePatient(int id) throws DatabaseException {
         try (Connection connection = DriverManager.getConnection(url)){
             deletePatientsDetails(connection, id);
@@ -440,7 +452,7 @@ public class Database {
         }
     }
 
-    public void updateDoctorDetails(Connection connection, Doctor doctor) throws SQLException {
+    private void updateDoctorDetails(Connection connection, Doctor doctor) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(updateDoctorDetails)){
             statement.setString(1, doctor.getSpecialization());
             statement.setString(2, doctor.getDepartment());
@@ -450,6 +462,12 @@ public class Database {
         }
     }
 
+    /**
+     * Updates doctor information inside the database.
+     *
+     * @param doctor Doctor that will be updated.
+     * @throws DatabaseException Errors connected with the failure of updating doctor's data. Such as doctor was not present inside the database or connection errors.
+     */
     public void updateDoctor(Doctor doctor) throws DatabaseException {
         try (Connection connection = DriverManager.getConnection(url)){
             updatePerson(connection, doctor);
@@ -467,6 +485,12 @@ public class Database {
         }
     }
 
+    /**
+     * Deletes doctor from the database.
+     *
+     * @param id Identification number of the doctor.
+     * @throws DatabaseException Error connected with the failure of deleting doctor from database. Such as doctor was not present inside the database or connection errors.
+     */
     public void deleteDoctor(int id) throws DatabaseException {
         try (Connection connection = DriverManager.getConnection(url)){
             deletePerson(connection, id);
@@ -476,6 +500,12 @@ public class Database {
         }
     }
 
+    /**
+     * Returns list of all doctors in the database.
+     *
+     * @return List of all doctors in the database.
+     * @throws DatabaseException Error connected with the failure of retrieving all doctors from the database - connection errors.
+     */
     public List<Doctor> getAllDoctors() throws DatabaseException {
         try(Connection connection = DriverManager.getConnection(url); PreparedStatement statement = connection.prepareStatement(getAllDoctors)){
             ResultSet result = statement.executeQuery();
@@ -552,6 +582,7 @@ public class Database {
      *
      * @param patientId Patients identifier.
      * @param doctorId Doctors identifier.
+     * @param department Department where the doctor works and where will be the appointment.
      * @param startTime Starting time of appointment.
      * @param endTime Ending time of appointment.
      * @throws DatabaseException Error connected to the failure of storing new appointment.
@@ -584,12 +615,28 @@ public class Database {
         addAppointment(patient.getId(), doctor.getId(), doctor.getDepartment(), startTime, endTime);
     }
 
+    /**
+     * Adds new appointment to the database.
+     *
+     * @param patientId Patient's identification number.
+     * @param doctorId Doctor's identification number.
+     * @param startTime Starting time of the appointment.
+     * @param endTime Ending time of the appointment.
+     * @throws DatabaseException Error connected to the failure of storing new appointment.
+     */
     public void addAppointment(int patientId, int doctorId,LocalDateTime startTime, LocalDateTime endTime) throws DatabaseException {
         Doctor doctor = getDoctor(doctorId);
 
         addAppointment(patientId, doctorId, doctor.getDepartment(), startTime, endTime);
     }
 
+    /**
+     * Returns the appointment based on provided id.
+     *
+     * @param id Identification number of the appointment.
+     * @return Appointment based on provided id.
+     * @throws DatabaseException Error connected to the failure of retrieving appointment from the database. No such appointment with id is present in the database or connection errors.
+     */
     public Appointment getAppointment(int id) throws DatabaseException {
         try(Connection connection = DriverManager.getConnection(url); PreparedStatement statement = connection.prepareStatement(getAppointmentById)){
             statement.setInt(1, id);
@@ -602,6 +649,12 @@ public class Database {
         }
     }
 
+    /**
+     * Deletes appointment from the database based on provided id.
+     *
+     * @param id Identificatino number of the appointment.
+     * @throws DatabaseException Error connected to the failure of deleting appointment from the database. No such appointment with id is present in the database or connection errors.
+     */
     public void deleteAppointment(int id) throws DatabaseException {
         try(Connection connection = DriverManager.getConnection(url); PreparedStatement statement = connection.prepareStatement(deleteAppointments)){
             statement.setInt(1, id);
@@ -612,6 +665,12 @@ public class Database {
         }
     }
 
+    /**
+     * Updates information about existing appointment.
+     *
+     * @param appointment Appointment data that will be used for updating.
+     * @throws DatabaseException Failure of updating data inside database. Invalid identifiers or connection errors.
+     */
     public void updateAppointment(Appointment appointment) throws DatabaseException {
         try(Connection connection = DriverManager.getConnection(url); PreparedStatement statement = connection.prepareStatement(updateAppointment)){
             statement.setInt(1, appointment.patientId);
@@ -644,14 +703,34 @@ public class Database {
         }
     }
 
+    /**
+     * Returns list of appointments for patient with provided id.
+     *
+     * @param id Identification number of the patient.
+     * @return List of appointments for patient.
+     * @throws DatabaseException Error connected with the connection to the database.
+     */
     public List<Appointment> getAppointmentsForPatient(int id) throws DatabaseException {
         return getAppointmentsForPersonnel(id, "patient_id");
     }
 
+    /**
+     * Returns list of appointments for doctor with provided id.
+     *
+     * @param id Identification number of the doctor.
+     * @return List of appointments for doctor with provided id.
+     * @throws DatabaseException Error connected with the connection to the database.
+     */
     public List<Appointment> getAppointmentsForDoctor(int id) throws DatabaseException {
         return getAppointmentsForPersonnel(id, "doctor_id");
     }
 
+    /**
+     * Returns calendar object representing all appointments in the database.
+     *
+     * @return Calendar object representing all appointments.
+     * @throws DatabaseException Error connected to the failure of retrieving data from database or connection errors.
+     */
     public Calendar getCalendar() throws DatabaseException {
         try (Connection connection = DriverManager.getConnection(url); PreparedStatement statement = connection.prepareStatement(getAllAppointments)){
             ResultSet result = statement.executeQuery();

@@ -15,14 +15,21 @@ public class DatabaseException extends Exception{
     public static final String patientGetDatabaseError = "Unable to get patient from database";
     /** Failure of querying doctor from database error message */
     public static final String doctorGetDatabaseError = "Unable to get doctor from database";
+    /** Failure of querying appointments from database error message */
     public static final String appointmentGetDatabaseError = "Unable to get appointment from database";
 
+    /** Failure to update patient data to the database error message */
     public static final String patientUpdateDatabaseError = "Unable to update patient in database";
+    /** Failure to update doctor data to the database error message */
     public static final String doctorUpdateDatabaseError = "Unable to update doctor in database";
+    /** Failure to update appointments data to the database error message */
     public static final String appointmentUpdateDatabaseError = "Unable to update appointment in database";
 
+    /** Failure to delete patient from the database error message */
     public static final String patientDeleteDatabaseError = "Unable to delete patient from database";
+    /** Failure to delete doctor from the database error message */
     public static final String doctorDeleteDatabaseError = "Unable to delete doctor from database";
+    /** Failure to delete appointment from the database error message */
     public static final String appointmentDeleteDatabaseError = "Unable to delete appointment from database";
 
     /**
