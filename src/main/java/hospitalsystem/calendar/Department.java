@@ -8,10 +8,12 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.IsoFields;
-import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 
+/**
+ * Manager of appointments for department.
+ */
 public class Department{
     record PeriodInfo(int start, int end, int layers){}
     record RowInfo(int layer, int part, LocalDateTime day){}
@@ -39,8 +41,10 @@ public class Department{
         }
     }
 
+    /** Name of the department */
     public String name;
 
+    /** Sorted set of the appointments connected with the department */
     public final SortedSet<Appointment> appointments;
 
     private final Map<Integer, List<Appointment>> layers;
@@ -57,6 +61,11 @@ public class Department{
 
     int sizeOfCalendar = (endTime.getHour() - startTime.getHour()) * numberOfSlotsInHour * sizeOfSlot;
 
+    /**
+     * Creates new hospital department.
+     *
+     * @param name Name of the department.
+     */
     Department(String name){
         this.name = name;
 
@@ -65,10 +74,18 @@ public class Department{
         layerOfAppointment = new HashMap<>();
     }
 
+    /**
+     * Adds appointment info the department calendar.
+     *
+     * @param appointment Appointment that will be added into department calendar.
+     */
     public void addAppointment(Appointment appointment){
         appointments.add(appointment);
     }
 
+    /**
+     * Computes hierarchy how to arrange appointments so the parallel appointments do not overlap in the calendar diagram.
+     */
     public void computeLayers(){
         PriorityQueue<Appointment> heap = new PriorityQueue<>();
         LowestEmpty lowest = new LowestEmpty();
@@ -116,6 +133,13 @@ public class Department{
         return sb.toString();
     }
 
+    /**
+     * Processes one week of appointments.
+     *
+     * @param appointments Sorted list of appointments.
+     * @param info Information about the index of start and end of the time interval (week) and how many layers will be needed for the creation of calendar.
+     * @return String representing diagram of the department calendar for the week specified by PeriodInfo.
+     */
     private String processWeek(List<Appointment> appointments, PeriodInfo info){
         StringBuilder sb = new StringBuilder();
         int active = info.start;
@@ -149,6 +173,13 @@ public class Department{
         return sb.toString();
     }
 
+    /**
+     * Process one day of appointments.
+     *
+     * @param appointments Sorted list of appointments.
+     * @param info Information about the index of start and end of the time interval (day) and information about number of layers.
+     * @return String representing diagram of the department calendar for the day.
+     */
     private String processDay(List<Appointment> appointments, PeriodInfo info){
         StringBuilder sb = new StringBuilder();
         int active = info.start;
@@ -166,6 +197,13 @@ public class Department{
         return sb.toString();
     }
 
+    /**
+     * Processes days in which no appointments are arranged.
+     *
+     * @param appointments Sorted list of appointments.
+     * @param info Information about the index of start and end of the time interval (empty days).
+     * @return String representing diagram of the calendar for the empty days.
+     */
     private String processEmptyDays(List<Appointment> appointments, PeriodInfo info){
         if (appointments.get(info.start).startTime.getDayOfWeek() == DayOfWeek.SUNDAY){
             return "";
@@ -174,6 +212,13 @@ public class Department{
         return processEmptyDays(appointments.get(info.start).startTime.plusDays(1), appointments.get(info.end).startTime);
     }
 
+    /**
+     * Processes days in which no appointments are arranged.
+     *
+     * @param start Start time of the time interval in which no appointments are arranged.
+     * @param end End time of the time interval in which no appointments are arranged.
+     * @return String representing diagram of the calendar for the empty days.
+     */
     private String processEmptyDays(LocalDateTime start, LocalDateTime end){
         StringBuilder sb = new StringBuilder();
 
@@ -207,6 +252,14 @@ public class Department{
         return sb.toString();
     }
 
+    /**
+     * Processes appointments in the given time interval into layers calendar diagram.
+     *
+     * @param appointments List of sorted appointments.
+     * @param info Information about the time interval and number of layers.
+     * @param row Information about in what state of calendar diagram the process is.
+     * @return String representing diagram of calendar in the parts based on provided input information.
+     */
     private String processAppointments(List<Appointment> appointments, PeriodInfo info, RowInfo row){
         StringBuilder sb = new StringBuilder();
         LocalDateTime time = row.day.withHour(8).withMinute(0).withSecond(0).withNano(0);
@@ -226,16 +279,38 @@ public class Department{
         return sb.toString();
     }
 
+    /**
+     * Processes the blank space between appointments.
+     *
+     * @param time Time in which we are located in calendar.
+     * @param appointment Nearest appointment to the time.
+     * @return Returns string representing diagram of blank space in calendar.
+     */
     private String processTimeBetweenAppointments(LocalDateTime time, Appointment appointment){
         return processTimeBetweenAppointments(time, appointment.startTime);
     }
 
+    /**
+     * Processes the blank space without any appointments.
+     *
+     * @param start Start time of the blank space.
+     * @param end End time of the blank space.
+     * @return Returns String representing diagram of blank space in calendar.
+     */
     private String processTimeBetweenAppointments(LocalDateTime start, LocalDateTime end){
         int emptySlots = Math.toIntExact(Duration.between(start, end).toMinutes() / 30);
 
         return "-".repeat(emptySlots * sizeOfSlot);
     }
 
+    /**
+     * Returns diagram prefix for the days based on state in which the drawing of diagram is.
+     *
+     * @param layer Layer of the drawing.
+     * @param part Part of the day the process is drawing.
+     * @param time Time of the day.
+     * @return diagram prefix for the days based on state in which the drawing of diagram is.
+     */
     private String processLayerPrefix(int layer, int part, LocalDateTime time){
         if (layer == 0) {
             return printDate(time, part);
@@ -244,6 +319,13 @@ public class Department{
         }
     }
 
+    /**
+     * Returns index of the last appointment in the same week.
+     *
+     * @param sortedAppointments Sorted list of appointments.
+     * @param startIdx Index of the appointment for which we want to find last in the same week.
+     * @return Index of the last appointment in the same week and number of layers in this period.
+     */
     private PeriodInfo getLastIdxOfSameWeek(List<Appointment> sortedAppointments, int startIdx){
         AppointmentCompare sameWeek = (a1, a2) -> {
             return a1.startTime.toLocalDate().get(IsoFields.WEEK_OF_WEEK_BASED_YEAR) == a2.startTime.toLocalDate().get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
@@ -252,12 +334,27 @@ public class Department{
         return getLastIdxOfSame(sortedAppointments, startIdx, sameWeek);
     }
 
+    /**
+     * Returns index of the last appointment in the same day.
+     *
+     * @param sortedAppointments Sorted list of appointments.
+     * @param startIdx Index of the appointment for which we want to find last in the same day.
+     * @return Index of the last appointment in the same day and number of layers in this period.
+     */
     private PeriodInfo getLastIdxOfSameDay(List<Appointment> sortedAppointments, int startIdx){
         AppointmentCompare sameDay = (a1, a2) -> {return a1.startTime.toLocalDate().equals(a2.startTime.toLocalDate());};
 
         return getLastIdxOfSame(sortedAppointments, startIdx, sameDay);
     }
 
+    /**
+     * Generic function return last appointment satisfying provided compare function.
+     *
+     * @param appointments Sorted list of appointments.
+     * @param startIdx Index of the appointment that we will compare other appointments.
+     * @param dateCompare Function that we will use for denoting whether the appointments still satisfy relation.
+     * @return Index of the last appointment satisfying the compare function and number of layers in this period.
+     */
     private PeriodInfo getLastIdxOfSame(List<Appointment> appointments, int startIdx, AppointmentCompare dateCompare){
         int idx = startIdx;
         int layers = 0;
@@ -270,7 +367,15 @@ public class Department{
         return new PeriodInfo(startIdx, idx, layers);
     }
 
+    /**
+     * Returns string representing date of the day based on the part in which the drawing is.
+     *
+     * @param time Time of the day.
+     * @param part Part in which the drawing is.
+     * @return String representing date of the day based on the part in which the drawing is.
+     */
     private String printDate(LocalDateTime time, int part){
+        //TODO:
         int size = 10;
 
         if (part == 0){
@@ -285,13 +390,5 @@ public class Department{
 
             return " ".repeat(offset) + time.getYear() + " ".repeat(size - 4 - offset);
         }
-    }
-
-    private String printEmpty(int part){
-        if (part == 0 || part == 2){
-            return "X X\n";
-        }
-
-        return " X \n";
     }
 }
