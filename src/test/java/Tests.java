@@ -6,7 +6,7 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.Scanner;
 
-public class Tests {
+public abstract class Tests {
     public Scanner getPrebuildInput(String input) {
         System.setIn(new ByteArrayInputStream(input.getBytes()));
 
@@ -14,7 +14,7 @@ public class Tests {
     }
 
     @BeforeAll
-    static void silence() {
+    static void output() {
         System.setOut(new PrintStream(OutputStream.nullOutputStream()));
         System.setErr(new PrintStream(OutputStream.nullOutputStream()));
     }

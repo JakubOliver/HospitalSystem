@@ -24,12 +24,22 @@ public class MainMenu extends Menu{
            """;
 
     /**
-     * Creates main menu page and runs the IU cycle.
+     * Creates main menu page and runs the UI cycle.
      *
      * @param api Hospital providing the menu options how to interact with hospital system.
      */
     public MainMenu(Hospital api) {
         super(api, new Scanner(System.in));
+    }
+
+    /**
+     * Creats main menu page and runs the UI cycle.
+     *
+     * @param api Hospital providing the menu options how to interact with hospital system.
+     * @param scanner Scanner pointing to the input data.
+     */
+    public MainMenu(Hospital api, Scanner scanner) {
+        super(api, scanner);
     }
 
     @Override

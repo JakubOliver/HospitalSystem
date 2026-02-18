@@ -25,34 +25,7 @@ import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class DatabaseTests extends Tests{
-    static String testDB = "jdbc:sqlite:memory:";
-    Hospital api = new Hospital(testDB);
-
-    ///////////////
-    /// SAMPLES ///
-    ///////////////
-
-    static PersonData samplePersonData = new PersonData("Pepa", "Novak",  LocalDate.of(2001,1,1));
-
-    static PatientsDetails samplePatientDetails = new PatientsDetails("Broken leg");
-    static PatientData samplePatientData = new PatientData(samplePersonData, samplePatientDetails);
-
-    static DoctorDetails sampleDoctorDetails = new DoctorDetails("Surgeon", "Traumatology");
-    static DoctorData sampleDoctorData = new DoctorData(samplePersonData, sampleDoctorDetails);
-
-    static AppointmentData sampleAppointmentData = new AppointmentData(
-            1,
-            2,
-            LocalDateTime.of(2001, 1, 1, 10, 0),
-            LocalDateTime.of(2001, 1, 1, 11, 0)
-    );
-
-    @BeforeEach
-    public void cleanup() {
-        api.delete();
-    }
-
+public class DatabaseTests extends TestsUsingDatabase{
     @Test
     void addPatientCMD() {
         Scanner patientsScanner = getPrebuildInput("1 \n Pepa \n Novak \n 2001-01-01 \n Broken leg \n enter \n 6");

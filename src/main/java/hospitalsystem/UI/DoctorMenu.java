@@ -129,7 +129,7 @@ public class DoctorMenu extends Menu implements PersonnelMenu {
         if (!processPacketStatusInSilence(packet)) return;
 
         for (String text : packet.data) {
-            System.out.print(text);
+            System.out.println(text);
         }
 
         waitForEnter();
