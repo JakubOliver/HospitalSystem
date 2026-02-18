@@ -44,9 +44,13 @@ public class Database {
     private static final String getAppointmentBySomeId = "SELECT * FROM appointments where {0} = ?";
     private static final String getAllAppointments = "SELECT * FROM appointments";
 
+    private static final String deleteAllData = "DELETE FROM doctors_details; DELETE FROM patients_details; DELETE FROM appointments; DELETE FROM people";
+
     private static final String getLastUsedIdError = "Unable to get generated key!";
     private static final String notExistingIdentifierError = "Id does not exist!";
     private static final String notExistingPatientIdentifierError = "Patient with this id does not exist!";
+    private static final String notExistingDoctorIdentifierError = "Doctor with this id does not exist!";
+    private static final String notExistingAppointmentIdentifierError = "Appointment with this id does not exist!";
 
     private final String url;
 
@@ -550,7 +554,7 @@ public class Database {
                 );
             }
 
-            throw new SQLException(notExistingPatientIdentifierError);
+            throw new SQLException(notExistingDoctorIdentifierError);
         }
     }
 
@@ -642,6 +646,9 @@ public class Database {
             statement.setInt(1, id);
 
             ResultSet result = statement.executeQuery();
+
+            if (!result.next())
+                throw new DatabaseException(notExistingAppointmentIdentifierError);
 
             return new Appointment(result);
         } catch (SQLException e) {
@@ -741,6 +748,24 @@ public class Database {
             return calendar;
         } catch (SQLException e){
             throw new DatabaseException(DatabaseException.appointmentGetDatabaseError, e.getMessage());
+        }
+    }
+
+    /**
+     * Deletes all data from database.
+     * <p>
+     * Created for the purpose of unit tests to ensure same starting point for all tests.
+     *
+     * @throws DatabaseException Error connected to the failure of deletion of data from database.
+     */
+    public void deleteAllData() throws DatabaseException {
+        try (Connection connection = DriverManager.getConnection(url); Statement statement = connection.createStatement()){
+            statement.executeUpdate("DELETE FROM doctors_details"); //TODO:
+            statement.executeUpdate("DELETE FROM patients_details");
+            statement.executeUpdate("DELETE FROM appointments");
+            statement.executeUpdate("DELETE FROM people");
+        } catch (SQLException e) {
+            throw new DatabaseException(DatabaseException.generalDeleteDatabaseError, e.getMessage());
         }
     }
 }

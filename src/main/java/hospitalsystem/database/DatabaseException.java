@@ -32,6 +32,9 @@ public class DatabaseException extends Exception{
     /** Failure to delete appointment from the database error message */
     public static final String appointmentDeleteDatabaseError = "Unable to delete appointment from database";
 
+    /** Fails to delete data from database error message */
+    public static final String generalDeleteDatabaseError = "Unable to delete data from database";
+
     /**
      * Creates databaseException with the provided message.
      *

@@ -7,7 +7,7 @@ public class GeneralPacket {
     /** Denotes whether the API request connected to the packet was successful */
     public final boolean successful;
     /** Error message of the exception that occurs while processing API request */
-    protected final String error;
+    public final String error;
 
     /**
      * Creates general packet.

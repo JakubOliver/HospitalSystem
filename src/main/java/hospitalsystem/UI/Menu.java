@@ -13,7 +13,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.*;
-import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
 /**
@@ -287,10 +286,10 @@ abstract class Menu implements Page{
         System.out.print(question);
 
         while (scanner.hasNextLine()){
-            line = scanner.nextLine();
+            line = scanner.nextLine().trim();
 
             if (!line.isEmpty()){
-                return line.trim();
+                return line;
             } else if (defaultValue != null) {
                 return defaultValue;
             }
@@ -310,25 +309,6 @@ abstract class Menu implements Page{
      */
     public String getString(String question){
         return getString(question, null);
-    }
-
-    /**
-     * Processes input and extracts first line satisfying regular expression.
-     *
-     * @param question Question with which will be user prompted.
-     * @param regex Regular expression which has to be satisfied.
-     * @return Not empty string satisfying provided regular expression.
-     */
-    public String satisfyRegex(String question, String regex){
-        Pattern pattern = Pattern.compile(regex);
-
-        String text = getString(question);
-
-        while (pattern.matcher(text).matches()){
-            text = getString(question);
-        }
-
-        return text;
     }
 
     /**

@@ -219,7 +219,7 @@ public class Hospital {
     private void validateAppointmentData(AppointmentData appointmentData) throws CalendarException, DatabaseException {
         //Validate whether the patient and doctor exists and have correct type
         database.getPatient(appointmentData.patientsId());
-        database.getDoctor(appointmentData.patientsId());
+        database.getDoctor(appointmentData.doctorsId());
 
         Calendar.timeIsValid(appointmentData.starTime(), appointmentData.endTime());
 
@@ -304,7 +304,7 @@ public class Hospital {
      * @param id Identifier of the appointment that will be removed from the system.
      * @return General packet which provide caller with information about successfulness of delete.
      */
-    public  GeneralPacket deleteAppointment(int id){
+    public GeneralPacket deleteAppointment(int id){
         try{
             database.deleteAppointment(id);
         } catch (DatabaseException e){
@@ -444,5 +444,22 @@ public class Hospital {
         }
 
         return new  GeneralPacket();
+    }
+
+    /**
+     * Deletes all data from hospital system.
+     * <p>
+     * For the purpose of the unit testing to ensure same database for tests.
+     *
+     * @return General packet providing caller with the information about successfulness of the cleanup.
+     */
+    public GeneralPacket delete(){
+        try {
+            database.deleteAllData();
+
+            return new GeneralPacket();
+        } catch (DatabaseException e) {
+            return new GeneralPacket(e);
+        }
     }
 }
