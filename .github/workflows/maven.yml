@@ -30,3 +30,33 @@ jobs:
         
     - name: Run tests
       run: mvn -B verify
+
+    - name: Generate Javadoc
+      run: mvn -B javadoc:javadoc
+    
+    - name: Upload Javadoc artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: javadoc
+        path: target/site/apidocs
+
+    - name: Prepare Pages content
+      run: |
+        mkdir -p public
+        cp -R target/site/apidocs/* public/
+        touch public/.nojekyll
+
+    - name: Upload Pages artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: public
+
+  deploy:
+    if: github.event_name == 'push'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+    steps:
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
