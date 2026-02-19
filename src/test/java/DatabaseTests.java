@@ -1,24 +1,20 @@
-import hospitalsystem.Hospital;
 import hospitalsystem.UI.PatientMenu;
 import hospitalsystem.calendar.Appointment;
 import hospitalsystem.calendar.CalendarException;
 import hospitalsystem.calendar.util.AppointmentData;
-import hospitalsystem.database.DatabaseException;
 import hospitalsystem.packet.DataPacket;
 import hospitalsystem.packet.GeneralPacket;
 import hospitalsystem.personnel.Doctor;
 import hospitalsystem.personnel.Patient;
 import hospitalsystem.personnel.Person;
 import hospitalsystem.personnel.util.*;
-import org.junit.jupiter.api.BeforeEach;
+
 import org.junit.jupiter.api.Test;
 
-import javax.swing.plaf.nimbus.State;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Scanner;
@@ -30,7 +26,7 @@ public class DatabaseTests extends TestsUsingDatabase{
     void addPatientCMD() {
         Scanner patientsScanner = getPrebuildInput("1 \n Pepa \n Novak \n 2001-01-01 \n Broken leg \n enter \n 6");
 
-        PatientMenu patientMenu = new PatientMenu(api, patientsScanner);
+        new PatientMenu(api, patientsScanner);
     }
 
     @Test
@@ -97,6 +93,7 @@ public class DatabaseTests extends TestsUsingDatabase{
         DataPacket<Doctor> packet = api.getDoctor(1);
 
         assertTrue(packet.successful);
+        assertNotNull(packet.data);
         assertEquals(new Doctor(new Person(1, samplePersonData), sampleDoctorDetails).toString(), packet.data.toString());
     }
 
@@ -286,7 +283,6 @@ public class DatabaseTests extends TestsUsingDatabase{
 
         assertTrue(packet.successful);
         assertNotNull(packet.data);
-        assertNotNull(packet.data.toString());
     }
 
     @Test

@@ -7,15 +7,10 @@ import hospitalsystem.personnel.util.DoctorDetails;
 import hospitalsystem.personnel.util.PersonData;
 import org.junit.jupiter.api.Test;
 
-import java.io.ByteArrayInputStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.InputMismatchException;
 import java.util.Scanner;
-
-import hospitalsystem.UI.MainMenu;
-
-import javax.print.Doc;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -66,7 +61,7 @@ public class InputTests extends Tests{
 
     @Test
     void DateTimeCorrectCheck(){
-        Scanner scanner = getPrebuildInput("2001-01-01T01:01");
+        Scanner scanner = getPrebuildInput("    \n \n \n          2001-01-01T01:01   ");
         PatientMenu menu = new PatientMenu(hospital, scanner, true);
 
         assertEquals(LocalDateTime.of(2001, 1, 1, 1, 1), menu.getDateTime("Date: "));
@@ -74,7 +69,7 @@ public class InputTests extends Tests{
 
     @Test
     void DateTimeAlternativeCorrectCheck(){
-        Scanner scanner = getPrebuildInput("2001-01-01 01:01");
+        Scanner scanner = getPrebuildInput("        2001-01-01 01:01            ");
         PatientMenu menu = new PatientMenu(hospital, scanner, true);
 
         assertEquals(LocalDateTime.of(2001, 1, 1, 1, 1), menu.getDateTime("Date: "));

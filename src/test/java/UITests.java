@@ -1,4 +1,3 @@
-import hospitalsystem.Hospital;
 import hospitalsystem.UI.DoctorMenu;
 import hospitalsystem.UI.ExportMenu;
 import hospitalsystem.UI.MainMenu;
@@ -8,7 +7,6 @@ import hospitalsystem.packet.DataPacket;
 import hospitalsystem.packet.GeneralPacket;
 import hospitalsystem.personnel.Doctor;
 import hospitalsystem.personnel.Patient;
-import hospitalsystem.util.Exportable;
 import hospitalsystem.util.ExportsUtil;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,7 +39,7 @@ public class UITests extends TestsUsingDatabase {
         api.addPatient(samplePatientData);
 
         Scanner scanner = getPrebuildInput("        4        \n 1        \n enter \n 6 ");
-        PatientMenu patientMenu = new PatientMenu(api, scanner);
+        new PatientMenu(api, scanner);
 
         DataPacket<Patient> packet = api.getPatient(1);
 
@@ -55,7 +53,7 @@ public class UITests extends TestsUsingDatabase {
         api.addDoctor(sampleDoctorData);
 
         Scanner scanner = getPrebuildInput("        4 \n  1        \n enter \n 6 ");
-        DoctorMenu doctorMenu = new DoctorMenu(api, scanner);
+        new DoctorMenu(api, scanner);
 
         DataPacket<Doctor> packet = api.getDoctor(1);
 
@@ -69,7 +67,7 @@ public class UITests extends TestsUsingDatabase {
         api.addPatient(samplePatientData);
 
         Scanner scanner = getPrebuildInput("        4 \n  1        \n enter \n 6 ");
-        DoctorMenu doctorMenu = new DoctorMenu(api, scanner);
+        new DoctorMenu(api, scanner);
 
         assertTrue(output.toString().contains("Error: " + DatabaseException.doctorGetDatabaseError + ": Person with id " + 1 + " is not " + "doctor"));
     }
@@ -79,7 +77,7 @@ public class UITests extends TestsUsingDatabase {
         api.addDoctor(sampleDoctorData);
 
         Scanner scanner = getPrebuildInput("        3 \n  1        \n enter \n 6 ");
-        DoctorMenu doctorMenu = new DoctorMenu(api, scanner);
+        new DoctorMenu(api, scanner);
 
         DataPacket<Doctor> packet = api.getDoctor(1);
         assertFalse(packet.successful);
@@ -100,7 +98,7 @@ public class UITests extends TestsUsingDatabase {
         }
 
         Scanner scanner = getPrebuildInput("        5 \n enter \n 6 ");
-        DoctorMenu doctorMenu = new DoctorMenu(api, scanner);
+        new DoctorMenu(api, scanner);
 
         String outputString = output.toString();
 
@@ -112,7 +110,7 @@ public class UITests extends TestsUsingDatabase {
     @Test
     public void traversalAcrossMenus(){
         Scanner scanner = getPrebuildInput("1\n6\n2\n6\n3\n5\n4\n5\n5\n");
-        MainMenu mainMenu = new MainMenu(api, scanner);
+        new MainMenu(api, scanner);
 
         String outputString = output.toString();
         assertTrue(outputString.contains("Delete existing patient"));
@@ -132,7 +130,7 @@ public class UITests extends TestsUsingDatabase {
         }
 
         Scanner scanner = getPrebuildInput("4    \n enter \n 5");
-        ExportMenu exportMenu = new ExportMenu(api, scanner);
+        new ExportMenu(api, scanner);
 
         File directory = new File(ExportsUtil.exportDirectoryDestination);
         assertTrue(directory.exists() && directory.isDirectory());

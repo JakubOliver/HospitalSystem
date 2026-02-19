@@ -10,7 +10,7 @@ import java.util.Scanner;
 public class MainMenu extends Menu{
     private static final String header =
             """
-            
+           
             /$$   /$$                               /$$   /$$               /$$        /$$$$$$                        /$$
            | $$  | $$                              |__/  | $$              | $$       /$$__  $$                      | $$
            | $$  | $$  /$$$$$$   /$$$$$$$  /$$$$$$  /$$ /$$$$$$    /$$$$$$ | $$      | $$  \\__/ /$$   /$$  /$$$$$$$ /$$$$$$    /$$$$$$  /$$$$$$/$$$$
