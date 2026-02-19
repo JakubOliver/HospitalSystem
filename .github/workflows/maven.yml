@@ -43,12 +43,12 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: javadoc
-        path: docs
+        path: docs/apidocs
 
     - name: Prepare Pages content
       run: |
         mkdir -p public
-        cp -R docs/* public/
+        cp -R docs/apidocs/* public/
         touch public/.nojekyll
 
     - name: Upload Pages artifact
