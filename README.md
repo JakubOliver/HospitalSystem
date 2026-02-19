@@ -13,4 +13,4 @@ More detailed information on how to run and control the application can be found
 ## Documentation
 * [User documentation](docs/user.md)
 * [Programmer documentation](docs/programmer.md)
-* [JavaDocs](https://jakuboliver.github.io/HospitalSystem/apidocs/)
+* [JavaDocs](https://jakuboliver.github.io/HospitalSystem)
