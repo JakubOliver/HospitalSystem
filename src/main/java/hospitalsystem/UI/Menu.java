@@ -50,6 +50,7 @@ abstract class Menu implements Page{
 
     @Override
     public void printMenu(){
+        System.out.println();
         IntStream.range(0, options.size())
                 .mapToObj(i -> enumerateOption(i + 1, options.get(i).toString()))
                 .forEach(System.out::println);
