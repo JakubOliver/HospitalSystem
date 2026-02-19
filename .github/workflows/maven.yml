@@ -43,7 +43,7 @@ jobs:
     - name: Prepare Pages content
       run: |
         mkdir -p public
-        cp -R target/site/apidocs/* public/
+        cp -R docs/* public/
         touch public/.nojekyll
 
     - name: Upload Pages artifact
