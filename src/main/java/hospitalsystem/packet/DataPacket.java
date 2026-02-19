@@ -15,9 +15,9 @@ public class DataPacket<T> extends GeneralPacket{
      * @param data Data that will be stored in data packet (representing API data response).
      */
     public DataPacket(T data) {
-        this.data = data;
-
         super();
+
+        this.data = data;
     }
 
     /**
