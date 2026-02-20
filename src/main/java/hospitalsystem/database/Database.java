@@ -13,8 +13,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-//TODO: zvazit zda nenahradit cast metd tim ze dostanou Query a parametry pomoci ... a potom se sestroji
-
 /**
  * Interface for communication with SQLite database from Hospital system request.
  */
@@ -29,10 +27,10 @@ public class Database {
     private static final String updateDoctorDetails = "UPDATE doctors_details SET specialization = ?, department = ? WHERE id = ?";
     private static final String updateAppointment = "UPDATE appointments SET patient_id = ?, doctor_id = ?, department = ?, start_time = ?, end_time = ? WHERE id = ?";
 
-    private static final String deletePerson = "DELETE FROM people WHERE id = ?";
-    private static final String deletePatientDetails = "DELETE FROM patients_details WHERE id = ?";
-    private static final String deleteDoctorsDetails = "DELETE FROM doctors_details WHERE id = ?";
-    private static final String deleteAppointments = "DELETE FROM appointments WHERE id = ?";
+    private static final String deletePersonById = "DELETE FROM people WHERE id = ?";
+    private static final String deletePatientDetailsById = "DELETE FROM patients_details WHERE id = ?";
+    private static final String deleteDoctorsDetailsById = "DELETE FROM doctors_details WHERE id = ?";
+    private static final String deleteAppointmentsById = "DELETE FROM appointments WHERE id = ?";
 
     private static final String getPersonById = "SELECT * FROM people WHERE id = ?";
     private static final String getAllPeopleByType = "SELECT * FROM people, patients_details, doctors_details WHERE people.type = ?";
@@ -44,7 +42,10 @@ public class Database {
     private static final String getAppointmentBySomeId = "SELECT * FROM appointments where {0} = ?";
     private static final String getAllAppointments = "SELECT * FROM appointments";
 
-    private static final String deleteAllData = "DELETE FROM doctors_details; DELETE FROM patients_details; DELETE FROM appointments; DELETE FROM people";
+    private static final String deleteDoctorsDetails = "DELETE FROM doctors_details";
+    private static final String deletePatientsDetails ="DELETE FROM patients_details";
+    private static final String deleteAppointments = "DELETE FROM appointments";
+    private static final String deletePeople = "DELETE FROM people";
 
     private static final String getLastUsedIdError = "Unable to get generated key!";
     private static final String notExistingIdentifierError = "Id does not exist!";
@@ -126,7 +127,7 @@ public class Database {
      * Returns id that was given to the entry in the provided statement.
      *
      * @param stmt Statement for which we want to know the id.
-     * @return Id that was given to the entry in the provided statement.
+     * @return id that was given to the entry in the provided statement.
      * @throws SQLException Errors connected with the problem of retrieving id of the entry created by the statement.
      */
     private int getLastUsedId(Statement stmt) throws SQLException {
@@ -183,7 +184,7 @@ public class Database {
     }
 
     private void deletePerson(Connection connection, int id) throws SQLException {
-        try (PreparedStatement statement = connection.prepareStatement(deletePerson)){
+        try (PreparedStatement statement = connection.prepareStatement(deletePersonById)){
             statement.setInt(1, id);
 
             statement.executeUpdate();
@@ -290,17 +291,19 @@ public class Database {
      */
     public void updatePatient(Patient patient) throws DatabaseException {
         try (Connection connection = DriverManager.getConnection(url)){
+            connection.setAutoCommit(false);
+
             updatePerson(connection, patient);
             updatePatientDetails(connection, patient);
 
-            //TODO promislet znad nevracet
+            connection.commit();
         }catch  (SQLException e) {
             throw new DatabaseException(DatabaseException.patientUpdateDatabaseError, e.getMessage());
         }
     }
 
     private void deletePatientsDetails(Connection connection, int id) throws SQLException {
-        try (PreparedStatement statement = connection.prepareStatement(deletePatientDetails)){
+        try (PreparedStatement statement = connection.prepareStatement(deletePatientDetailsById)){
             statement.setInt(1, id);
 
             statement.executeUpdate();
@@ -354,7 +357,7 @@ public class Database {
      */
     public Patient getPatient(int id) throws DatabaseException {
         try (Connection connection = DriverManager.getConnection(url)){
-            Person person = getPerson(connection, id, Patient.getClassIdentifier()); //TODO: validace, že je to opravdu patient
+            Person person = getPerson(connection, id, Patient.getClassIdentifier());
             PatientsDetails details =  getPatientDetails(connection, id);
 
             return new Patient(person, details);
@@ -444,13 +447,9 @@ public class Database {
             connection.commit();
 
             return new Doctor(
-                    id,
-                    doctorData.person().firstName(),
-                    doctorData.person().lastName(),
-                    doctorData.person().dateOfBirth(),
-                    doctorData.details().specialization(),
-                    doctorData.details().department()
-            ); //TODO: vytvorit konstruktory, ktere budou lepe zpracovat tyto vstupy
+                    new Person(id, doctorData.person()),
+                    doctorData.details()
+            );
         } catch  (SQLException e) {
             throw new DatabaseException(DatabaseException.doctorInsertDatabaseError, e.getMessage());
         }
@@ -482,7 +481,7 @@ public class Database {
     }
 
     private void deleteDoctorsDetails(Connection connection, int id) throws SQLException{
-        try (PreparedStatement statement = connection.prepareStatement(deleteDoctorsDetails)){
+        try (PreparedStatement statement = connection.prepareStatement(deleteDoctorsDetailsById)){
             statement.setInt(1, id);
 
             statement.executeUpdate();
@@ -663,7 +662,7 @@ public class Database {
      * @throws DatabaseException Error connected to the failure of deleting appointment from the database. No such appointment with id is present in the database or connection errors.
      */
     public void deleteAppointment(int id) throws DatabaseException {
-        try(Connection connection = DriverManager.getConnection(url); PreparedStatement statement = connection.prepareStatement(deleteAppointments)){
+        try(Connection connection = DriverManager.getConnection(url); PreparedStatement statement = connection.prepareStatement(deleteAppointmentsById)){
             statement.setInt(1, id);
 
             statement.executeUpdate();
@@ -706,7 +705,7 @@ public class Database {
 
             return appointments;
         } catch (SQLException e) {
-            throw new DatabaseException(e.getMessage()); //TODO:
+            throw new DatabaseException(DatabaseException.appointmentGetDatabaseError, e.getMessage());
         }
     }
 
@@ -760,10 +759,10 @@ public class Database {
      */
     public void deleteAllData() throws DatabaseException {
         try (Connection connection = DriverManager.getConnection(url); Statement statement = connection.createStatement()){
-            statement.executeUpdate("DELETE FROM doctors_details"); //TODO:
-            statement.executeUpdate("DELETE FROM patients_details");
-            statement.executeUpdate("DELETE FROM appointments");
-            statement.executeUpdate("DELETE FROM people");
+            statement.executeUpdate(deleteDoctorsDetails);
+            statement.executeUpdate(deletePatientsDetails);
+            statement.executeUpdate(deleteAppointments);
+            statement.executeUpdate(deletePeople);
         } catch (SQLException e) {
             throw new DatabaseException(DatabaseException.generalDeleteDatabaseError, e.getMessage());
         }
