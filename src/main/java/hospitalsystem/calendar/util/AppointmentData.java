@@ -10,4 +10,4 @@ import java.time.LocalDateTime;
  * @param starTime Starting time of the appointment.
  * @param endTime Ending time of the appointment.
  */
-public record AppointmentData(int patientsId, int doctorsId, LocalDateTime starTime, LocalDateTime endTime) { } //TODO: zvazit zda nepridat department
+public record AppointmentData(int patientsId, int doctorsId, LocalDateTime starTime, LocalDateTime endTime) { }

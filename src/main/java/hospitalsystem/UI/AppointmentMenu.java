@@ -44,7 +44,7 @@ public class AppointmentMenu extends Menu{
     //TODO: pridat update appointment z default hodnotama
     private Optional<AppointmentData> getAppointmentData(){
         int patientsId;
-        if (createNew("patient")){
+        if (createNew(Patient.getClassIdentifier())){
             PersonData personData = getPersonData();
             PatientsDetails patientDetails = getPatientDetails();
 
@@ -58,7 +58,7 @@ public class AppointmentMenu extends Menu{
         }
 
         int doctorsId;
-        if (createNew("doctor")){
+        if (createNew(Doctor.getClassIdentifier())) {
             PersonData personData = getPersonData();
             DoctorDetails patientDetails = getDoctorDetails();
 

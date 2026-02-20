@@ -408,7 +408,25 @@ public class DatabaseTests extends TestsUsingDatabase{
         DataPacket<List<String>> packet = api.getAppointmentsForPersonnel(1, PersonKinds.Patient);
 
         assertFalse(packet.successful);
+        assertNotNull(packet.error);
         assertTrue(packet.error.contains(MessageFormat.format(DatabaseException.invalidTypeOfPersonDatabaseError, 1, Patient.getClassIdentifier())));
+    }
+
+    @Test
+    void appointmentWithTwoPatients(){
+        api.addPatient(samplePatientData);
+        api.addPatient(samplePatientData);
+
+        GeneralPacket packet = api.addAppointment(new AppointmentData(
+                1,
+                2,
+                LocalDateTime.of(2026, 2, 10, 10, 0),
+                LocalDateTime.of(2026, 2, 10, 14, 30)
+        ));
+
+        assertFalse(packet.successful);
+        assertNotNull(packet.error);
+        assertTrue(packet.error.contains(MessageFormat.format(DatabaseException.invalidTypeOfPersonDatabaseError, 2, Doctor.getClassIdentifier())));
     }
 
     @Test

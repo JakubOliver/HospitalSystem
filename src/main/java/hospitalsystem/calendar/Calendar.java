@@ -25,8 +25,6 @@ public class Calendar {
     /** Every appointment have to end before this hour */
     public static int maxEndingTime = 16;
 
-    //TODO: validate times, isPatient, isDoctor etc.
-
     /**
      * Creates empty calendar.
      */

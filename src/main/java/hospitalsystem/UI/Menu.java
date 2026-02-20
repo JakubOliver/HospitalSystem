@@ -142,8 +142,6 @@ abstract class Menu implements Page{
         return getPersonData(null);
     }
 
-    //TODO: zvazit zda neprehodit tyto metody jako metody trid jako details atd. pomoci nejake motady jako of
-
     /**
      * Processes input and extracts valid information into patient details data wrapper.
      *
@@ -234,7 +232,7 @@ abstract class Menu implements Page{
      */
     public void clearConsole()
     {
-        //TODO: rozhodnout OS na zacatku ať se to nemusi porad pocitat
+        //Used based on: https://intellipaat.com/blog/java-clear-the-console/
         String os = System.getProperty("os.name");
         try {
             if (os.startsWith("Windows")) {

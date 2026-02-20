@@ -92,8 +92,6 @@ public class Appointment implements Comparable<Appointment>, Exportable {
         return this.startTime.compareTo(o.startTime);
     }
 
-    //TODO: konstruktor s delkou
-
     /**
      * Returns info about appointment for the calendar diagram based on provided required part.
      *

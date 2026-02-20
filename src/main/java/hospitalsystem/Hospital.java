@@ -314,7 +314,6 @@ public class Hospital {
         return new GeneralPacket();
     }
 
-    //TODO: edit and delete appointment
     //TODO: appointment where patientId or doctorId (maybe like some general search, where the user provide data and get all appointments satisfying this query)
 
     /**
