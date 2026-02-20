@@ -10,6 +10,7 @@ import hospitalsystem.packet.GeneralPacket;
 import hospitalsystem.packet.DataPacket;
 import hospitalsystem.personnel.Doctor;
 import hospitalsystem.personnel.Patient;
+import hospitalsystem.personnel.util.PersonKinds;
 import hospitalsystem.personnel.util.DoctorData;
 import hospitalsystem.personnel.util.PatientData;
 import hospitalsystem.util.Exportable;
@@ -120,7 +121,6 @@ public class Hospital {
      * @return Data packet that provide caller with information about successfulness of the addition of doctor into the system. And also provides doctor object representing the same doctor.
      */
     public DataPacket<Doctor> addDoctor(DoctorData doctorData) {
-        //TODO: validate
         try {
             return new DataPacket<>(database.addDoctor(doctorData));
         } catch (DatabaseException e){
@@ -316,6 +316,32 @@ public class Hospital {
 
     //TODO: edit and delete appointment
     //TODO: appointment where patientId or doctorId (maybe like some general search, where the user provide data and get all appointments satisfying this query)
+
+    /**
+     * Returns list of all appointments connected to the person with provided id and kind.
+     *
+     * @param id Identification number of the person.
+     * @param kind Kind of person.
+     * @return List of all appointment connected to the person with provided id and kind.
+     */
+    public DataPacket<List<String>> getAppointmentsForPersonnel(int id, PersonKinds kind){
+        try{
+            List<Appointment> appointments = switch (kind) {
+                case Patient -> {
+                    database.getPatient(id);
+                    yield database.getAppointmentsForPatient(id);
+                }
+                case Doctor -> {
+                    database.getDoctor(id);
+                    yield database.getAppointmentsForDoctor(id);
+                }
+            };
+
+            return new DataPacket<>(appointments.stream().map(Appointment::toString).toList());
+        } catch (DatabaseException e) {
+            return new DataPacket<>(e);
+        }
+    }
 
     /**
      * Returns string representing the calendar of the whole hospital.

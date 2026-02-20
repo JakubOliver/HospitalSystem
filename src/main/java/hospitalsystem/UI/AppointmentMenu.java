@@ -7,9 +7,11 @@ import hospitalsystem.packet.GeneralPacket;
 import hospitalsystem.packet.DataPacket;
 import hospitalsystem.personnel.Doctor;
 import hospitalsystem.personnel.Patient;
+import hospitalsystem.personnel.util.PersonKinds;
 import hospitalsystem.personnel.util.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
@@ -32,7 +34,9 @@ public class AppointmentMenu extends Menu{
     public void defineMenu() {
         addOption("Add new appointment", this::addAppointment);
         addOption("Edit appointment", this::editAppointment);
-        addOption("Delete appointment", () -> {}); //TODO
+        addOption("Delete appointment", this::deleteAppointment);
+        addOption("Show all appointments for patient", () -> showAllForPersonnel(PersonKinds.Patient));
+        addOption("Show all appointments for doctor", () -> showAllForPersonnel(PersonKinds.Doctor));
         addOption("List appointments", this::showCalendar);
         addOption("Back", this::end);
     }
@@ -108,7 +112,6 @@ public class AppointmentMenu extends Menu{
 
         if (appointmentData.isEmpty()) return;
 
-        //TODO: pomoci genericType
         AppointmentData data = appointmentData.get();
         DataPacket<Doctor> doctorPacket = api.getDoctor(data.doctorsId());
 
@@ -127,6 +130,41 @@ public class AppointmentMenu extends Menu{
         ));
 
         processPacketStatus(finalPacket);
+    }
+
+    /**
+     * Processes input data from scanner and deletes appointment with the provided ID.
+     */
+    public void deleteAppointment(){
+        int id = getInteger("Appointment ID: ");
+
+        GeneralPacket packet = api.deleteAppointment(id);
+
+        processPacketStatus(packet);
+    }
+
+    /**
+     * Processes input data from scanner and shows appointment for the personnel with the provided ID and kind.
+     *
+     * @param kind Kind of personnel (Patient or Doctor).
+     */
+    public void showAllForPersonnel(PersonKinds kind){
+        DataPacket<List<String>> packet = switch(kind){
+            case Patient -> {
+                int id = getInteger("Patient ID: ");
+                yield api.getAppointmentsForPersonnel(id, PersonKinds.Patient);
+            }
+            case Doctor -> {
+                int id = getInteger("Doctor's ID: ");
+                yield api.getAppointmentsForPersonnel(id, PersonKinds.Doctor);
+            }
+        };
+
+        if (!processPacketStatusInSilence(packet)) return;
+
+        packet.data.forEach(System.out::println);
+
+        waitForEnter();
     }
 
     //TODO: calendar per deparmtne

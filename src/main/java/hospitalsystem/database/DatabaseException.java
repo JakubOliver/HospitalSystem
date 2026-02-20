@@ -35,6 +35,9 @@ public class DatabaseException extends Exception{
     /** Fails to delete data from database error message */
     public static final String generalDeleteDatabaseError = "Unable to delete data from database";
 
+    /** Type of person that is retrieved from database by id is not same as expected type */
+    public static final String invalidTypeOfPersonDatabaseError = "Person with id {0} is not {1}";
+
     /**
      * Creates databaseException with the provided message.
      *

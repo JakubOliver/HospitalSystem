@@ -141,4 +141,9 @@ public class Appointment implements Comparable<Appointment>, Exportable {
                 startTime.toString(),
                 endTime.toString());
     }
+
+    @Override
+    public String toString(){
+        return "id: " + id + ", patientID: " + patientId + ", doctorID: " + doctorId + ", department: " + department + ", startTime: " + startTime.toString() + ", endTime: " + endTime.toString();
+    }
 }

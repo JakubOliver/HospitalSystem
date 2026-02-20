@@ -206,7 +206,7 @@ public class Database {
 
             if (result.next()) {
                 if (!expectedType.equals(result.getString("type"))) {
-                    throw new SQLException("Person with id " + id + " is not " + expectedType);
+                    throw new SQLException(MessageFormat.format(DatabaseException.invalidTypeOfPersonDatabaseError, id, expectedType));
                 }
 
                 return new Person(

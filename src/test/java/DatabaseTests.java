@@ -2,6 +2,7 @@ import hospitalsystem.UI.PatientMenu;
 import hospitalsystem.calendar.Appointment;
 import hospitalsystem.calendar.CalendarException;
 import hospitalsystem.calendar.util.AppointmentData;
+import hospitalsystem.database.DatabaseException;
 import hospitalsystem.packet.DataPacket;
 import hospitalsystem.packet.GeneralPacket;
 import hospitalsystem.personnel.Doctor;
@@ -15,7 +16,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.MessageFormat;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -364,6 +367,48 @@ public class DatabaseTests extends TestsUsingDatabase{
 
             assertTrue(appointmentPacket.successful);
         }
+    }
+
+    @Test
+    void listDoctorsAppointments(){
+        List<String> appointments = new ArrayList<>();
+
+        addDoctor();
+        for (int i = 0; i < 10; i++){
+            addPatient();
+
+            GeneralPacket packet = api.addAppointment(new AppointmentData(
+                    i + 2,
+                    1,
+                    LocalDateTime.of(2026, 2, 10, 10, 0),
+                    LocalDateTime.of(2026, 2, 10, 14, 30)
+            ));
+
+            assertTrue(packet.successful);
+
+            DataPacket<Appointment> response = api.getAppointment(i + 1);
+            assertTrue(response.successful);
+            assertNotNull(response.data);
+            appointments.add(response.data.toString());
+        }
+
+        DataPacket<List<String>> appointmentsPacket = api.getAppointmentsForPersonnel(1, PersonKinds.Doctor);
+
+        assertTrue(appointmentsPacket.successful);
+        assertNotNull(appointmentsPacket.data);
+
+        for (String appointment : appointments){
+            assertTrue(appointmentsPacket.data.contains(appointment));
+        }
+    }
+
+    @Test
+    void listPatientInvalidType(){
+        addDoctor();
+        DataPacket<List<String>> packet = api.getAppointmentsForPersonnel(1, PersonKinds.Patient);
+
+        assertFalse(packet.successful);
+        assertTrue(packet.error.contains(MessageFormat.format(DatabaseException.invalidTypeOfPersonDatabaseError, 1, Patient.getClassIdentifier())));
     }
 
     @Test
