@@ -75,6 +75,9 @@ public class Calendar {
         if (Duration.between(start, end).toMinutes() < minimumLengthOfAppointment)
             throw new CalendarException(CalendarException.toShort);
 
+        if (!start.toLocalDate().equals(end.toLocalDate()))
+            throw new CalendarException(CalendarException.notSameDay);
+
         return startAtHalves(start) && startAtHalves(end);
     }
 

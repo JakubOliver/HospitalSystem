@@ -7,7 +7,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class TestsUsingDatabase extends Tests{
-    static String testDB = "jdbc:sqlite:memory";
     Hospital api = new Hospital(testDB);
 
     ///////////////

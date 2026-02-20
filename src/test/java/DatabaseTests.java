@@ -247,6 +247,22 @@ public class DatabaseTests extends TestsUsingDatabase{
     }
 
     @Test
+    void addAppointmentAcrossMultipleDays(){
+        addPatient();
+        addDoctor();
+
+        GeneralPacket packet = api.addAppointment(new AppointmentData(
+                1,
+                2,
+                LocalDateTime.parse("2026-01-01T12:00"),
+                LocalDateTime.parse("2026-03-01T16:00")
+        ));
+
+        assertFalse(packet.successful);
+        assertEquals(CalendarException.notSameDay, packet.error);
+    }
+
+    @Test
     void getAppointment(){
         addPatient();
         addDoctor();

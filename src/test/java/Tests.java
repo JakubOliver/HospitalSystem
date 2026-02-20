@@ -6,6 +6,8 @@ import java.io.PrintStream;
 import java.util.Scanner;
 
 public abstract class Tests {
+    static String testDB = "jdbc:sqlite:memory";
+
     public Scanner getPrebuildInput(String input) {
         System.setIn(new ByteArrayInputStream(input.getBytes()));
 

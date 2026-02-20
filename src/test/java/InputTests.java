@@ -15,7 +15,7 @@ import java.util.Scanner;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class InputTests extends Tests{
-    Hospital hospital = new Hospital("jdbc:sqlite:memory:");
+    Hospital hospital = new Hospital(testDB);
 
     @Test
     void correctOption(){
