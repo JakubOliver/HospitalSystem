@@ -33,7 +33,7 @@ public class MainMenu extends Menu{
     }
 
     /**
-     * Creats main menu page and runs the UI cycle.
+     * Creates main menu page and runs the UI cycle.
      *
      * @param api Hospital providing the menu options how to interact with hospital system.
      * @param scanner Scanner pointing to the input data.

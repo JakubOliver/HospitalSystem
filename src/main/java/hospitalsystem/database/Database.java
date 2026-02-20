@@ -140,9 +140,7 @@ public class Database {
         }
     }
 
-    /////////////////////////////////
-    ///          PERSON          ///
-    ////////////////////////////////
+    //          PERSON
 
     /**
      * Adds new person into database.
@@ -222,9 +220,7 @@ public class Database {
         }
     }
 
-    /////////////////////////////////
-    ///         Patient          ///
-    ////////////////////////////////
+    //        Patient
 
     /**
      * Adds patients details into database.
@@ -259,16 +255,13 @@ public class Database {
 
             connection.commit();
 
-            Patient patient = new Patient(
+            return new Patient(
                     id,
                     patientData.person().firstName(),
                     patientData.person().lastName(),
                     patientData.person().dateOfBirth(),
                     patientData.details().anamnesis()
             );
-
-            //SystemLogger.successfullNewPatient(patient);
-            return patient;
         } catch  (SQLException e) {
             throw new DatabaseException(DatabaseException.patientInsertDatabaseError);
         }
@@ -408,9 +401,7 @@ public class Database {
         }
     }
 
-    /////////////////////////////////
-    ///          DOCTOR          ///
-    ////////////////////////////////
+    //          DOCTOR
 
     /**
      * Adds new doctor details to the database.
@@ -576,9 +567,7 @@ public class Database {
         }
     }
 
-    /////////////////////////////////
-    ///       Appointment        ///
-    ////////////////////////////////
+    //       Appointment
 
     /**
      * Adds new appointment to the database.
@@ -658,7 +647,7 @@ public class Database {
     /**
      * Deletes appointment from the database based on provided id.
      *
-     * @param id Identificatino number of the appointment.
+     * @param id Identification number of the appointment.
      * @throws DatabaseException Error connected to the failure of deleting appointment from the database. No such appointment with id is present in the database or connection errors.
      */
     public void deleteAppointment(int id) throws DatabaseException {

@@ -16,5 +16,5 @@ public final class ExportsUtil {
     /** Exception message which denotes that while exporting was unsuccessfully created export directory */
     public static String unableToPrepareExportsDirectoryErrMsg = "Unable to create directory for exports";
 
-    private ExportsUtil(){};
+    private ExportsUtil(){}
 }

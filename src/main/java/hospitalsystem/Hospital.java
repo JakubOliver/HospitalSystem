@@ -221,7 +221,8 @@ public class Hospital {
         database.getPatient(appointmentData.patientsId());
         database.getDoctor(appointmentData.doctorsId());
 
-        Calendar.timeIsValid(appointmentData.starTime(), appointmentData.endTime());
+        if (!Calendar.timeIsValid(appointmentData.starTime(), appointmentData.endTime()))
+            throw new CalendarException(CalendarException.invalidTimes);
 
         if (!haveTime(
                 database.getAppointmentsForPatient(appointmentData.patientsId()),

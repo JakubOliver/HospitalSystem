@@ -50,7 +50,7 @@ public class AppointmentMenu extends Menu{
 
             DataPacket<Patient> packet = api.addPatient(new PatientData(personData, patientDetails));
 
-            if(!processPacketStatusInSilence(packet)) return Optional.empty(); //TODO: mozna udelat metodu check person (dost se to opakuje)
+            if(!processPacketStatusInSilence(packet)) return Optional.empty();
 
             patientsId = packet.data.getId();
         } else {
@@ -86,8 +86,6 @@ public class AppointmentMenu extends Menu{
      * Processes input data and calls for creating of new appointment in hospital system.
      */
     public void addAppointment(){
-        //TODO: volba zda si vybrat (id nebo jmeno) nebo vytvořit noveho
-
         Optional<AppointmentData> appointmentData = getAppointmentData();
 
         if (appointmentData.isPresent()){

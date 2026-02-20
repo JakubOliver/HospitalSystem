@@ -109,7 +109,7 @@ public class Department{
         }
     }
 
-    //TODO: some round time function for 30 minuts intervals
+    //TODO: some round time function for 30 minutes intervals
 
     @Override
     public String toString(){
@@ -327,9 +327,7 @@ public class Department{
      * @return Index of the last appointment in the same week and number of layers in this period.
      */
     private PeriodInfo getLastIdxOfSameWeek(List<Appointment> sortedAppointments, int startIdx){
-        AppointmentCompare sameWeek = (a1, a2) -> {
-            return a1.startTime.toLocalDate().get(IsoFields.WEEK_OF_WEEK_BASED_YEAR) == a2.startTime.toLocalDate().get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
-        };
+        AppointmentCompare sameWeek = (a1, a2) -> a1.startTime.toLocalDate().get(IsoFields.WEEK_OF_WEEK_BASED_YEAR) == a2.startTime.toLocalDate().get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
 
         return getLastIdxOfSame(sortedAppointments, startIdx, sameWeek);
     }
@@ -342,7 +340,7 @@ public class Department{
      * @return Index of the last appointment in the same day and number of layers in this period.
      */
     private PeriodInfo getLastIdxOfSameDay(List<Appointment> sortedAppointments, int startIdx){
-        AppointmentCompare sameDay = (a1, a2) -> {return a1.startTime.toLocalDate().equals(a2.startTime.toLocalDate());};
+        AppointmentCompare sameDay = (a1, a2) -> a1.startTime.toLocalDate().equals(a2.startTime.toLocalDate());
 
         return getLastIdxOfSame(sortedAppointments, startIdx, sameDay);
     }

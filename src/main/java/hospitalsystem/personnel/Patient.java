@@ -8,7 +8,7 @@ import java.time.LocalDate;
  * Represents a patient in the hospital system.
  */
 public class Patient extends Person{
-    private String anamnesis;
+    private final String anamnesis;
 
     /**
      * Creates patient based on provided parameters.
