@@ -6,6 +6,7 @@ import hospitalsystem.personnel.Person;
 import hospitalsystem.personnel.util.*;
 import hospitalsystem.calendar.*;
 
+import javax.swing.plaf.nimbus.State;
 import javax.xml.crypto.Data;
 import java.sql.*;
 import java.text.MessageFormat;
@@ -246,6 +247,17 @@ public class Database {
         }
     }
 
+    public void deleteAppointmentsWherePerson(Connection connection, int id, PersonKinds kinds) throws DatabaseException {
+        try(Statement statement = connection.createStatement()){
+            switch (kinds){
+                case Patient -> statement.executeUpdate("DELETE FROM appointments WHERE patient_id = " + id);
+                case Doctor -> statement.executeUpdate("DELETE FROM appointments WHERE doctor_id = " + id);
+            }
+        }catch (SQLException e){
+            throw new DatabaseException(e.getMessage()); //todo:
+        }
+    }
+
     //        Patient
 
     /**
@@ -338,8 +350,13 @@ public class Database {
      */
     public void deletePatient(int id) throws DatabaseException {
         try (Connection connection = DriverManager.getConnection(url)){
+            connection.setAutoCommit(false);
+
             deletePatientsDetails(connection, id);
             deletePerson(connection, id);
+            deleteAppointmentsWherePerson(connection, id, PersonKinds.Patient);
+
+            connection.commit();
         } catch (SQLException e) {
             throw new DatabaseException(DatabaseException.patientDeleteDatabaseError, e.getMessage());
         }
@@ -519,8 +536,13 @@ public class Database {
      */
     public void deleteDoctor(int id) throws DatabaseException {
         try (Connection connection = DriverManager.getConnection(url)){
+            connection.setAutoCommit(false);
+
             deletePerson(connection, id);
             deleteDoctorsDetails(connection, id);
+            deleteAppointmentsWherePerson(connection, id, PersonKinds.Doctor);
+
+            connection.commit();
         } catch (SQLException e){
             throw new DatabaseException(DatabaseException.doctorDeleteDatabaseError, e.getMessage());
         }
