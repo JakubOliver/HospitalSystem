@@ -114,7 +114,7 @@ public class DoctorMenu extends Menu implements PersonnelMenu {
 
         if (!processPacketStatusInSilence(packet)) return;
 
-        System.out.print(packet.data);
+        System.out.println(packet.data);
 
         waitForEnter();
     }

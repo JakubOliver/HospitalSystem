@@ -570,4 +570,20 @@ public class DatabaseTests extends TestsUsingDatabase{
         assertNotNull(packet4.error);
         assertTrue(packet4.error.contains("Id does not exist!"), () -> packet4.error);
     }
+
+    @Test
+    void deletePatientByUsingDeleteDoctor(){
+        GeneralPacket packet = api.addPatient(samplePatientData);
+        assertTrue(packet.successful);
+
+        GeneralPacket packet2 = api.deleteDoctor(1);
+        assertFalse(packet2.successful);
+        assertNotNull(packet2.error);
+        assertTrue(packet2.error.contains(MessageFormat.format(DatabaseException.invalidTypeOfPersonDatabaseError, 1, Doctor.getClassIdentifier())));
+
+        DataPacket<Patient> packet3 = api.getPatient(1);
+        assertTrue(packet3.successful);
+        assertNotNull(packet3.data);
+        assertEquals(new Patient(new Person(1, samplePersonData), samplePatientDetails).toString(), packet3.data.toString());
+    }
 }

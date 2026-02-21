@@ -108,6 +108,7 @@ public class Hospital {
      */
     public GeneralPacket deletePatient(int id){
         try{
+            database.getPatient(id); //check whether the patient with id exists
             database.deletePatient(id);
 
             return new GeneralPacket();
@@ -201,6 +202,7 @@ public class Hospital {
      */
     public GeneralPacket deleteDoctor(int id){
         try{
+            database.getDoctor(id); //Check whether exists doctor with provided id.
             database.deleteDoctor(id);
 
             return new GeneralPacket();
