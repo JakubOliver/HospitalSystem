@@ -411,8 +411,17 @@ abstract class Menu implements Page{
      * @return Whether the user wants to create new object.
      */
     public boolean createNew(String what){
-        String question = "Create new " + what + " (Yes/No) : ";
+        return getBool("Create new " + what);
+    }
 
+    /**
+     * Processes input from scanner and returns value after processing first line that contains some text that can be converted to bool value.
+     *
+     * @param question Question with which will be user prompted.
+     * @return Value after processing first line that contains some text that can be converted to bool value.
+     */
+    public boolean getBool(String question){
+        question += " (Yes/No) : ";
         String line = getString(question);
 
         while (!isValidBoolAnswer(line)){

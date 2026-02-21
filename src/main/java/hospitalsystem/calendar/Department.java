@@ -3,10 +3,7 @@ package hospitalsystem.calendar;
 import hospitalsystem.calendar.util.AppointmentCompare;
 import hospitalsystem.calendar.util.Parts;
 
-import java.time.DayOfWeek;
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.IsoFields;
 import java.time.temporal.TemporalAdjusters;
@@ -115,9 +112,23 @@ public class Department{
         }
     }
 
+    /**
+     * Returns string representation of department calendar.
+     *
+     * @return String representation of department calendar.
+     */
     @Override
     public String toString(){
+        return toString(false);
+    }
 
+    /**
+     * Returns string representation of department calendar.
+     *
+     * @param fromToday Denotes whether calendar will be exported whole or only appointments in the present and future.
+     * @return String representation of department calendar.
+     */
+    public String toString(boolean fromToday){
         StringBuilder sb = new StringBuilder();
 
         sb.append(name).append("\n");
@@ -125,6 +136,18 @@ public class Department{
         List<Appointment> sortedAppointments = new ArrayList<>(appointments);
 
         int startIdx = 0;
+
+        if (fromToday){
+            LocalDate today = LocalDate.now();
+
+            while (startIdx < sortedAppointments.size() && !sortedAppointments.get(startIdx).startTime.toLocalDate().equals(today)){
+                ++startIdx;
+            }
+        }
+
+        if (startIdx == sortedAppointments.size()){
+            sb.append("No appointments in the future.\n");
+        }
 
         while (startIdx < sortedAppointments.size()){
             PeriodInfo week = getLastIdxOfSameWeek(sortedAppointments, startIdx);

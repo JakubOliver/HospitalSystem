@@ -300,7 +300,7 @@ public class DatabaseTests extends TestsUsingDatabase{
     void getCalendar(){
         addCombination();
 
-        DataPacket<List<String>> packet = api.getCalendar();
+        DataPacket<List<String>> packet = api.getCalendar(false);
 
         assertTrue(packet.successful);
         assertNotNull(packet.data);
@@ -477,7 +477,7 @@ public class DatabaseTests extends TestsUsingDatabase{
             DataPacket<Doctor> packet2 = api.getDoctor(1);
             assertFalse(packet2.successful);
 
-            DataPacket<List<String>> packet3 = api.getCalendar();
+            DataPacket<List<String>> packet3 = api.getCalendar(false);
             assertFalse(packet3.successful);
         } catch (SQLException _){}
     }

@@ -172,8 +172,9 @@ public class AppointmentMenu extends Menu{
      */
     public void showDepartmentCalendar(){
         String department = getString(getQuestion("Department name"));
+        boolean fromToday = getBool(getQuestion("From Today"));
 
-        DataPacket<String> packet = api.getCalendarForDepartment(department);
+        DataPacket<String> packet = api.getCalendarForDepartment(department, fromToday);
 
         if (!processPacketStatusInSilence(packet)) return;
 
@@ -184,7 +185,8 @@ public class AppointmentMenu extends Menu{
      * Prints whole calendar for the hospital.
      */
     public void showCalendar(){
-        DataPacket<List<String>> packet = api.getCalendar();
+        boolean fromToday = getBool(getQuestion("From Today"));
+        DataPacket<List<String>> packet = api.getCalendar(fromToday);
 
         if (!processPacketStatusInSilence(packet)) return;
 

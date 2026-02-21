@@ -345,13 +345,14 @@ public class Hospital {
      * Returns string representing calendar for the provided department.
      *
      * @param department Name of department.
+     * @param fromToday Denotes whether calendar will be exported whole or only appointments in the present and future.
      * @return String representing calendar for the provided department.
      */
-    public DataPacket<String> getCalendarForDepartment(String department){
+    public DataPacket<String> getCalendarForDepartment(String department, boolean fromToday){
         try {
             Calendar calendar = database.getCalendar();
 
-            return new DataPacket<>(calendar.getDepartmentCalendar(department));
+            return new DataPacket<>(calendar.getDepartmentCalendar(department, fromToday));
         } catch (DatabaseException | CalendarException e) {
             return new DataPacket<>(e);
         }
@@ -360,13 +361,14 @@ public class Hospital {
     /**
      * Returns list of strings representing the calendar of the whole hospital.
      *
+     * @param fromToday Denotes whether calendar will be exported whole or only appointments in the present and future.
      * @return list of strings representing the calendar of the whole hospital.
      */
-    public DataPacket<List<String>> getCalendar(){
+    public DataPacket<List<String>> getCalendar(boolean fromToday){
         try {
             Calendar calendar = database.getCalendar();
 
-            return new DataPacket<>(calendar.getCalendar());
+            return new DataPacket<>(calendar.getCalendar(fromToday));
         } catch (DatabaseException e) {
             return new DataPacket<>(e);
         }

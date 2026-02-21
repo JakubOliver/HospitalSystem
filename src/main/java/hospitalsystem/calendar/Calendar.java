@@ -103,28 +103,30 @@ public class Calendar {
      * Returns string representing calendar for the provided department.
      *
      * @param department Name of department.
+     * @param fromToday Denotes whether calendar will be exported whole or only appointments in the present and future.
      * @return String representing calendar for the provided department.
      * @throws CalendarException Department with the provided name does not exist.
      */
-    public String getDepartmentCalendar(String department) throws CalendarException {
+    public String getDepartmentCalendar(String department, boolean fromToday) throws CalendarException {
         if (!departments.containsKey(department))
             throw  new CalendarException(MessageFormat.format(CalendarException.notValidDepartment, department));
 
-        return departments.get(department).toString();
+        return departments.get(department).toString(fromToday);
     }
 
     /**
      * Returns list of strings representing graphical version of calendar.
      *
+     * @param fromToday Denotes whether calendar will be exported whole or only appointments in the present and future.
      * @return List of strings representing graphical version of calendar.
      */
-    public List<String> getCalendar(){
-        return departments.keySet().stream().map(x -> departments.get(x).toString()).toList();
+    public List<String> getCalendar(boolean fromToday){
+        return departments.keySet().stream().map(x -> departments.get(x).toString(fromToday)).toList();
     }
 
     @Override
     public String toString() {
-        return String.join("", getCalendar());
+        return String.join("", getCalendar(false));
     }
 
     /**
