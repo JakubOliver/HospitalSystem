@@ -2,7 +2,6 @@ import hospitalsystem.UI.PatientMenu;
 import hospitalsystem.calendar.Appointment;
 import hospitalsystem.calendar.CalendarException;
 import hospitalsystem.calendar.util.AppointmentData;
-import hospitalsystem.database.Database;
 import hospitalsystem.database.DatabaseException;
 import hospitalsystem.packet.DataPacket;
 import hospitalsystem.packet.GeneralPacket;
@@ -77,7 +76,7 @@ public class DatabaseTests extends TestsUsingDatabase{
             addPatient();
         }
 
-        DataPacket<List<String>> packet = api.allPatients();
+        DataPacket<List<Patient>> packet = api.allPatients();
 
         assertTrue(packet.successful);
         assertNotNull(packet.data);
@@ -119,7 +118,7 @@ public class DatabaseTests extends TestsUsingDatabase{
             addDoctor();
         }
 
-        DataPacket<List<String>> packet = api.allDoctors();
+        DataPacket<List<Doctor>> packet = api.allDoctors();
         assertTrue(packet.successful);
         assertNotNull(packet.data);
         assertEquals(10, packet.data.size());
@@ -300,7 +299,7 @@ public class DatabaseTests extends TestsUsingDatabase{
     void getCalendar(){
         addCombination();
 
-        DataPacket<List<String>> packet = api.getCalendar(false);
+        DataPacket<List<String>> packet = api.getCalendarRepresentation(false);
 
         assertTrue(packet.successful);
         assertNotNull(packet.data);
@@ -477,7 +476,7 @@ public class DatabaseTests extends TestsUsingDatabase{
             DataPacket<Doctor> packet2 = api.getDoctor(1);
             assertFalse(packet2.successful);
 
-            DataPacket<List<String>> packet3 = api.getCalendar(false);
+            DataPacket<List<String>> packet3 = api.getCalendarRepresentation(false);
             assertFalse(packet3.successful);
         } catch (SQLException _){}
     }

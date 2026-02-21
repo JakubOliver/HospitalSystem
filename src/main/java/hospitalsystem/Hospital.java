@@ -20,7 +20,6 @@ import hospitalsystem.util.ExportsUtil;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -122,13 +121,9 @@ public class Hospital {
      *
      * @return Data packet that provide caller with information about successfulness of the query and provides array of data strings about every patient.
      */
-    public DataPacket<List<String>> allPatients(){
+    public DataPacket<List<Patient>> allPatients(){
         try{
-            List<Patient> patients = database.getAllPatients();
-
-            return new DataPacket<>(
-                    patients.stream().map(Patient::toString).toList()
-            );
+            return new DataPacket<>(database.getAllPatients());
         } catch (DatabaseException e){
             return new DataPacket<>(e);
         }
@@ -216,13 +211,9 @@ public class Hospital {
      *
      * @return Data packet that provide caller with information about successfulness of the query and provides array of data strings about every doctor.
      */
-    public DataPacket<List<String>> allDoctors(){
+    public DataPacket<List<Doctor>> allDoctors(){
         try{
-            List<Doctor> doctors = database.getAllDoctors();
-
-            return new DataPacket<>(
-                    doctors.stream().map(Doctor::toString).toList()
-            );
+            return new DataPacket<>(database.getAllDoctors());
         } catch (DatabaseException e){
             return new DataPacket<>(e);
         }
@@ -401,11 +392,20 @@ public class Hospital {
      * @param fromToday Denotes whether calendar will be exported whole or only appointments in the present and future.
      * @return list of strings representing the calendar of the whole hospital.
      */
-    public DataPacket<List<String>> getCalendar(boolean fromToday){
+    public DataPacket<List<String>> getCalendarRepresentation(boolean fromToday){
         try {
             Calendar calendar = database.getCalendar();
 
             return new DataPacket<>(calendar.getCalendar(fromToday));
+        } catch (DatabaseException e) {
+            return new DataPacket<>(e);
+        }
+    }
+
+    //TODO:
+    public DataPacket<Calendar> getCalendar(){
+        try{
+            return new DataPacket<>(database.getCalendar());
         } catch (DatabaseException e) {
             return new DataPacket<>(e);
         }

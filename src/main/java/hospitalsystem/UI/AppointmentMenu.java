@@ -235,7 +235,7 @@ public class AppointmentMenu extends Menu{
      */
     public void showCalendar(){
         boolean fromToday = getBool(getQuestion("From Today"));
-        DataPacket<List<String>> packet = api.getCalendar(fromToday);
+        DataPacket<List<String>> packet = api.getCalendarRepresentation(fromToday);
 
         if (!processPacketStatusInSilence(packet)) return;
 

@@ -2,6 +2,7 @@ package hospitalsystem.calendar;
 
 import hospitalsystem.calendar.util.AppointmentCompare;
 import hospitalsystem.calendar.util.Parts;
+import hospitalsystem.personnel.Person;
 
 import java.time.*;
 import java.time.temporal.ChronoUnit;
@@ -409,5 +410,22 @@ public class Department{
                 yield  " ".repeat(offset) + time.getYear() + " ".repeat(prefixSize - lengthOfNumbers - offset);
             }
         };
+    }
+
+    //TODO:
+    public int size(){
+        return appointments.size();
+    }
+
+    public int numberOfAppearances(Person person){
+        int appearances = 0;
+
+        for (Appointment appointment : appointments){
+            if (person.getId() == appointment.patientId || person.getId() == appointment.doctorId){
+                appearances++;
+            }
+        }
+
+        return appearances;
     }
 }

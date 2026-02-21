@@ -109,7 +109,7 @@ public class UITests extends TestsUsingDatabase {
 
     @Test
     public void traversalAcrossMenus(){
-        Scanner scanner = getPrebuildInput("1\n6\n2\n6\n3\n8\n4\n5\n5\n");
+        Scanner scanner = getPrebuildInput("1\n6\n2\n6\n3\n8\n4\n5\n5\n2\n6\n");
         new MainMenu(api, scanner);
 
         String outputString = output.toString();

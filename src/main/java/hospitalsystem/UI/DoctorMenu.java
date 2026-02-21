@@ -124,12 +124,12 @@ public class DoctorMenu extends Menu implements PersonnelMenu {
      */
     @Override
     public void all(){
-        DataPacket<List<String>> packet = api.allDoctors();
+        DataPacket<List<Doctor>> packet = api.allDoctors();
 
         if (!processPacketStatusInSilence(packet)) return;
 
-        for (String text : packet.data) {
-            System.out.println(text);
+        for (Doctor doctor : packet.data) {
+            System.out.println(doctor);
         }
 
         waitForEnter();

@@ -1,5 +1,8 @@
 package hospitalsystem.calendar;
 
+import hospitalsystem.personnel.Doctor;
+import hospitalsystem.personnel.Person;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -149,5 +152,30 @@ public class Calendar {
                 writer.write(appointment.export() + "\n");
             }
         }
+    }
+
+    //TODO:
+    public int size(){
+        int size = 0;
+
+        for (Department department : departments.values()){
+            size += department.size();
+        }
+
+        return size;
+    }
+
+    public int numberOfAppearances(Person person){
+        int appearances = 0;
+
+        if (person instanceof Doctor doctor){
+            return departments.get(doctor.getDepartment()).numberOfAppearances(doctor);
+        }
+
+        for (Department department : departments.values()){
+            appearances += department.numberOfAppearances(person);
+        }
+
+        return appearances;
     }
 }
