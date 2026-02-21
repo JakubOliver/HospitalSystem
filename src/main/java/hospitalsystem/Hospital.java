@@ -451,7 +451,7 @@ public class Hospital {
      */
     public GeneralPacket exportPatients(){
         try {
-            File destination = new File(createExportDirectory(), ExportsUtil.patientExportDestination);
+            File destination = new File(createExportDirectory(), ExportsUtil.getExportFileName(ExportsUtil.patientExportDestination));
 
             writeExport(destination, database.getAllPatients());
 
@@ -468,7 +468,7 @@ public class Hospital {
      */
     public GeneralPacket exportDoctors(){
         try {
-            File destination = new File(createExportDirectory(), ExportsUtil.doctorExportDestination);
+            File destination = new File(createExportDirectory(), ExportsUtil.getExportFileName(ExportsUtil.doctorExportDestination));
 
             writeExport(destination, database.getAllDoctors());
 
@@ -485,7 +485,7 @@ public class Hospital {
      */
     public GeneralPacket exportAppointments(){
         try{
-            File destination = new File(createExportDirectory(), ExportsUtil.appointmentExportDestination);
+            File destination = new File(createExportDirectory(), ExportsUtil.getExportFileName(ExportsUtil.appointmentExportDestination));
             Calendar calendar = database.getCalendar();
 
             calendar.export(destination);
@@ -506,17 +506,17 @@ public class Hospital {
             File directory = createExportDirectory();
 
             writeExport(
-                    new File(directory, ExportsUtil.patientExportDestination),
+                    new File(directory, ExportsUtil.getExportFileName(ExportsUtil.patientExportDestination)),
                     database.getAllPatients()
             );
 
             writeExport(
-                    new File(directory, ExportsUtil.doctorExportDestination),
+                    new File(directory, ExportsUtil.getExportFileName(ExportsUtil.doctorExportDestination)),
                     database.getAllDoctors()
             );
 
             Calendar calendar = database.getCalendar();
-            calendar.export(new File(directory, ExportsUtil.appointmentExportDestination));
+            calendar.export(new File(directory, ExportsUtil.getExportFileName(ExportsUtil.appointmentExportDestination)));
         } catch (DatabaseException | IOException e){
             return new GeneralPacket(e);
         }

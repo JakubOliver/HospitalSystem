@@ -135,15 +135,15 @@ public class UITests extends TestsUsingDatabase {
         File directory = new File(ExportsUtil.exportDirectoryDestination);
         assertTrue(directory.exists() && directory.isDirectory());
 
-        File patients = new File(directory, ExportsUtil.patientExportDestination);
+        File patients = new File(directory, ExportsUtil.getExportFileName(ExportsUtil.patientExportDestination));
         assertTrue(patients.exists());
         assertTrue(patients.lastModified() > (System.currentTimeMillis() - 100_000)); //Checks whether the file modified in last 100 seconds.
 
-        File doctors = new File(directory, ExportsUtil.doctorExportDestination);
+        File doctors = new File(directory, ExportsUtil.getExportFileName(ExportsUtil.doctorExportDestination));
         assertTrue(doctors.exists());
         assertTrue(doctors.lastModified() > (System.currentTimeMillis() - 100_000));
 
-        File appointments =  new File(directory, ExportsUtil.appointmentExportDestination);
+        File appointments =  new File(directory, ExportsUtil.getExportFileName(ExportsUtil.appointmentExportDestination));
         assertTrue(appointments.exists());
         assertTrue(appointments.lastModified() > (System.currentTimeMillis() - 100_000));
     }

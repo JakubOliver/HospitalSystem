@@ -1,5 +1,8 @@
 package hospitalsystem.util;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 /**
  * Contains contains connected with exporting data into files.
  */
@@ -17,4 +20,8 @@ public final class ExportsUtil {
     public static String unableToPrepareExportsDirectoryErrMsg = "Unable to create directory for exports";
 
     private ExportsUtil(){}
+
+    public static String getExportFileName(String name){
+        return LocalDate.now() + "-" + name;
+    }
 }
