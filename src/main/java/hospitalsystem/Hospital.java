@@ -344,16 +344,31 @@ public class Hospital {
     }
 
     /**
-     * Returns string representing the calendar of the whole hospital.
+     * Returns string representing calendar for the provided department.
      *
-     * @return string representing the calendar of the whole hospital.
+     * @param department Name of department.
+     * @return String representing calendar for the provided department.
      */
-    public DataPacket<String> showCalendar(){
+    public DataPacket<String> getCalendarForDepartment(String department){
         try {
-            //TODO: mozna vracet Calendar a vypsat to aby se nemuselo vytvaret obrovsky string
             Calendar calendar = database.getCalendar();
 
-            return new DataPacket<>(calendar.toString());
+            return new DataPacket<>(calendar.getDepartmentCalendar(department));
+        } catch (DatabaseException | CalendarException e) {
+            return new DataPacket<>(e);
+        }
+    }
+
+    /**
+     * Returns list of strings representing the calendar of the whole hospital.
+     *
+     * @return list of strings representing the calendar of the whole hospital.
+     */
+    public DataPacket<List<String>> getCalendar(){
+        try {
+            Calendar calendar = database.getCalendar();
+
+            return new DataPacket<>(calendar.getCalendar());
         } catch (DatabaseException e) {
             return new DataPacket<>(e);
         }

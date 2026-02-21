@@ -7,7 +7,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -96,15 +98,32 @@ public class Calendar {
         return true;
     }
 
+    /**
+     * Returns string representing calendar for the provided department.
+     *
+     * @param department Name of department.
+     * @return String representing calendar for the provided department.
+     * @throws CalendarException Department with the provided name does not exist.
+     */
+    public String getDepartmentCalendar(String department) throws CalendarException {
+        if (departments.containsKey(department))
+            throw  new CalendarException(CalendarException.notValidDepartment);
+
+        return departments.get(department).toString();
+    }
+
+    /**
+     * Returns list of strings representing graphical version of calendar.
+     *
+     * @return List of strings representing graphical version of calendar.
+     */
+    public List<String> getCalendar(){
+        return departments.keySet().stream().map(x -> departments.get(x).toString()).toList();
+    }
+
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-
-        for (String department : departments.keySet()){
-            sb.append(departments.get(department).toString());
-        }
-
-        return sb.toString();
+        return String.join("", getCalendar());
     }
 
     /**
@@ -114,12 +133,17 @@ public class Calendar {
      * @throws IOException Errors occurs when occurs problem with opening and writing into files.
      */
     public void export(File destination) throws IOException {
-        //TODO: mozna export seradit podle id
+        List<Appointment> appointments = new ArrayList<>();
+
+        for (Department department : departments.values()){
+            appointments.addAll(department.appointments);
+        }
+
+        appointments.sort((a1, a2) -> a1.id - a2.id);
+
         try (FileWriter writer = new FileWriter(destination)){
-            for (Department department : departments.values()){
-                for (Appointment appointment : department.appointments){
-                    writer.write(appointment.export() + "\n");
-                }
+            for (Appointment appointment : appointments){
+                writer.write(appointment.export() + "\n");
             }
         }
     }

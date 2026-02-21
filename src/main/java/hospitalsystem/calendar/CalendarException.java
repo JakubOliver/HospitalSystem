@@ -18,6 +18,8 @@ public class CalendarException extends Exception {
     public static String timeCollisionWIthDoctor = "In this time interval the doctor has already some appointment";
     /** Start and end time of appointment does not share same date */
     public static String notSameDay = "Duration of appointments takes place within multiple days.";
+    /** Requested information for department that is not present in hospital system. */
+    public static String notValidDepartment = "Department with name {0} does not exist.";
 
     /**
      * Creates new calendar exception with the provided message.

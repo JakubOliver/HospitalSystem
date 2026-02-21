@@ -7,7 +7,6 @@ import hospitalsystem.packet.GeneralPacket;
 import hospitalsystem.packet.DataPacket;
 import hospitalsystem.personnel.Doctor;
 import hospitalsystem.personnel.Patient;
-import hospitalsystem.personnel.util.PersonKinds;
 import hospitalsystem.personnel.util.*;
 
 import java.time.LocalDateTime;
@@ -37,6 +36,7 @@ public class AppointmentMenu extends Menu{
         addOption("Delete appointment", this::deleteAppointment);
         addOption("Show all appointments for patient", () -> showAllForPersonnel(PersonKinds.Patient));
         addOption("Show all appointments for doctor", () -> showAllForPersonnel(PersonKinds.Doctor));
+        addOption("Show calendar for department", this::showDepartmentCalendar);
         addOption("List appointments", this::showCalendar);
         addOption("Back", this::end);
     }
@@ -165,18 +165,31 @@ public class AppointmentMenu extends Menu{
         waitForEnter();
     }
 
-    //TODO: calendar per deparmtne
     //TODO: calendar per week
     //TODO: showCalender from today
+
+    /**
+     * Processes input data from scanner and based on provided department shows calendar.
+     */
+    public void showDepartmentCalendar(){
+        String department = getString("Department name");
+
+        DataPacket<String> packet = api.getCalendarForDepartment(department);
+
+        if (!processPacketStatusInSilence(packet)) return;
+
+        printAndWait(packet.data);
+    }
 
     /**
      * Prints whole calendar for the hospital.
      */
     public void showCalendar(){
-        DataPacket<String> packet = api.showCalendar();
+        DataPacket<List<String>> packet = api.getCalendar();
 
         if (!processPacketStatusInSilence(packet)) return;
 
-        printAndWait(packet.data); //TODO: vymyslet trošku lepší způsub mozna aby i kalendář vypisovat, poněvadž mi přijde zvlášní, že se to ukládá to jednoho stringu, ale zas to v calendar je také
+        packet.data.forEach(System.out::println);
+        waitForEnter();
     }
 }
