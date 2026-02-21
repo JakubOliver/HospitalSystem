@@ -7,6 +7,7 @@ import hospitalsystem.packet.GeneralPacket;
 import hospitalsystem.packet.DataPacket;
 import hospitalsystem.personnel.Doctor;
 import hospitalsystem.personnel.Patient;
+import hospitalsystem.personnel.Person;
 import hospitalsystem.personnel.util.*;
 
 import java.time.LocalDateTime;
@@ -41,6 +42,18 @@ public class AppointmentMenu extends Menu{
         addOption("Back", this::end);
     }
 
+    private int selectPerson(List<? extends Person> people){
+        if (people.size() > 1) {
+            for (int i = 0; i < people.size(); i++) {
+                System.out.println((i + 1) + ". " + people.get(i).toString());
+            }
+
+            return people.get(getOption(people.size())).getId();
+        }
+
+        return people.getFirst().getId();
+    }
+
     private Optional<AppointmentData> getAppointmentData(){
         int patientsId;
         if (createNew(Patient.getClassIdentifier())){
@@ -53,7 +66,25 @@ public class AppointmentMenu extends Menu{
 
             patientsId = packet.data.getId();
         } else {
-            patientsId = getInteger("Patient's ID: ");
+            boolean byId = getBool("Find patient by id?");
+
+            if (byId) {
+                patientsId = getInteger("Patient's ID: ");
+            } else {
+                String patientFistName = getString("Firstname: ");
+                String patientLastName = getString("Lastname: ");
+
+                DataPacket<List<Patient>> patients = api.getAllPatientWithName(patientFistName, patientLastName);
+
+                if (!processPacketStatusInSilence(patients)) return Optional.empty();
+
+                if (patients.data.isEmpty()) {
+                    printAndWait("No patient with that name");
+                    return Optional.empty();
+                }
+
+                patientsId = selectPerson(patients.data);
+            }
         }
 
         int doctorsId;
@@ -67,7 +98,25 @@ public class AppointmentMenu extends Menu{
 
             doctorsId = packet.data.getId();
         } else {
-            doctorsId = getInteger("Doctor's ID: ");
+            boolean byId = getBool("Find doctor by id?");
+
+            if (byId) {
+                doctorsId = getInteger("Doctor's ID: ");
+            } else {
+                String patientFistName = getString("Firstname: ");
+                String patientLastName = getString("Lastname: ");
+
+                DataPacket<List<Doctor>> doctors = api.getAllDoctorsWithName(patientFistName, patientLastName);
+
+                if (!processPacketStatusInSilence(doctors)) return Optional.empty();
+
+                if (doctors.data.isEmpty()) {
+                    printAndWait("No doctor with that name");
+                    return Optional.empty();
+                }
+
+                doctorsId = selectPerson(doctors.data);
+            }
         }
 
         LocalDateTime startTime = getDateTime("Start Time: ");

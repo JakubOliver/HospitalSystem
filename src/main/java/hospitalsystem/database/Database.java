@@ -6,6 +6,7 @@ import hospitalsystem.personnel.Person;
 import hospitalsystem.personnel.util.*;
 import hospitalsystem.calendar.*;
 
+import javax.xml.crypto.Data;
 import java.sql.*;
 import java.text.MessageFormat;
 import java.time.LocalDate;
@@ -217,6 +218,31 @@ public class Database {
             }
 
             throw new SQLException(notExistingIdentifierError);
+        }
+    }
+
+    //TODO:
+    public List<Person> getPerson(String fistName, String lastName, String expectedType) throws DatabaseException {
+        try(Connection connection = DriverManager.getConnection(url); PreparedStatement statement = connection.prepareStatement("SELECT * FROM people WHERE firstname = ? AND lastname = ? and type = ?;")){
+            statement.setString(1, fistName);
+            statement.setString(2, lastName);
+            statement.setString(3, expectedType);
+
+            ResultSet result = statement.executeQuery();
+
+            List<Person> persons = new ArrayList<>();
+            while (result.next()) {
+                persons.add(new Person(
+                        result.getInt("id"),
+                        result.getString("firstname"),
+                        result.getString("lastname"),
+                        LocalDate.parse(result.getString("birth_date"))
+                ));
+            }
+
+            return persons;
+        } catch (SQLException e){
+            throw new DatabaseException(DatabaseException.personGetDatabaseError, e.getMessage());
         }
     }
 

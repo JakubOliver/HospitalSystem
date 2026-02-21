@@ -11,6 +11,8 @@ public class DatabaseException extends Exception{
     /** Failure of inserting appointment into database error message */
     public static final String appointmentInsertDatabaseError = "Unable to correctly add appointment into database";
 
+    /** Failure of querying person from database error message */
+    public static final String personGetDatabaseError = "Unable to get person from database";
     /** Failure of querying patients from database error message */
     public static final String patientGetDatabaseError = "Unable to get patient from database";
     /** Failure of querying doctor from database error message */

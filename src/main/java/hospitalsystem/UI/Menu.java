@@ -50,6 +50,8 @@ abstract class Menu implements Page{
 
     @Override
     public void printMenu(){
+        clearConsole();
+        System.out.println(header);
         System.out.println();
         IntStream.range(0, options.size())
                 .mapToObj(i -> enumerateOption(i + 1, options.get(i).toString()))
@@ -328,7 +330,9 @@ abstract class Menu implements Page{
                 date = LocalDate.parse(line.trim());
 
                 acquireCorrectDate = true;
-            } catch (DateTimeParseException _){}
+            } catch (DateTimeParseException _){
+                System.out.println("Invalid input: not a valid date, date must be in format YYYY-MM-DD.");
+            }
         }
 
         return date;
@@ -368,7 +372,9 @@ abstract class Menu implements Page{
                 date =  LocalDateTime.parse(line.trim());
 
                 acquireCorrectDateTime = true;
-            } catch (DateTimeParseException _){}
+            } catch (DateTimeParseException _){
+                System.out.println("Invalid input: not a valid date, date must be in format YYYY-MM-DD HH:MM.");
+            }
         }
 
         return date;
@@ -489,4 +495,19 @@ abstract class Menu implements Page{
     public boolean processPacketStatusInSilence(GeneralPacket packet){
         return processPacketStatus(packet, true);
     }
+
+    private static final String header =
+            """
+           
+            /$$   /$$                               /$$   /$$               /$$        /$$$$$$                        /$$
+           | $$  | $$                              |__/  | $$              | $$       /$$__  $$                      | $$
+           | $$  | $$  /$$$$$$   /$$$$$$$  /$$$$$$  /$$ /$$$$$$    /$$$$$$ | $$      | $$  \\__/ /$$   /$$  /$$$$$$$ /$$$$$$    /$$$$$$  /$$$$$$/$$$$
+           | $$$$$$$$ /$$__  $$ /$$_____/ /$$__  $$| $$|_  $$_/   |____  $$| $$      |  $$$$$$ | $$  | $$ /$$_____/|_  $$_/   /$$__  $$| $$_  $$_  $$
+           | $$__  $$| $$  \\ $$|  $$$$$$ | $$  \\ $$| $$  | $$      /$$$$$$$| $$       \\____  $$| $$  | $$|  $$$$$$   | $$    | $$$$$$$$| $$ \\ $$ \\ $$
+           | $$  | $$| $$  | $$ \\____  $$| $$  | $$| $$  | $$ /$$ /$$__  $$| $$       /$$  \\ $$| $$  | $$ \\____  $$  | $$ /$$| $$_____/| $$ | $$ | $$
+           | $$  | $$|  $$$$$$/ /$$$$$$$/| $$$$$$$/| $$  |  $$$$/|  $$$$$$$| $$      |  $$$$$$/|  $$$$$$$ /$$$$$$$/  |  $$$$/|  $$$$$$$| $$ | $$ | $$
+           |__/  |__/ \\______/ |_______/ | $$____/ |__/   \\___/   \\_______/|__/       \\______/  \\____  $$|_______/    \\___/   \\_______/|__/ |__/ |__/
+                                         | $$                                                   /$$  | $$
+                                         | $$                                                  |  $$$$$$/
+           """;
 }

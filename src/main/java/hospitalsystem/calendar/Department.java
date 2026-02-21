@@ -140,7 +140,7 @@ public class Department{
         if (fromToday){
             LocalDate today = LocalDate.now();
 
-            while (startIdx < sortedAppointments.size() && !sortedAppointments.get(startIdx).startTime.toLocalDate().equals(today)){
+            while (startIdx < sortedAppointments.size() && sortedAppointments.get(startIdx).startTime.toLocalDate().isBefore(today)){
                 ++startIdx;
             }
         }
@@ -178,7 +178,7 @@ public class Department{
         sb.append(processEmptyDays(startOfWeek, appointments.get(active).startTime));
 
         while (active < info.end){
-            PeriodInfo day = getLastIdxOfSameDay(appointments, info.start);
+            PeriodInfo day = getLastIdxOfSameDay(appointments, active);
             active = day.end;
 
             sb.append(processDay(appointments, day));

@@ -10,6 +10,7 @@ import hospitalsystem.packet.GeneralPacket;
 import hospitalsystem.packet.DataPacket;
 import hospitalsystem.personnel.Doctor;
 import hospitalsystem.personnel.Patient;
+import hospitalsystem.personnel.Person;
 import hospitalsystem.personnel.util.PersonKinds;
 import hospitalsystem.personnel.util.DoctorData;
 import hospitalsystem.personnel.util.PatientData;
@@ -19,7 +20,9 @@ import hospitalsystem.util.ExportsUtil;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -61,6 +64,22 @@ public class Hospital {
         try{
             return new DataPacket<>(database.getPatient(id));
         } catch (DatabaseException e){
+            return new DataPacket<>(e);
+        }
+    }
+
+    public DataPacket<List<Patient>> getAllPatientWithName(String firstName, String lastName){
+        try {
+            List<Person> people = database.getPerson(firstName, lastName, Patient.getClassIdentifier());
+
+            List<Patient> patients = new ArrayList<>();
+
+            for (Person person : people) {
+                patients.add(database.getPatient(person.getId()));
+            }
+
+            return new DataPacket<>(patients);
+        } catch (DatabaseException e) {
             return new DataPacket<>(e);
         }
     }
@@ -137,6 +156,22 @@ public class Hospital {
     public DataPacket<Doctor> getDoctor(int id){
         try{
             return new DataPacket<>(database.getDoctor(id));
+        } catch (DatabaseException e) {
+            return new DataPacket<>(e);
+        }
+    }
+
+    public DataPacket<List<Doctor>> getAllDoctorsWithName(String firstName, String lastName){
+        try {
+            List<Person> people = database.getPerson(firstName, lastName, Doctor.getClassIdentifier());
+
+            List<Doctor> doctors = new ArrayList<>();
+
+            for (Person person : people) {
+                doctors.add(database.getDoctor(person.getId()));
+            }
+
+            return new DataPacket<>(doctors);
         } catch (DatabaseException e) {
             return new DataPacket<>(e);
         }

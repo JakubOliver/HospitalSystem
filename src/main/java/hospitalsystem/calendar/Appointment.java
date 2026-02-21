@@ -86,11 +86,15 @@ public class Appointment implements Comparable<Appointment>, Exportable {
 
     @Override
     public int compareTo(Appointment o) {
-        if (this.startTime.isEqual(o.startTime)) {
-            return this.endTime.compareTo(o.endTime);
+        if (!startTime.equals(o.startTime)) {
+            return startTime.compareTo(o.startTime);
         }
 
-        return this.startTime.compareTo(o.startTime);
+        if (!endTime.equals(o.endTime)) {
+            return endTime.compareTo(o.endTime);
+        }
+
+        return id - o.id;
     }
 
     /**
