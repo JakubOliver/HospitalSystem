@@ -19,7 +19,9 @@ public class Department{
     record PeriodInfo(int start, int end, int layers){}
     record RowInfo(int layer, Parts part, LocalDateTime day){}
 
-    //TODO:
+    /**
+     * Data structure that remembers provided values and always provided the lowest not used.
+     */
     static class LowestEmpty{
         PriorityQueue<Integer> heap;
         int highest;
@@ -52,16 +54,15 @@ public class Department{
     private final Map<Integer, List<Appointment>> layers;
     private final Map<Appointment, Integer> layerOfAppointment;
 
-    int prefixSize = 10;
-    int sizeOfSlot = 6;
-    int lengthOfSlotInMinutes = 30;
-    int numberOfSlotsInHour = 60 / lengthOfSlotInMinutes;
-    int numberOfParts = 3;
+    private final int prefixSize = 10;
+    private final int sizeOfSlot = 6;
+    private final int lengthOfSlotInMinutes = 30;
+    private final int numberOfSlotsInHour = 60 / lengthOfSlotInMinutes;
 
-    LocalTime startTime = LocalTime.of(8, 0,0);
-    LocalTime endTime = LocalTime.of(16,0,0);
+    private final LocalTime startTime = LocalTime.of(8, 0,0);
+    private final LocalTime endTime = LocalTime.of(16,0,0);
 
-    int sizeOfCalendar = (endTime.getHour() - startTime.getHour()) * numberOfSlotsInHour * sizeOfSlot;
+    private final int sizeOfCalendar = (endTime.getHour() - startTime.getHour()) * numberOfSlotsInHour * sizeOfSlot;
 
     /**
      * Creates new hospital department.
@@ -92,6 +93,9 @@ public class Department{
         PriorityQueue<Appointment> heap = new PriorityQueue<>();
         LowestEmpty lowest = new LowestEmpty();
 
+        /*
+        Uses modified algorithm for max compact in interval graphs.
+         */
         for (Appointment appointment : appointments){
             while (!heap.isEmpty() && heap.peek().endTime.isBefore(appointment.startTime)){
                 Appointment old = heap.poll();

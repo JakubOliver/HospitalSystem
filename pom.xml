@@ -85,6 +85,7 @@
                 <configuration>
                     <outputDirectory>${project.basedir}/docs</outputDirectory>
                     <reportOutputDirectory>${project.basedir}/docs</reportOutputDirectory>
+                    <overview>${project.basedir}/docs/src/overview.html</overview>
                 </configuration>
             </plugin>
         </plugins>

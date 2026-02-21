@@ -20,13 +20,13 @@ public class Calendar {
     private final Map<String, Department> departments;
 
     /** Minimum length of appointment */
-    public static int minimumLengthOfAppointment = 60;
+    public static final int minimumLengthOfAppointment = 60;
     /** Requirement that all appointments have to start and end at *.30 or *.00 (so at half or whole hours) */
-    public static int alignmentOfAppointment = 30;
+    public static final int alignmentOfAppointment = 30;
     /** First appointment can start after hour */
-    public static int minStartingTime = 8;
+    public static final int minStartingTime = 8;
     /** Every appointment have to end before this hour */
-    public static int maxEndingTime = 16;
+    public static final int maxEndingTime = 16;
 
     /**
      * Creates empty calendar.
