@@ -315,8 +315,6 @@ public class Hospital {
         return new GeneralPacket();
     }
 
-    //TODO: appointment where patientId or doctorId (maybe like some general search, where the user provide data and get all appointments satisfying this query)
-
     /**
      * Returns list of all appointments connected to the person with provided id and kind.
      *

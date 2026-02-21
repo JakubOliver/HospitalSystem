@@ -2,6 +2,7 @@ import hospitalsystem.UI.PatientMenu;
 import hospitalsystem.calendar.Appointment;
 import hospitalsystem.calendar.CalendarException;
 import hospitalsystem.calendar.util.AppointmentData;
+import hospitalsystem.database.Database;
 import hospitalsystem.database.DatabaseException;
 import hospitalsystem.packet.DataPacket;
 import hospitalsystem.packet.GeneralPacket;
@@ -17,6 +18,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.MessageFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -478,5 +480,94 @@ public class DatabaseTests extends TestsUsingDatabase{
             DataPacket<List<String>> packet3 = api.getCalendar();
             assertFalse(packet3.successful);
         } catch (SQLException _){}
+    }
+
+    @Test
+    void updatePatient(){
+        GeneralPacket packet = api.addPatient(samplePatientData);
+        assertTrue(packet.successful);
+
+        DataPacket<Patient> packet2 = api.getPatient(1);
+        assertTrue(packet2.successful);
+        assertNotNull(packet2.data);
+
+        Patient newPatient = new Patient(
+                packet2.data.getId(),
+                "Lukas",
+                "Sedlak",
+                packet2.data.getDateOfBirth(),
+                "Pack pain"
+        );
+
+        GeneralPacket packet3 = api.updatePatient(newPatient);
+        assertTrue(packet3.successful);
+
+        DataPacket<Patient> packet4 = api.getPatient(1);
+        assertTrue(packet4.successful);
+        assertNotNull(packet4.data);
+
+        assertEquals(newPatient.toString(), packet4.data.toString());
+    }
+
+    @Test
+    void updatePatientInvalid(){
+        Patient newPatient = new Patient(
+                1,
+                "Lukas",
+                "Sedlak",
+                LocalDate.of(1970, 1, 1),
+                "Pack pain"
+        );
+
+        GeneralPacket packet = api.updatePatient(newPatient);
+        assertFalse(packet.successful);
+        assertNotNull(packet.error);
+        assertTrue(packet.error.contains("Id does not exist!"));
+
+        DataPacket<Patient> packet2 = api.getPatient(1);
+        assertFalse(packet2.successful);
+        assertNotNull(packet2.error);
+        assertTrue(packet2.error.contains("Id does not exist!"));
+    }
+
+    @Test
+    void updateDoctorInvalid(){
+        Doctor doctor = new Doctor(
+                new Person(1, samplePersonData),
+                sampleDoctorDetails
+        );
+
+        GeneralPacket packet = api.addPatient(samplePatientData);
+        assertTrue(packet.successful);
+
+        GeneralPacket response = api.updateDoctor(doctor);
+        assertFalse(response.successful);
+        assertNotNull(response.error);
+        assertTrue(response.error.contains(MessageFormat.format(DatabaseException.invalidTypeOfPersonDatabaseError, 1, Doctor.getClassIdentifier())));
+    }
+
+    @Test
+    void updateAppointmentInvalid(){
+        GeneralPacket packet = api.addPatient(samplePatientData);
+        assertTrue(packet.successful);
+
+        GeneralPacket packet2 = api.addDoctor(sampleDoctorData);
+        assertTrue(packet2.successful);
+
+        GeneralPacket packet3 = api.addAppointment(sampleAppointmentData);
+        assertTrue(packet3.successful);
+
+        Appointment newAppointment = new Appointment(
+                1,
+                new Patient(new Person(1, samplePersonData), samplePatientDetails),
+                new Doctor(new Person(40, samplePersonData), sampleDoctorDetails),
+                LocalDateTime.of(2001, 1, 1, 10, 0),
+                LocalDateTime.of(2001, 1, 1, 11, 0)
+        );
+
+        GeneralPacket packet4 = api.updateAppointment(newAppointment);
+        assertFalse(packet4.successful);
+        assertNotNull(packet4.error);
+        assertTrue(packet4.error.contains("Id does not exist!"), () -> packet4.error);
     }
 }

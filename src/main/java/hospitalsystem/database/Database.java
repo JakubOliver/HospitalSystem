@@ -286,6 +286,7 @@ public class Database {
         try (Connection connection = DriverManager.getConnection(url)){
             connection.setAutoCommit(false);
 
+            getPerson(connection, patient.getId(), Patient.getClassIdentifier()); //Check whether the person exists and if is patient
             updatePerson(connection, patient);
             updatePatientDetails(connection, patient);
 
@@ -464,8 +465,13 @@ public class Database {
      */
     public void updateDoctor(Doctor doctor) throws DatabaseException {
         try (Connection connection = DriverManager.getConnection(url)){
+            connection.setAutoCommit(false);
+
+            getPerson(connection, doctor.getId(), Doctor.getClassIdentifier());
             updatePerson(connection, doctor);
             updateDoctorDetails(connection, doctor);
+
+            connection.commit();
         } catch (SQLException e){
             throw new DatabaseException(DatabaseException.doctorUpdateDatabaseError, e.getMessage());
         }

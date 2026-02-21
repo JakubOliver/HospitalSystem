@@ -230,7 +230,6 @@ public class Department{
 
         LocalDateTime dayTime = start;
 
-        //TODO: dodrzovat tydny at sedi nazvy, doplnit zacatky tydnu
         for (int empty = 0; empty < daysToNext; empty++){
             int weekDif = start.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR) - dayTime.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
             if (weekDif != 0) break;

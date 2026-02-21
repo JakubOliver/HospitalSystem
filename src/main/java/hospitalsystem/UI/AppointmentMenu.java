@@ -41,7 +41,6 @@ public class AppointmentMenu extends Menu{
         addOption("Back", this::end);
     }
 
-    //TODO: pridat update appointment z default hodnotama
     private Optional<AppointmentData> getAppointmentData(){
         int patientsId;
         if (createNew(Patient.getClassIdentifier())){
