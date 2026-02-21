@@ -1,6 +1,7 @@
 package hospitalsystem.calendar;
 
 import hospitalsystem.calendar.util.AppointmentCompare;
+import hospitalsystem.calendar.util.Parts;
 
 import java.time.DayOfWeek;
 import java.time.Duration;
@@ -16,8 +17,9 @@ import java.util.*;
  */
 public class Department{
     record PeriodInfo(int start, int end, int layers){}
-    record RowInfo(int layer, int part, LocalDateTime day){}
+    record RowInfo(int layer, Parts part, LocalDateTime day){}
 
+    //TODO:
     static class LowestEmpty{
         PriorityQueue<Integer> heap;
         int highest;
@@ -109,8 +111,6 @@ public class Department{
         }
     }
 
-    //TODO: some round time function for 30 minutes intervals
-
     @Override
     public String toString(){
 
@@ -187,7 +187,7 @@ public class Department{
         LocalDateTime dayTime = appointments.get(active).startTime;
 
         for (int layer = 0; layer <= info.layers(); layer++){
-            for (int part = 0; part < numberOfParts; part++){
+            for (Parts part : Parts.values()){
                 sb.append(processLayerPrefix(layer, part, dayTime));
 
                 sb.append(processAppointments(appointments, info, new RowInfo(layer, part, dayTime)));
@@ -226,20 +226,12 @@ public class Department{
 
         LocalDateTime dayTime = start;
 
-        /*
-        if (daysToNext > 3000){
-            //TODO: neco specl
-
-            return sb.toString();
-        }
-         */
-        System.out.println("____________");
         //TODO: dodrzovat tydny at sedi nazvy, doplnit zacatky tydnu
         for (int empty = 0; empty < daysToNext; empty++){
             int weekDif = start.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR) - dayTime.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
             if (weekDif != 0) break;
 
-            for (int part = 0; part < numberOfParts; part++){
+            for (Parts part : Parts.values()){
                 sb.append(printDate(dayTime, part));
                 sb.append("-".repeat(sizeOfCalendar));
                 sb.append("\n");
@@ -311,7 +303,7 @@ public class Department{
      * @param time Time of the day.
      * @return diagram prefix for the days based on state in which the drawing of diagram is.
      */
-    private String processLayerPrefix(int layer, int part, LocalDateTime time){
+    private String processLayerPrefix(int layer, Parts part, LocalDateTime time){
         if (layer == 0) {
             return printDate(time, part);
         } else {
@@ -372,21 +364,24 @@ public class Department{
      * @param part Part in which the drawing is.
      * @return String representing date of the day based on the part in which the drawing is.
      */
-    private String printDate(LocalDateTime time, int part){
-        //TODO:
-        int size = 10;
+    private String printDate(LocalDateTime time, Parts part){
+        int lengthOfNumbers = 4;
 
-        if (part == 0){
-            String dayName = time.getDayOfWeek().toString();
-            int offset = (size - dayName.length()) / 2;
+        return switch (part){
+            case TOP -> {
+                String dayName = time.getDayOfWeek().toString();
+                int offset = (prefixSize - dayName.length()) / 2;
 
-            return " ".repeat(offset) + dayName + " ".repeat(size - dayName.length() - offset);
-        } else if (part == 1){
-            return String.format("%02d", time.getDayOfMonth()) + " ".repeat(size - 4) + String.format("%02d", time.getMonthValue());
-        } else {
-            int offset = (size - 4) / 2;
+                yield  " ".repeat(offset) + dayName + " ".repeat(prefixSize - dayName.length() - offset);
+            }
+            case MIDDLE -> {
+                yield  String.format("%02d", time.getDayOfMonth()) + " ".repeat(prefixSize - lengthOfNumbers) + String.format("%02d", time.getMonthValue());
+            }
+            case BOTTOM -> {
+                int offset = (prefixSize - lengthOfNumbers) / 2;
 
-            return " ".repeat(offset) + time.getYear() + " ".repeat(size - 4 - offset);
-        }
+                yield  " ".repeat(offset) + time.getYear() + " ".repeat(prefixSize - lengthOfNumbers - offset);
+            }
+        };
     }
 }

@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.MessageFormat;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -106,8 +107,8 @@ public class Calendar {
      * @throws CalendarException Department with the provided name does not exist.
      */
     public String getDepartmentCalendar(String department) throws CalendarException {
-        if (departments.containsKey(department))
-            throw  new CalendarException(CalendarException.notValidDepartment);
+        if (!departments.containsKey(department))
+            throw  new CalendarException(MessageFormat.format(CalendarException.notValidDepartment, department));
 
         return departments.get(department).toString();
     }

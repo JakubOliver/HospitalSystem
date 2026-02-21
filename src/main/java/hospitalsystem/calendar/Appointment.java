@@ -1,5 +1,6 @@
 package hospitalsystem.calendar;
 
+import hospitalsystem.calendar.util.Parts;
 import hospitalsystem.personnel.Doctor;
 import hospitalsystem.personnel.Patient;
 import hospitalsystem.util.Exportable;
@@ -98,24 +99,28 @@ public class Appointment implements Comparable<Appointment>, Exportable {
      * @param part Part that is required for drawing calendar diagram.
      * @return Info about appointment for the calendar diagram based on provided required part.
      */
-    public String getStringForPart(int part){
+    public String getStringForPart(Parts part){
         String prefix = "";
         int length = Math.toIntExact((Duration.between(startTime, endTime).toMinutes() / 30) * 6);
 
-        if (part == 0){
-            int idDigits = numberOfDigits(doctorId);
+        return switch (part){
+            case TOP -> {
+                int idDigits = numberOfDigits(doctorId);
 
-            int nameLength = Math.min(department.length(), length - 3 - idDigits);
+                int nameLength = Math.min(department.length(), length - 3 - idDigits);
 
-            return prefix + department.substring(0, nameLength) + " ".repeat(length - nameLength - idDigits) + doctorId;
-        } else if (part == 1){
-            int idDigits = numberOfDigits(patientId);
-            int emptySize = (length - idDigits) / 2;
+                yield  prefix + department.substring(0, nameLength) + " ".repeat(length - nameLength - idDigits) + doctorId;
+            }
+            case MIDDLE -> {
+                int idDigits = numberOfDigits(patientId);
+                int emptySize = (length - idDigits) / 2;
 
-            return prefix + " ".repeat(emptySize) + "\u001b[31m" + patientId + "\u001b[0m" + " ".repeat(length - idDigits - emptySize);
-        } else {
-            return prefix + startTime.toLocalTime().toString() + " ".repeat(length - 10) + endTime.toLocalTime().toString();
-        }
+                yield prefix + " ".repeat(emptySize) + "\u001b[31m" + patientId + "\u001b[0m" + " ".repeat(length - idDigits - emptySize);
+            }
+            case BOTTOM -> {
+                yield prefix + startTime.toLocalTime().toString() + " ".repeat(length - 10) + endTime.toLocalTime().toString();
+            }
+        };
     }
 
     /**

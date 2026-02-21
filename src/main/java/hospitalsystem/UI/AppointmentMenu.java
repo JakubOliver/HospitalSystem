@@ -172,7 +172,7 @@ public class AppointmentMenu extends Menu{
      * Processes input data from scanner and based on provided department shows calendar.
      */
     public void showDepartmentCalendar(){
-        String department = getString("Department name");
+        String department = getString(getQuestion("Department name"));
 
         DataPacket<String> packet = api.getCalendarForDepartment(department);
 
