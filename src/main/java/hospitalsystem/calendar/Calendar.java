@@ -35,6 +35,9 @@ public class Calendar {
     private static final LocalDate lowestAvailableDate = LocalDate.of(1900, 1, 1);
     private static final LocalDate highestAvailableDate = LocalDate.of(3000, 1, 1);
 
+    private static final LocalDateTime lowestAvailableAppointmentDateTime = LocalDateTime.parse("2000-01-01T00:00:00");
+    private static final LocalDateTime highestAvailableAppointmentDateTime = LocalDateTime.parse("3000-01-01T00:00:00");
+
     /**
      * Creates empty calendar.
      */
@@ -107,7 +110,11 @@ public class Calendar {
     }
 
     public static boolean isWithinValidDates(LocalDate date){
-        return date.isAfter(lowestAvailableDate) && date.isBefore(highestAvailableDate);
+        return date.isAfter(lowestAvailableDate) && date.isBefore(LocalDate.now().plusDays(1));
+    }
+
+    public static boolean isAppointmentWithinValidDateTime(LocalDateTime dateTime){
+        return dateTime.isAfter(lowestAvailableAppointmentDateTime) && dateTime.isBefore(highestAvailableAppointmentDateTime);
     }
 
     /**

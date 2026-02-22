@@ -68,6 +68,22 @@ abstract class Menu implements Page{
         try {
             options.get(idx).method().run();
         } catch (CancelException _) {}
+
+        /*
+        There are many ways how to process that the user wants to stop filing inputs
+        for updating, creating etc. I choose the option when the input that triggers
+        the stop of filling also triggers custom exception.
+        Maybe better way how to counter this problem is to crete another state machine
+        similar to the UIState. Unfortunately this implies that after (or before) all calls for
+        data we would be required to check whether the state changed, and we would have huge
+        amount of ifs everywhere. We can say same conclusion about the approach using Optional
+        or some default values.
+        Another approach similar to the previous is using some functional interface, that would
+        have set some default function like beforeDo and this method would determine whether
+        the main function would be called. But for the correct functionality we would have to
+        wrap almost very function in this functional interface (methods for processing inputs and
+        also hospital system calls).
+         */
     }
 
     /**
@@ -339,7 +355,7 @@ abstract class Menu implements Page{
                 date = LocalDate.parse(line.trim());
 
                 if (!Calendar.isWithinValidDates(date)){
-                    System.out.println("Invalid input: date have to be between year 1900 and 3000");
+                    System.out.println("Invalid input: date have to be between year 1900 and present");
                 } else {
                     acquireCorrectDate = true;
                 }
@@ -384,7 +400,11 @@ abstract class Menu implements Page{
             try{
                 date =  LocalDateTime.parse(line.trim());
 
-                acquireCorrectDateTime = true;
+                if (!Calendar.isAppointmentWithinValidDateTime(date)){
+                    System.out.println("Invalid input: date have to be between year 2000-01-01 and 3000-01-01.");
+                } else {
+                    acquireCorrectDateTime = true;
+                }
             } catch (DateTimeParseException _){
                 System.out.println("Invalid input: not a valid date, date must be in format YYYY-MM-DD HH:MM.");
             }
