@@ -1,6 +1,7 @@
 package hospitalsystem.UI;
 
 import hospitalsystem.Hospital;
+import hospitalsystem.calendar.Calendar;
 import hospitalsystem.packet.GeneralPacket;
 import hospitalsystem.personnel.Doctor;
 import hospitalsystem.personnel.Patient;
@@ -24,6 +25,8 @@ abstract class Menu implements Page{
 
     List<MenuEntry> options = new ArrayList<>();
     UIState state = UIState.RUN;
+
+    private static final String exitSequence = "cancel";
 
     /**
      * Abstract constructor used in the chain of construction.
@@ -62,7 +65,9 @@ abstract class Menu implements Page{
     public void processMenu(){
         int idx = getOption(options.size());
 
-        options.get(idx).method().run();
+        try {
+            options.get(idx).method().run();
+        } catch (CancelException _) {}
     }
 
     /**
@@ -257,22 +262,22 @@ abstract class Menu implements Page{
      * @return Valid integer.
      */
     public int getInteger(String question){
+        boolean acquiredCorrectInteger = false;
+        int number = 0;
         String line;
-        System.out.print(question);
 
-        while (scanner.hasNextLine()) {
-            line = scanner.nextLine();
+        while (!acquiredCorrectInteger) {
+            line = getString(question);
 
             try{
-                return Integer.parseInt(line.trim());
+                number = Integer.parseInt(line.trim());
+                acquiredCorrectInteger = true;
             } catch (NumberFormatException e){
                 System.out.println("Invalid input: not a valid number");
             }
-
-            System.out.print(question);
         }
 
-        throw new InputMismatchException("Scanner run out of lines and no correct integer found.");
+        return number;
     }
 
     /**
@@ -288,6 +293,10 @@ abstract class Menu implements Page{
 
         while (scanner.hasNextLine()){
             line = scanner.nextLine().trim();
+
+            if (line.equals(exitSequence)){
+                throw new CancelException(CancelException.userCancel);
+            }
 
             if (!line.isEmpty()){
                 return line;
@@ -329,7 +338,11 @@ abstract class Menu implements Page{
             try{
                 date = LocalDate.parse(line.trim());
 
-                acquireCorrectDate = true;
+                if (!Calendar.isWithinValidDates(date)){
+                    System.out.println("Invalid input: date have to be between year 1900 and 3000");
+                } else {
+                    acquireCorrectDate = true;
+                }
             } catch (DateTimeParseException _){
                 System.out.println("Invalid input: not a valid date, date must be in format YYYY-MM-DD.");
             }

@@ -670,7 +670,7 @@ public class Database {
      * @param endTime Ending time of the appointment.
      * @throws DatabaseException Error connected to the failure of storing new appointment.
      */
-    public void addAppointment(int patientId, int doctorId,LocalDateTime startTime, LocalDateTime endTime) throws DatabaseException {
+    public void addAppointment(int patientId, int doctorId, LocalDateTime startTime, LocalDateTime endTime) throws DatabaseException {
         Doctor doctor = getDoctor(doctorId);
 
         addAppointment(patientId, doctorId, doctor.getDepartment(), startTime, endTime);

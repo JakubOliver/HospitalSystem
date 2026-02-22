@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,6 +31,9 @@ public class Calendar {
     public static final int minStartingTime = 8;
     /** Every appointment have to end before this hour */
     public static final int maxEndingTime = 16;
+
+    private static final LocalDate lowestAvailableDate = LocalDate.of(1900, 1, 1);
+    private static final LocalDate highestAvailableDate = LocalDate.of(3000, 1, 1);
 
     /**
      * Creates empty calendar.
@@ -100,6 +104,10 @@ public class Calendar {
             throw new CalendarException(CalendarException.invalidTimes);
 
         return true;
+    }
+
+    public static boolean isWithinValidDates(LocalDate date){
+        return date.isAfter(lowestAvailableDate) && date.isBefore(highestAvailableDate);
     }
 
     /**
