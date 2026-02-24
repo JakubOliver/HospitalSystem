@@ -40,6 +40,27 @@ After selecting the option will be created (if not already exists) directory exp
 
 <img alt="img_1.png" src="src/exportMenu.png" width="420"/>
 
+## Types of inputs
+
+While using the administrative system you will came a cross many types of inputs. Below you can see specification of each one:
+
+* Text: this type of input you will be prompted while filling information about names, anamnesis etc. The only requirement for this input is that the provided text must be not empty. So if you wish to have patient with name "45afa#@" it is possible but not advisable.
+* Integer: this type of input you will be prompted while filling information about identification number or selection options. The only requirements for this input is that the provided number is valid integer, so number such as 3.14 etc. are not valid.
+* Date: this type of input you will be filling with information about mostly date of births for the measure with this entry is connected requirement, that the date have to be between date 1900-01-01 and present, and also the date have to be provided in correct YYYY-MM-DD format.
+* DateTime: this type of input you will be prompted while filling information about times connected to the appointments. The requirement for this entry is that the time have to be between 1900-01-01 00:00 (inclusive) and 3000-01-01 00:00 (exclusive) and have correct format YYYY-MM-DD HH-MM or YYYY-MM-DDTHH-MM.
+
 ## How to exit
 
 Every submenu can be exited (going back to main menu) by selecting options **Back**. And the program can be ended in the main menu by selecting option **End**. 
+
+# Tips and tricks
+
+This section is dedicated for thing that could improve workflow of administration or maybe surprise user.
+
+Firstly the whole administrative system is build with idea of mind that every running process and every function call only have place of truth for data and that is database. Therefore, it is easy and straightforward to used program with multiple instances at once. For example as show in the picture bellow this can be really useful while add new appointment, because you can see at the same time calendar so it is easier to find empty space, where doctor does not have appointment.
+
+![img.png](src/multipleWindows.png)
+
+When we talk about adding new appointments and more specifically when user selects the option to create new patient or doctor then it is important to know that, this process is independent of the appointment generation, because we did not want the user to prompt whole new patient and doctor again. So if you successfully create patient or doctor in this process but unfortunately the creation of appointment did not go through, for example because the appointment was in conflict with doctor's schedule then in second attempt you should select name or Id of the patient or doctor, because he or she is already in the system. 
+
+This is not a technical bug, because deleting user and ensure the biggest atomicity of operation will be only another api call, but this approach make more sense for me. 
