@@ -47,7 +47,7 @@ While using the administrative system you will came a cross many types of inputs
 * Text: this type of input you will be prompted while filling information about names, anamnesis etc. The only requirement for this input is that the provided text must be not empty. So if you wish to have patient with name "45afa#@" it is possible but not advisable.
 * Integer: this type of input you will be prompted while filling information about identification number or selection options. The only requirements for this input is that the provided number is valid integer, so number such as 3.14 etc. are not valid.
 * Date: this type of input you will be filling with information about mostly date of births for the measure with this entry is connected requirement, that the date have to be between date 1900-01-01 and present, and also the date have to be provided in correct YYYY-MM-DD format.
-* DateTime: this type of input you will be prompted while filling information about times connected to the appointments. The requirement for this entry is that the time have to be between 1900-01-01 00:00 (inclusive) and 3000-01-01 00:00 (exclusive) and have correct format YYYY-MM-DD HH-MM or YYYY-MM-DDTHH-MM.
+* DateTime: this type of input you will be prompted while filling information about times connected to the appointments. The requirement for this entry is that the time have to be between 2000-01-01 00:00 (inclusive) and 3000-01-01 00:00 (exclusive) and have correct format YYYY-MM-DD HH-MM or YYYY-MM-DDTHH-MM.
 
 ## How to exit
 
@@ -57,7 +57,7 @@ Every submenu can be exited (going back to main menu) by selecting options **Bac
 
 This section is dedicated for thing that could improve workflow of administration or maybe surprise user.
 
-Firstly the whole administrative system is build with idea of mind that every running process and every function call only have place of truth for data and that is database. Therefore, it is easy and straightforward to used program with multiple instances at once. For example as show in the picture bellow this can be really useful while add new appointment, because you can see at the same time calendar so it is easier to find empty space, where doctor does not have appointment.
+Firstly the whole administrative system is build with idea in mind that every running process and every function call only have source of truth for data and that is database. Therefore, it is easy and straightforward to used program with multiple instances at once. For example as show in the picture bellow this can be really useful while adding new appointment, because you can see at the same time calendar so it is easier to find empty space, where doctor does not have appointment.
 
 ![img.png](src/multipleWindows.png)
 

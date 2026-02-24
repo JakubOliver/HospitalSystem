@@ -109,10 +109,22 @@ public class Calendar {
         return true;
     }
 
+    /**
+     * Checks whether the date is between 1990-01-01 and present.
+     *
+     * @param date Date that will be checked.
+     * @return Whether the date is between 1990-01-01 and present.
+     */
     public static boolean isWithinValidDates(LocalDate date){
         return date.isAfter(lowestAvailableDate) && date.isBefore(LocalDate.now().plusDays(1));
     }
 
+    /**
+     * Checks whether the date is between 2000-01-01 00:00 and 3000-01-01 00:00
+     *
+     * @param dateTime Date and time that will be checked.
+     * @return Whether the date is between 2000-01-01 00:00 and 3000-01-01 00:00
+     */
     public static boolean isAppointmentWithinValidDateTime(LocalDateTime dateTime){
         return dateTime.isAfter(lowestAvailableAppointmentDateTime) && dateTime.isBefore(highestAvailableAppointmentDateTime);
     }
@@ -169,7 +181,11 @@ public class Calendar {
         }
     }
 
-    //TODO:
+    /**
+     * Returns number of appointments in the calendar.
+     *
+     * @return Number of appointments in the calendar.
+     */
     public int size(){
         int size = 0;
 
@@ -180,6 +196,12 @@ public class Calendar {
         return size;
     }
 
+    /**
+     * Returns how many appointments does the provided person had or will have in the future.
+     *
+     * @param person Person for which we want to know number of appointments.
+     * @return How many appointments does the provided person had or will have in the future.
+     */
     public int numberOfAppearances(Person person){
         int appearances = 0;
 
