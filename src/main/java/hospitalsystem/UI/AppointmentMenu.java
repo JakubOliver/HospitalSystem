@@ -42,6 +42,12 @@ public class AppointmentMenu extends Menu{
         addOption("Back", this::end);
     }
 
+    /**
+     * Returns index of the person the user want to select from list of people.
+     *
+     * @param people List of people from which will be user identify the required one.
+     * @return Index of the person the use want to select from list of people.
+     */
     private int selectPerson(List<? extends Person> people){
         if (people.size() > 1) {
             for (int i = 0; i < people.size(); i++) {
@@ -54,6 +60,11 @@ public class AppointmentMenu extends Menu{
         return people.getFirst().getId();
     }
 
+    /**
+     * Collects data required to the creating appointment.
+     *
+     * @return Data required to the creating appointment.
+     */
     private Optional<AppointmentData> getAppointmentData(){
         int patientsId;
         //TODO: poznamka do dokumentace, ze vytvoreni je indenpendent process (je to feature ne bug, aby nebylo potreba znovu vytvaret osoby)

@@ -21,6 +21,7 @@ import java.util.Map;
  * Manager of appointments for hospital system.
  */
 public class Calendar {
+    /** Departments in hospital */
     private final Map<String, Department> departments;
 
     /** Minimum length of appointment */
@@ -33,7 +34,6 @@ public class Calendar {
     public static final int maxEndingTime = 16;
 
     private static final LocalDate lowestAvailableDate = LocalDate.of(1900, 1, 1);
-    private static final LocalDate highestAvailableDate = LocalDate.of(3000, 1, 1);
 
     private static final LocalDateTime lowestAvailableAppointmentDateTime = LocalDateTime.parse("2000-01-01T00:00:00");
     private static final LocalDateTime highestAvailableAppointmentDateTime = LocalDateTime.parse("3000-01-01T00:00:00");
@@ -65,6 +65,9 @@ public class Calendar {
         computeLayers();
     }
 
+    /**
+     * Computes layer system of each department.
+     */
     private void computeLayers(){
         for (Department department : departments.values()) {
             department.computeLayers();

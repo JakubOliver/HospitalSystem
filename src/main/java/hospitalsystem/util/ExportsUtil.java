@@ -19,8 +19,17 @@ public final class ExportsUtil {
     /** Exception message which denotes that while exporting was unsuccessfully created export directory */
     public static String unableToPrepareExportsDirectoryErrMsg = "Unable to create directory for exports";
 
+    /**
+     * Private constructor of export util class. (This class should not be instantiable, therefore is default constructor private/unreachable)
+     */
     private ExportsUtil(){}
 
+    /**
+     * Returns name of the file with export date prefix.
+     *
+     * @param name Base name of the file.
+     * @return Name of the file with export date prefix.
+     */
     public static String getExportFileName(String name){
         return LocalDate.now() + "-" + name;
     }

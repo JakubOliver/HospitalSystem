@@ -48,6 +48,9 @@ public class GeneralPacket {
      * Wrapper class containing messages connected with the packets.
      */
     public static class Msg {
+        /**
+         * Private constructor of Msg class. (This class should not be instantiable, therefore has private default constructor).
+         */
         private Msg(){}
 
         /** Informative message representing general error with the API request connected to the packet. */

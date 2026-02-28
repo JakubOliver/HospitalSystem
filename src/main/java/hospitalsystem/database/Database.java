@@ -55,6 +55,7 @@ public class Database {
     private static final String notExistingDoctorIdentifierError = "Doctor with this id does not exist!";
     private static final String notExistingAppointmentIdentifierError = "Appointment with this id does not exist!";
 
+    /** Path to the database */
     private final String url;
 
     /**
@@ -142,8 +143,6 @@ public class Database {
         }
     }
 
-    //          PERSON
-
     /**
      * Adds new person into database.
      *
@@ -172,6 +171,13 @@ public class Database {
         }
     }
 
+    /**
+     * Updates information about provided person.
+     *
+     * @param connection Connection to the database.
+     * @param person Person data that will be updated.
+     * @throws SQLException Error connected to the failure of updating data or providing invalid person information.
+     */
     private void updatePerson(Connection connection, Person person) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(updatePerson)){
             statement.setString(1, person.getFirstName());
@@ -183,6 +189,13 @@ public class Database {
         }
     }
 
+    /**
+     * Deletes person from the database.
+     *
+     * @param connection Connection to the database.
+     * @param id Identification number of the person.
+     * @throws SQLException Errors connected to the failure of deleting person from database.
+     */
     private void deletePerson(Connection connection, int id) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(deletePersonById)){
             statement.setInt(1, id);
@@ -196,6 +209,7 @@ public class Database {
      *
      * @param connection Connection to the database.
      * @param id Id of the person.
+     * @param expectedType Kind of the person which will help filter out invalid combinations.
      * @return Person with the provided id.
      * @throws SQLException Errors connected with the unability of retrieve person with provided id.
      */
@@ -222,7 +236,15 @@ public class Database {
         }
     }
 
-    //TODO:
+    /**
+     * Returns list of people with provided first name and last name.
+     *
+     * @param fistName First name of the person.
+     * @param lastName Last name of the person.
+     * @param expectedType Kind of the person which will help filter out invalid combinations.
+     * @return List of people with provided first name and last name.
+     * @throws DatabaseException Error connected with the failure of retrieving people from database.
+     */
     public List<Person> getPerson(String fistName, String lastName, String expectedType) throws DatabaseException {
         try(Connection connection = DriverManager.getConnection(url); PreparedStatement statement = connection.prepareStatement("SELECT * FROM people WHERE firstname = ? AND lastname = ? and type = ?;")){
             statement.setString(1, fistName);
@@ -247,9 +269,17 @@ public class Database {
         }
     }
 
-    public void deleteAppointmentsWherePerson(Connection connection, int id, PersonKinds kinds) throws DatabaseException {
+    /**
+     * Deletes appointments which are connected to the person with provided id.
+     *
+     * @param connection Connection to the database.
+     * @param id Identification number of person.
+     * @param kind Denotes what kind of person it is.
+     * @throws DatabaseException Errors connected to the failure of deleting appointments or that the id or combination id and kind if invalid.
+     */
+    private void deleteAppointmentsWherePerson(Connection connection, int id, PersonKinds kind) throws DatabaseException {
         try(Statement statement = connection.createStatement()){
-            switch (kinds){
+            switch (kind){
                 case Patient -> statement.executeUpdate("DELETE FROM appointments WHERE patient_id = " + id);
                 case Doctor -> statement.executeUpdate("DELETE FROM appointments WHERE doctor_id = " + id);
             }
@@ -257,8 +287,6 @@ public class Database {
             throw new DatabaseException(e.getMessage()); //todo:
         }
     }
-
-    //        Patient
 
     /**
      * Adds patients details into database.
@@ -305,6 +333,13 @@ public class Database {
         }
     }
 
+    /**
+     * Updates patient details inside the database.
+     *
+     * @param connection Connection to the database.
+     * @param patient Patient data/details that will be updated in the database.
+     * @throws SQLException Error connected to the failure of updating patients details or providing invalid patient data.
+     */
     private void updatePatientDetails(Connection connection, Patient patient) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(updatePatientDetails)){
             statement.setString(1, patient.getAnamnesis());
@@ -334,6 +369,13 @@ public class Database {
         }
     }
 
+    /**
+     * Deletes patient details from the database.
+     *
+     * @param connection Connection to the database.
+     * @param id Identification number of the person connected to the details.
+     * @throws SQLException Errors connected to the failure of deleting details or providing invalid id.
+     */
     private void deletePatientsDetails(Connection connection, int id) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(deletePatientDetailsById)){
             statement.setInt(1, id);
@@ -445,8 +487,6 @@ public class Database {
         }
     }
 
-    //          DOCTOR
-
     /**
      * Adds new doctor details to the database.
      *
@@ -490,6 +530,13 @@ public class Database {
         }
     }
 
+    /**
+     * Updates doctor's details inside the database.
+     *
+     * @param connection Connection to the database.
+     * @param doctor Doctor data/details that will be updated.
+     * @throws SQLException Errors connected to the failure of updating details or providing invalid doctor's data.
+     */
     private void updateDoctorDetails(Connection connection, Doctor doctor) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(updateDoctorDetails)){
             statement.setString(1, doctor.getSpecialization());
@@ -520,6 +567,13 @@ public class Database {
         }
     }
 
+    /**
+     * Deletes doctor details from the database.
+     *
+     * @param connection Connection to the database.
+     * @param id Identification number of the doctor connected to the details that will be deleted.
+     * @throws SQLException Errors connected to the failure of deleting details or providing invalid id.
+     */
     private void deleteDoctorsDetails(Connection connection, int id) throws SQLException{
         try (PreparedStatement statement = connection.prepareStatement(deleteDoctorsDetailsById)){
             statement.setInt(1, id);
@@ -620,8 +674,6 @@ public class Database {
             throw new DatabaseException(DatabaseException.doctorGetDatabaseError, e.getMessage());
         }
     }
-
-    //       Appointment
 
     /**
      * Adds new appointment to the database.
@@ -735,6 +787,14 @@ public class Database {
         }
     }
 
+    /**
+     * Returns list of appointments connected to the person with the provided id.
+     *
+     * @param id Identification number of the person.
+     * @param column Identification text of the column which will be checked of the id match.
+     * @return List of appointments connected to the person with the provided id.
+     * @throws DatabaseException Error connected with failure of retrieving appointments from the database.
+     */
     private List<Appointment> getAppointmentsForPersonnel(int id, String column) throws DatabaseException {
         try(Connection connection = DriverManager.getConnection(url); PreparedStatement statement = connection.prepareStatement(MessageFormat.format(getAppointmentBySomeId, column))) {
             statement.setInt(1, id);

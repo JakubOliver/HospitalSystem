@@ -28,6 +28,7 @@ import java.util.List;
  * Hospital system for managing patients, doctors and appointments.
  */
 public class Hospital {
+    /** Database for storing data connected to the hospital system */
     private final Database database;
 
     /**
@@ -67,6 +68,13 @@ public class Hospital {
         }
     }
 
+    /**
+     * Returns list of patients with the provided first name and last name.
+     *
+     * @param firstName First name of the patient.
+     * @param lastName Last name of the patient.
+     * @return List of patients with the provided first and last name.
+     */
     public DataPacket<List<Patient>> getAllPatientWithName(String firstName, String lastName){
         try {
             List<Person> people = database.getPerson(firstName, lastName, Patient.getClassIdentifier());
@@ -157,6 +165,13 @@ public class Hospital {
         }
     }
 
+    /**
+     * Returns list of doctors with provided first name and last name.
+     *
+     * @param firstName First name of the doctor.
+     * @param lastName Last name of the doctor.
+     * @return List of doctors with provided first name and last name.
+     */
     public DataPacket<List<Doctor>> getAllDoctorsWithName(String firstName, String lastName){
         try {
             List<Person> people = database.getPerson(firstName, lastName, Doctor.getClassIdentifier());
@@ -402,7 +417,11 @@ public class Hospital {
         }
     }
 
-    //TODO:
+    /**
+     * Returns calendar for the hospital.
+     *
+     * @return Calendar for the hospital.
+     */
     public DataPacket<Calendar> getCalendar(){
         try{
             return new DataPacket<>(database.getCalendar());

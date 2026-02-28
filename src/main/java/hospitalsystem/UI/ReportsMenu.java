@@ -5,22 +5,47 @@ import hospitalsystem.calendar.Calendar;
 import hospitalsystem.packet.DataPacket;
 import hospitalsystem.personnel.Doctor;
 import hospitalsystem.personnel.Patient;
-import hospitalsystem.personnel.Person;
 
 import java.util.*;
 
-public class Reports extends Menu{
+/**
+ * Menu page containing options connected with data reports.
+ */
+public class ReportsMenu extends Menu{
+    /**
+     * Data structure that stores top X entries with the biggest value.
+     *
+     * @param <T> Generic type for the key variable.
+     */
     static class TopX<T>{
+        /**
+         * Data wrapper for the top X entry.
+         *
+         * @param data Data that will be used as key.
+         * @param value Value of the entry.
+         * @param <T> Generic type of the data/key.
+         */
         record TopXEntry<T>(T data, int value){}
 
         public List<TopXEntry<T>> entries;
         private int size;
 
+        /**
+         * Creates instance of top X data stricture, with the provided size.
+         *
+         * @param size Denotes how many top entries will be stored.
+         */
         TopX(int size){
             this.size = size;
             entries = new ArrayList<>(size);
         }
 
+        /**
+         * Adds new entry.
+         *
+         * @param data Key data of the entry.
+         * @param value Value of the entry.
+         */
         void add(T data, int value){
             if (entries.size() >= size && value <= entries.getLast().value) return;
 
@@ -40,7 +65,13 @@ public class Reports extends Menu{
         }
     }
 
-    public Reports(Hospital api, Scanner scanner) {
+    /**
+     * Creates report menu page.
+     *
+     * @param api Hospital api diving the menu options how to interact with hospital system.
+     * @param scanner Scanner pointing to the input data.
+     */
+    public ReportsMenu(Hospital api, Scanner scanner) {
         super(api, scanner);
     }
 
@@ -50,6 +81,9 @@ public class Reports extends Menu{
         addOption("Back", this::end);
     }
 
+    /**
+     * Computes and prints statistics about hospital, patients, doctors and appointments.
+     */
     public void statistics(){
         DataPacket<List<Patient>> patientsPacket = api.allPatients();
         if (!processPacketStatusInSilence(patientsPacket)) return;

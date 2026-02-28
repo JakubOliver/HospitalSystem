@@ -4,7 +4,11 @@ package hospitalsystem.util;
  * Custom math util class containing math methods useful across the project (which do not appear inbuild libraries).
  */
 public class Math {
+    /**
+     * Private constructor of the math class. (This class should not be instantiable, therefor has private/unreachable constructor)
+     */
     private Math(){}
+
     /**
      * Returns number of digits that the number have.
      *

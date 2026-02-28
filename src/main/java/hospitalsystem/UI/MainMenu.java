@@ -33,7 +33,7 @@ public class MainMenu extends Menu{
         addOption("Doctors",  () -> new DoctorMenu(api, scanner));
         addOption("Calendar",  () -> new AppointmentMenu(api, scanner));
         addOption("Export", () -> new ExportMenu(api, scanner));
-        addOption("Statistics", () -> new Reports(api, scanner));
+        addOption("Statistics", () -> new ReportsMenu(api, scanner));
         addOption("End", this::end);
     }
 

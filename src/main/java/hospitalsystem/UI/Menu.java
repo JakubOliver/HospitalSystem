@@ -20,18 +20,21 @@ import java.util.stream.IntStream;
  * Abstract ancestor for menu pages. Implementing various methods with processing input data.
  */
 abstract class Menu implements Page{
-    Hospital api;
-    Scanner scanner;
+    /** Connection to the hospital system */
+    protected Hospital api;
+    /** Scanner pointing to the input data */
+    protected Scanner scanner;
 
-    List<MenuEntry> options = new ArrayList<>();
-    UIState state = UIState.RUN;
+    protected List<MenuEntry> options = new ArrayList<>();
+    protected UIState state = UIState.RUN;
 
-    private static final String exitSequence = "cancel";
+    protected static final String exitSequence = "cancel";
 
     /**
      * Abstract constructor used in the chain of construction.
      *
      * @param api HospitalAPI giving the menu options how to interact with hospital system.
+     * @param scanner Scanner pointing to the input data.
      */
     public Menu(Hospital api, Scanner scanner) {
         this(api, scanner, false);

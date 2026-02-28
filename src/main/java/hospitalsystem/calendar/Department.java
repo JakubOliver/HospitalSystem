@@ -14,7 +14,9 @@ import java.util.*;
  * Manager of appointments for department.
  */
 public class Department{
+    /** Data wrapper for the information for processing one day. */
     record PeriodInfo(int start, int end, int layers){}
+    /** Data wrapper for the information for processing one row of calendar */
     record RowInfo(int layer, Parts part, LocalDateTime day){}
 
     /**
@@ -24,12 +26,20 @@ public class Department{
         PriorityQueue<Integer> heap;
         int highest;
 
+        /**
+         * Creates instance of lowest empty data structure.
+         */
         LowestEmpty(){
             heap = new PriorityQueue<>();
 
             highest = 0;
         }
 
+        /**
+         * Returns lowest actively unused number.
+         *
+         * @return Lowe actively unused number.
+         */
         int getLowest(){
             if (heap.isEmpty()){
                 return highest++;
@@ -38,6 +48,11 @@ public class Department{
             return heap.poll();
         }
 
+        /**
+         * Returns number into the set of available numbers.
+         *
+         * @param number Number that will be added to the set of available numbers.
+         */
         void getBack(int number){
             heap.add(number);
         }
@@ -49,7 +64,9 @@ public class Department{
     /** Sorted set of the appointments connected with the department */
     public final SortedSet<Appointment> appointments;
 
+    /** Mapping of layer to appointments */
     private final Map<Integer, List<Appointment>> layers;
+    /** Mapping of appointments to layers */
     private final Map<Appointment, Integer> layerOfAppointment;
 
     private final int prefixSize = 10;
@@ -412,11 +429,21 @@ public class Department{
         };
     }
 
-    //TODO:
+    /**
+     * Returns number of appointments that are planned in the department.
+     *
+     * @return Number of appointments that are planned in the department.
+     */
     public int size(){
         return appointments.size();
     }
 
+    /**
+     * Returns number of appointments that are connected to the provided person.
+     *
+     * @param person Person for who is computed how many times had or will have appointment.
+     * @return Number of appointments that are connected to the provided person.
+     */
     public int numberOfAppearances(Person person){
         int appearances = 0;
 
