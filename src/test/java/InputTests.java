@@ -1,10 +1,10 @@
-import hospitalsystem.Hospital;
-import hospitalsystem.UI.PatientMenu;
-import hospitalsystem.personnel.Doctor;
-import hospitalsystem.personnel.Patient;
-import hospitalsystem.personnel.Person;
-import hospitalsystem.personnel.util.DoctorDetails;
-import hospitalsystem.personnel.util.PersonData;
+import cz.cuni.kubinja.hospitalsystem.Hospital;
+import cz.cuni.kubinja.hospitalsystem.UI.PatientMenu;
+import cz.cuni.kubinja.hospitalsystem.personnel.Doctor;
+import cz.cuni.kubinja.hospitalsystem.personnel.Patient;
+import cz.cuni.kubinja.hospitalsystem.personnel.Person;
+import cz.cuni.kubinja.hospitalsystem.personnel.util.DoctorDetails;
+import cz.cuni.kubinja.hospitalsystem.personnel.util.PersonData;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;

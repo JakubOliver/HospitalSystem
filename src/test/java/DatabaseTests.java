@@ -1,14 +1,14 @@
-import hospitalsystem.UI.PatientMenu;
-import hospitalsystem.calendar.Appointment;
-import hospitalsystem.calendar.CalendarException;
-import hospitalsystem.calendar.util.AppointmentData;
-import hospitalsystem.database.DatabaseException;
-import hospitalsystem.packet.DataPacket;
-import hospitalsystem.packet.GeneralPacket;
-import hospitalsystem.personnel.Doctor;
-import hospitalsystem.personnel.Patient;
-import hospitalsystem.personnel.Person;
-import hospitalsystem.personnel.util.*;
+import cz.cuni.kubinja.hospitalsystem.UI.PatientMenu;
+import cz.cuni.kubinja.hospitalsystem.calendar.Appointment;
+import cz.cuni.kubinja.hospitalsystem.calendar.CalendarException;
+import cz.cuni.kubinja.hospitalsystem.calendar.util.AppointmentData;
+import cz.cuni.kubinja.hospitalsystem.database.DatabaseException;
+import cz.cuni.kubinja.hospitalsystem.packet.DataPacket;
+import cz.cuni.kubinja.hospitalsystem.packet.GeneralPacket;
+import cz.cuni.kubinja.hospitalsystem.personnel.Doctor;
+import cz.cuni.kubinja.hospitalsystem.personnel.Patient;
+import cz.cuni.kubinja.hospitalsystem.personnel.Person;
+import cz.cuni.kubinja.hospitalsystem.personnel.util.PersonKinds;
 
 import org.junit.jupiter.api.Test;
 

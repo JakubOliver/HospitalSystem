@@ -1,6 +1,6 @@
-import hospitalsystem.Hospital;
-import hospitalsystem.calendar.util.AppointmentData;
-import hospitalsystem.personnel.util.*;
+import cz.cuni.kubinja.hospitalsystem.Hospital;
+import cz.cuni.kubinja.hospitalsystem.calendar.util.AppointmentData;
+import cz.cuni.kubinja.hospitalsystem.personnel.util.*;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.time.LocalDate;
