@@ -6,9 +6,6 @@ import cz.cuni.kubinja.hospitalsystem.personnel.Doctor;
 import cz.cuni.kubinja.hospitalsystem.personnel.Patient;
 import cz.cuni.kubinja.hospitalsystem.personnel.Person;
 import cz.cuni.kubinja.hospitalsystem.personnel.util.*;
-import hospitalsystem.personnel.*;
-import hospitalsystem.personnel.util.*;
-import hospitalsystem.calendar.*;
 
 import java.sql.*;
 import java.text.MessageFormat;

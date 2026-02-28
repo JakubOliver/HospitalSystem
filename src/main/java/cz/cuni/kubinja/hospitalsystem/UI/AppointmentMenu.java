@@ -9,7 +9,6 @@ import cz.cuni.kubinja.hospitalsystem.personnel.Doctor;
 import cz.cuni.kubinja.hospitalsystem.personnel.Patient;
 import cz.cuni.kubinja.hospitalsystem.personnel.Person;
 import cz.cuni.kubinja.hospitalsystem.personnel.util.*;
-import hospitalsystem.personnel.util.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
