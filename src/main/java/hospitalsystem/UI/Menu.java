@@ -40,6 +40,15 @@ abstract class Menu implements Page{
         this(api, scanner, false);
     }
 
+    /**
+     * Creates dummy menu page.
+     * <p>
+     * This way how to create menu is only used for testing, because we want to have option how to call directly menu options and not only via prepared input data.
+     *
+     * @param api Hospital api gives menu options how to interact with hospital system.
+     * @param scanner Scanner pointing to the input data.
+     * @param dummy Decides whether the mu page will be dummy (do not show menu, but only processes direct method calls)
+     */
     public Menu(Hospital api, Scanner scanner, boolean dummy) {
         this.api = api;
         this.scanner = scanner;

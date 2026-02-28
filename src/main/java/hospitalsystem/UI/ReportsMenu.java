@@ -136,7 +136,6 @@ public class ReportsMenu extends Menu{
             specializations.put(d.getSpecialization(), occurences == null ? 1 : ++occurences);
         });
 
-        //TODO: do specificke funkce
         TopX<String> commonSpecializations = new TopX<>(10);
         specializations.forEach(commonSpecializations::add);
 

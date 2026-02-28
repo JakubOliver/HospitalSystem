@@ -284,7 +284,7 @@ public class Database {
                 case Doctor -> statement.executeUpdate("DELETE FROM appointments WHERE doctor_id = " + id);
             }
         }catch (SQLException e){
-            throw new DatabaseException(e.getMessage()); //todo:
+            throw new DatabaseException(DatabaseException.appointmentDeleteDatabaseError, e.getMessage());
         }
     }
 

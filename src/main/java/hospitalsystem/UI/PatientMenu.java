@@ -29,7 +29,7 @@ public class PatientMenu extends Menu implements PersonnelMenu {
     /**
      * Creates dummy patient menu page.
      * <p>
-     * This wait how to create menu is only used for testing, because we want to have option how to call directly menu options and not only via prepared input data.
+     * This way how to create menu is only used for testing, because we want to have option how to call directly menu options and not only via prepared input data.
      *
      * @param api Hospital gives menu options how to interact with hospital system.
      * @param scanner Scanner pointing to the input data.

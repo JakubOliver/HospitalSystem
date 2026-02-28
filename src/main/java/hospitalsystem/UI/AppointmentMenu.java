@@ -67,7 +67,7 @@ public class AppointmentMenu extends Menu{
      */
     private Optional<AppointmentData> getAppointmentData(){
         int patientsId;
-        //TODO: poznamka do dokumentace, ze vytvoreni je indenpendent process (je to feature ne bug, aby nebylo potreba znovu vytvaret osoby)
+
         if (createNew(Patient.getClassIdentifier())){
             PersonData personData = getPersonData();
             PatientsDetails patientDetails = getPatientDetails();
@@ -224,9 +224,6 @@ public class AppointmentMenu extends Menu{
 
         waitForEnter();
     }
-
-    //TODO: calendar per week
-    //TODO: showCalender from today
 
     /**
      * Processes input data from scanner and based on provided department shows calendar.
