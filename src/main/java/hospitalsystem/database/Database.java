@@ -1,13 +1,9 @@
 package hospitalsystem.database;
 
-import hospitalsystem.personnel.Doctor;
-import hospitalsystem.personnel.Patient;
-import hospitalsystem.personnel.Person;
+import hospitalsystem.personnel.*;
 import hospitalsystem.personnel.util.*;
 import hospitalsystem.calendar.*;
 
-import javax.swing.plaf.nimbus.State;
-import javax.xml.crypto.Data;
 import java.sql.*;
 import java.text.MessageFormat;
 import java.time.LocalDate;

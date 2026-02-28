@@ -1,7 +1,6 @@
 package hospitalsystem.util;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 /**
  * Contains contains connected with exporting data into files.

@@ -28,7 +28,7 @@ public class ReportsMenu extends Menu{
         record TopXEntry<T>(T data, int value){}
 
         public List<TopXEntry<T>> entries;
-        private int size;
+        private final int size;
 
         /**
          * Creates instance of top X data stricture, with the provided size.
@@ -113,8 +113,8 @@ public class ReportsMenu extends Menu{
         for (Patient patient : patients){
             topVisitingPatients.add(patient, calendar.numberOfAppearances(patient));
 
-            Integer occurences = anamneses.get(patient.getAnamnesis());
-            anamneses.put(patient.getAnamnesis(), occurences == null ? 1 : ++occurences);
+            Integer occurrences = anamneses.get(patient.getAnamnesis());
+            anamneses.put(patient.getAnamnesis(), occurrences == null ? 1 : ++occurrences);
         }
 
         for (TopX.TopXEntry<Patient> patient : topVisitingPatients.entries){
@@ -132,8 +132,8 @@ public class ReportsMenu extends Menu{
         System.out.println("10 most common specializations:");
         Map<String, Integer> specializations = new HashMap<>();
         doctors.forEach(d -> {
-            Integer occurences = specializations.get(d.getSpecialization());
-            specializations.put(d.getSpecialization(), occurences == null ? 1 : ++occurences);
+            Integer occurrences = specializations.get(d.getSpecialization());
+            specializations.put(d.getSpecialization(), occurrences == null ? 1 : ++occurrences);
         });
 
         TopX<String> commonSpecializations = new TopX<>(10);

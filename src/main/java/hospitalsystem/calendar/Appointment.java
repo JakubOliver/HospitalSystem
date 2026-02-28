@@ -138,7 +138,7 @@ public class Appointment implements Comparable<Appointment>, Exportable {
      *
      * @param start Starting time of the interval.
      * @param end Ending time of the interval.
-     * @return Whether the time interval is overlaping with the appointment.
+     * @return Whether the time interval is overlapping with the appointment.
      */
     public boolean inConflict(LocalDateTime start, LocalDateTime end){
         return (start.isAfter(startTime) && start.isBefore(endTime)) || (end.isAfter(startTime) && end.isBefore(endTime));
