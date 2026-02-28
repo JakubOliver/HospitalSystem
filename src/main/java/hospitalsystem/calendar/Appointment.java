@@ -84,6 +84,12 @@ public class Appointment implements Comparable<Appointment>, Exportable {
         this.endTime = LocalDateTime.parse(result.getString("end_time"));
     }
 
+    /**
+     * Compares two appointments based on starting and ending time and id.
+     *
+     * @param o Other appointment.
+     * @return Integer which denotes whether this appointment is smaller, bigger or equal then the other one.
+     */
     @Override
     public int compareTo(Appointment o) {
         if (!startTime.equals(o.startTime)) {
