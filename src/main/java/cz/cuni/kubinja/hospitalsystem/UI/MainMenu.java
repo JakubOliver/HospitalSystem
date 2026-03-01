@@ -2,6 +2,7 @@ package cz.cuni.kubinja.hospitalsystem.UI;
 
 import cz.cuni.kubinja.hospitalsystem.Hospital;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
 /**
@@ -14,7 +15,7 @@ public class MainMenu extends Menu{
      * @param api Hospital providing the menu options how to interact with hospital system.
      */
     public MainMenu(Hospital api) {
-        super(api, new Scanner(System.in));
+        super(api, new Scanner(System.in, StandardCharsets.UTF_8));
     }
 
     /**
