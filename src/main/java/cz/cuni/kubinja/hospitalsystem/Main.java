@@ -1,6 +1,7 @@
 package cz.cuni.kubinja.hospitalsystem;
 
 import cz.cuni.kubinja.hospitalsystem.UI.MainMenu;
+import cz.cuni.kubinja.hospitalsystem.database.DatabaseException;
 
 /**
  * Contains main entry point of the program.
@@ -15,7 +16,13 @@ public class Main {
      * @param args Arguments of the program.
      */
     public static void main(String[] args) {
-        Hospital hospital = new Hospital(databasePath);
+        Hospital hospital;
+        try {
+            hospital = new Hospital(databasePath);
+        } catch (DatabaseException e) {
+            System.out.println(e.getMessage());
+            return;
+        }
 
         MainMenu mainMenu = new MainMenu(hospital);
     }

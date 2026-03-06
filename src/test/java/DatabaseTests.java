@@ -26,6 +26,8 @@ import java.util.Scanner;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DatabaseTests extends TestsUsingDatabase{
+    public DatabaseTests() throws DatabaseException {}
+
     @Test
     void addPatientCMD() {
         Scanner patientsScanner = getPrebuildInput("1 \n Pepa \n Novak \n 2001-01-01 \n Broken leg \n enter \n 6");

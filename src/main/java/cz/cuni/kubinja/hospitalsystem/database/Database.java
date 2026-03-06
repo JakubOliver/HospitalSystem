@@ -63,7 +63,7 @@ public class Database {
      *
      * @param url Location of the database.
      */
-    public Database(String url){
+    public Database(String url) throws DatabaseException {
         this.url = url;
 
         try (Connection conn = DriverManager.getConnection(url)) {
@@ -121,7 +121,7 @@ public class Database {
                     );
                     """);
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            throw new DatabaseException(DatabaseException.openingDatabaseError, e.getMessage());
         }
     }
 

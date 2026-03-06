@@ -4,6 +4,9 @@ package cz.cuni.kubinja.hospitalsystem.database;
  * Custom exception connected with the database queries errors tailored for the hospital system.
  */
 public class DatabaseException extends Exception{
+    /** Failure of opening/creating database */
+    public static final String openingDatabaseError = "Unable to open/create database.";
+
     /** Failure of inserting patient into database error message */
     public static final String patientInsertDatabaseError = "Unable to correctly add patient into database";
     /** Failure of inserting doctor into database error message */

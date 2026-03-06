@@ -27,6 +27,8 @@ import static org.junit.jupiter.api.Assertions.*;
 public class UITests extends TestsUsingDatabase {
     ByteArrayOutputStream output;
 
+    public UITests() throws DatabaseException {}
+
     @BeforeAll
     static void output(){}
 

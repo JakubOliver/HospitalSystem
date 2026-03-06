@@ -36,7 +36,7 @@ public class Hospital {
      *
      * @param databasePath Path to the database.
      */
-    public Hospital(String databasePath){
+    public Hospital(String databasePath) throws DatabaseException {
         database = new Database(databasePath);
     }
 
