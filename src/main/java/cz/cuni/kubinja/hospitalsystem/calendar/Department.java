@@ -68,11 +68,16 @@ public class Department{
     private final Map<Integer, List<Appointment>> layers;
     /** Mapping of appointments to layers */
     private final Map<Appointment, Integer> layerOfAppointment;
+    private boolean layersComputed = false;
 
-    private final int prefixSize = 10;
-    private final int sizeOfSlot = 6;
-    private final int lengthOfSlotInMinutes = 30;
-    private final int numberOfSlotsInHour = 60 / lengthOfSlotInMinutes;
+    /** Size of the prefix in calendar */
+    public static final int prefixSize = 10;
+    /** Size of the atomic time slot */
+    public static final int sizeOfSlot = 6;
+    /** Length of the slot in minutes */
+    public static final int lengthOfSlotInMinutes = 30;
+    /** Number of slots in hour */
+    public static final int numberOfSlotsInHour = 60 / lengthOfSlotInMinutes;
 
     private final LocalTime startTime = LocalTime.of(8, 0,0);
     private final LocalTime endTime = LocalTime.of(16,0,0);
@@ -99,20 +104,30 @@ public class Department{
      */
     public void addAppointment(Appointment appointment){
         appointments.add(appointment);
+
+        layersComputed = false;
     }
 
     /**
      * Computes hierarchy how to arrange appointments so the parallel appointments do not overlap in the calendar diagram.
      */
     public void computeLayers(){
-        PriorityQueue<Appointment> heap = new PriorityQueue<>();
+        layers.clear();
+        layerOfAppointment.clear();
+
+        PriorityQueue<Appointment> heap = new PriorityQueue<>(
+                Comparator
+                        .comparing((Appointment appointment) -> appointment.endTime)
+                        .thenComparing(appointment -> appointment.startTime)
+                        .thenComparing(appointment -> appointment.id)
+        );
         LowestEmpty lowest = new LowestEmpty();
 
         /*
         Uses modified algorithm for max compact in interval graphs.
          */
         for (Appointment appointment : appointments){
-            while (!heap.isEmpty() && heap.peek().endTime.isBefore(appointment.startTime)){
+            while (!heap.isEmpty() && !heap.peek().endTime.isAfter(appointment.startTime)){
                 Appointment old = heap.poll();
 
                 lowest.getBack(layerOfAppointment.get(old));
@@ -128,6 +143,8 @@ public class Department{
             layers.get(layer).add(appointment);
             layerOfAppointment.put(appointment, layer);
         }
+
+        layersComputed = true;
     }
 
     /**
@@ -147,6 +164,8 @@ public class Department{
      * @return String representation of department calendar.
      */
     public String toString(boolean fromToday){
+        if (!layersComputed) computeLayers();
+
         StringBuilder sb = new StringBuilder();
 
         sb.append(name).append("\n");
@@ -272,8 +291,10 @@ public class Department{
         LocalDateTime dayTime = start;
 
         for (int empty = 0; empty < daysToNext; empty++){
-            int weekDif = start.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR) - dayTime.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
-            if (weekDif != 0) break;
+            if (start.get(IsoFields.WEEK_BASED_YEAR) != dayTime.get(IsoFields.WEEK_BASED_YEAR) ||
+                start.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR) != dayTime.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR)) {
+                break;
+            }
 
             for (Parts part : Parts.values()){
                 sb.append(printDate(dayTime, part));
@@ -363,7 +384,13 @@ public class Department{
      * @return Index of the last appointment in the same week and number of layers in this period.
      */
     private PeriodInfo getLastIdxOfSameWeek(List<Appointment> sortedAppointments, int startIdx){
-        AppointmentCompare sameWeek = (a1, a2) -> a1.startTime.toLocalDate().get(IsoFields.WEEK_OF_WEEK_BASED_YEAR) == a2.startTime.toLocalDate().get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
+        AppointmentCompare sameWeek = (a1, a2) -> {
+            LocalDate d1 = a1.startTime.toLocalDate();
+            LocalDate d2 = a2.startTime.toLocalDate();
+
+            return d1.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR) == d2.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR) &&
+                    d1.get(IsoFields.WEEK_BASED_YEAR) == d2.get(IsoFields.WEEK_BASED_YEAR);
+        };
 
         return getLastIdxOfSame(sortedAppointments, startIdx, sameWeek);
     }

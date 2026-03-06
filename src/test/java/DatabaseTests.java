@@ -381,10 +381,9 @@ public class DatabaseTests extends TestsUsingDatabase{
             GeneralPacket packet = api.addAppointment(new AppointmentData(
                     i + 2,
                     1,
-                    LocalDateTime.of(2026, 2, 10, 10, 0),
-                    LocalDateTime.of(2026, 2, 10, 14, 30)
+                    LocalDateTime.of(2026, i + 1, 10, 10, 0),
+                    LocalDateTime.of(2026, i + 1, 10, 14, 30)
             ));
-
             assertTrue(packet.successful);
 
             DataPacket<Appointment> response = api.getAppointment(i + 1);

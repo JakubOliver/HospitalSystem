@@ -183,8 +183,8 @@ public class AppointmentMenu extends Menu{
                 appointment.id,
                 patientPacket.data,
                 doctorPacket.data,
-                appointment.startTime,
-                appointment.endTime
+                data.starTime(),
+                data.endTime()
         ));
 
         processPacketStatus(finalPacket);

@@ -28,9 +28,12 @@ public class Appointment implements Comparable<Appointment>, Exportable {
     public final String department;
 
     /** Starting time of the appointment */
-    public LocalDateTime startTime;
+    public final LocalDateTime startTime;
     /** Ending time of the appointment */
-    public LocalDateTime endTime;
+    public final LocalDateTime endTime;
+
+    /** Minimum length of the displayed department name */
+    public static final int minimumDepartmentDisplayNameLength = 3;
 
     /**
      * Creates new appointment.
@@ -100,7 +103,7 @@ public class Appointment implements Comparable<Appointment>, Exportable {
             return endTime.compareTo(o.endTime);
         }
 
-        return id - o.id;
+        return Integer.compare(id, o.id);
     }
 
     /**
@@ -111,24 +114,28 @@ public class Appointment implements Comparable<Appointment>, Exportable {
      */
     public String getStringForPart(Parts part){
         String prefix = "";
-        int length = Math.toIntExact((Duration.between(startTime, endTime).toMinutes() / 30) * 6);
+        int length = Math.toIntExact((Duration.between(startTime, endTime).toMinutes() / Department.lengthOfSlotInMinutes) * Department.sizeOfSlot);
 
         return switch (part){
             case TOP -> {
                 int idDigits = numberOfDigits(doctorId);
 
-                int nameLength = Math.min(department.length(), length - 3 - idDigits);
+                int nameLength = Math.max(0, Math.min(department.length(), length - minimumDepartmentDisplayNameLength - idDigits));
+                int gap = Math.max(0, length - nameLength - idDigits);
 
-                yield  prefix + department.substring(0, nameLength) + " ".repeat(length - nameLength - idDigits) + doctorId;
+                yield  prefix + department.substring(0, nameLength) + " ".repeat(gap) + doctorId;
             }
             case MIDDLE -> {
                 int idDigits = numberOfDigits(patientId);
-                int emptySize = (length - idDigits) / 2;
+                int emptySize = Math.max(0, (length - idDigits) / 2);
+                int gap = Math.max(0, length - idDigits - emptySize);
 
-                yield prefix + " ".repeat(emptySize) + "\u001b[31m" + patientId + "\u001b[0m" + " ".repeat(length - idDigits - emptySize);
+                yield prefix + " ".repeat(emptySize) + "\u001b[31m" + patientId + "\u001b[0m" + " ".repeat(gap);
             }
             case BOTTOM -> {
-                yield prefix + startTime.toLocalTime().toString() + " ".repeat(length - 10) + endTime.toLocalTime().toString();
+                int gap = Math.max(0, length - Department.prefixSize);
+
+                yield prefix + startTime.toLocalTime().toString() + " ".repeat(gap) + endTime.toLocalTime().toString();
             }
         };
     }
@@ -141,7 +148,7 @@ public class Appointment implements Comparable<Appointment>, Exportable {
      * @return Whether the time interval is overlapping with the appointment.
      */
     public boolean inConflict(LocalDateTime start, LocalDateTime end){
-        return (start.isAfter(startTime) && start.isBefore(endTime)) || (end.isAfter(startTime) && end.isBefore(endTime));
+        return start.isBefore(endTime) && end.isAfter(startTime);
     }
 
     @Override

@@ -12,6 +12,7 @@ import java.text.MessageFormat;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -103,11 +104,13 @@ public class Calendar {
      * @throws CalendarException Error occurs when time does not satisfy requirements.
      */
     public static boolean startAtHalves(LocalDateTime time) throws CalendarException {
-        if (time.getMinute() % alignmentOfAppointment != 0)
+        if (time.getMinute() % alignmentOfAppointment != 0 || time.getSecond() != 0 || time.getNano() != 0)
             throw new CalendarException(CalendarException.invalidAlignment);
 
-        if (!(minStartingTime <= time.getHour() && time.getHour() <= maxEndingTime))
+        LocalTime t = time.toLocalTime();
+        if (t.isBefore(LocalTime.of(minStartingTime, 0)) || t.isAfter(LocalTime.of(maxEndingTime, 0))) {
             throw new CalendarException(CalendarException.invalidTimes);
+        }
 
         return true;
     }
@@ -175,7 +178,7 @@ public class Calendar {
             appointments.addAll(department.appointments);
         }
 
-        appointments.sort((a1, a2) -> a1.id - a2.id);
+        appointments.sort((a1, a2) -> Integer.compare(a1.id, a2.id));
 
         try (FileWriter writer = new FileWriter(destination)){
             for (Appointment appointment : appointments){
@@ -209,7 +212,8 @@ public class Calendar {
         int appearances = 0;
 
         if (person instanceof Doctor doctor){
-            return departments.get(doctor.getDepartment()).numberOfAppearances(doctor);
+            Department department = departments.get(doctor.getDepartment());
+            return department == null ? 0 : department.numberOfAppearances(doctor);
         }
 
         for (Department department : departments.values()){

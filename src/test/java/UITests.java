@@ -2,6 +2,7 @@ import cz.cuni.kubinja.hospitalsystem.UI.DoctorMenu;
 import cz.cuni.kubinja.hospitalsystem.UI.ExportMenu;
 import cz.cuni.kubinja.hospitalsystem.UI.MainMenu;
 import cz.cuni.kubinja.hospitalsystem.UI.PatientMenu;
+import cz.cuni.kubinja.hospitalsystem.calendar.util.AppointmentData;
 import cz.cuni.kubinja.hospitalsystem.database.DatabaseException;
 import cz.cuni.kubinja.hospitalsystem.packet.DataPacket;
 import cz.cuni.kubinja.hospitalsystem.packet.GeneralPacket;
@@ -16,6 +17,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -126,7 +128,12 @@ public class UITests extends TestsUsingDatabase {
         for (int i = 0; i < 10; i++){
             assertTrue(api.addPatient(samplePatientData).successful);
             assertTrue(api.addDoctor(sampleDoctorData).successful);
-            assertTrue(api.addAppointment(sampleAppointmentData).successful);
+            assertTrue(api.addAppointment(new AppointmentData(
+                    2*i + 1,
+                    2*i + 2,
+                    LocalDateTime.of(2026, 1, 10, 10, 0),
+                    LocalDateTime.of(2026, 1, 10, 14, 30)
+            )).successful);
         }
 
         Scanner scanner = getPrebuildInput("4    \n enter \n 5");
