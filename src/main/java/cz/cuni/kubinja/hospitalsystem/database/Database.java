@@ -62,6 +62,7 @@ public class Database {
      * If not then creates missing tables.
      *
      * @param url Location of the database.
+     * @throws DatabaseException Errors connected to the unability to open/create database.
      */
     public Database(String url) throws DatabaseException {
         this.url = url;

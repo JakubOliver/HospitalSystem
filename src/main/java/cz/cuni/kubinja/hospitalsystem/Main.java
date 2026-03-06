@@ -11,6 +11,11 @@ public class Main {
     private static final String databasePath = "jdbc:sqlite:database.db";
 
     /**
+     * Private constructor of Main class.
+     */
+    private Main(){}
+
+    /**
      * Main entry point of the program.
      *
      * @param args Arguments of the program.

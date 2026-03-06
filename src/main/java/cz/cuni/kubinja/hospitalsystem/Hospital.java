@@ -35,6 +35,7 @@ public class Hospital {
      * Creates Hospital which content is based on the data in provided database.
      *
      * @param databasePath Path to the database.
+     * @throws DatabaseException Errors connected to the unability to open/create database.
      */
     public Hospital(String databasePath) throws DatabaseException {
         database = new Database(databasePath);

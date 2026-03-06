@@ -25,9 +25,12 @@ abstract class Menu implements Page{
     /** Scanner pointing to the input data */
     protected Scanner scanner;
 
+    /** Options of the menu page */
     protected List<MenuEntry> options = new ArrayList<>();
+    /** State in which menu page is */
     protected UIState state = UIState.RUN;
 
+    /** Sequence that forcefully stop entering data */
     protected static final String exitSequence = "cancel";
 
     /**
