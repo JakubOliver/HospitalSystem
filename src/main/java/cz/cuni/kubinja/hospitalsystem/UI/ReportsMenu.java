@@ -104,8 +104,8 @@ public class ReportsMenu extends Menu{
 
         System.out.println("Averages");
 
-        System.out.println("\tIn average every patient was on " + String.format("%.3f", (float) calendar.size() / patients.size()) + " appointments");
-        System.out.println("\tIn average every doctor worked "  + String.format("%.3f", (float) calendar.size() / doctors.size()) + " appointments");
+        System.out.println("\tIn average every patient was on " + String.format("%.3f", (patients.isEmpty() ? 0 : (float) calendar.size() / patients.size())) + " appointments");
+        System.out.println("\tIn average every doctor worked "  + String.format("%.3f", (doctors.isEmpty() ? 0 : (float) calendar.size() / doctors.size())) + " appointments");
 
         System.out.println("5 patients with most visits:");
         TopX<Patient> topVisitingPatients = new TopX<>(5);
