@@ -117,16 +117,19 @@ public class ReportsMenu extends Menu{
             anamneses.put(patient.getAnamnesis(), occurrences == null ? 1 : ++occurrences);
         }
 
-        for (TopX.TopXEntry<Patient> patient : topVisitingPatients.entries){
-            System.out.println("\t" + patient.data.getFirstName() + " " + patient.data.getLastName() + " with " + patient.value + " appointments");
+        for (int i = 0; i < topVisitingPatients.entries.size(); ++i){
+            TopX.TopXEntry<Patient> patient = topVisitingPatients.entries.get(i);
+            System.out.println("\t" + (i + 1) + ". " + patient.data.getFirstName() + " " + patient.data.getLastName() + " with " + patient.value + " appointments");
         }
 
         System.out.println("10 most common anamnesis:");
         TopX<String> commonAnamnesis = new TopX<>(10);
         anamneses.forEach(commonAnamnesis::add);
 
-        for (TopX.TopXEntry<String> anamnesis : commonAnamnesis.entries){
-            System.out.println("\t" + anamnesis.data + ":  " + anamnesis.value);
+        for (int i = 0; i < commonAnamnesis.entries.size(); ++i){
+            TopX.TopXEntry<String> anamnesis = commonAnamnesis.entries.get(i);
+
+            System.out.println("\t" + (i + 1) + ". " + anamnesis.data + ":  " + anamnesis.value);
         }
 
         System.out.println("10 most common specializations:");
@@ -139,8 +142,10 @@ public class ReportsMenu extends Menu{
         TopX<String> commonSpecializations = new TopX<>(10);
         specializations.forEach(commonSpecializations::add);
 
-        for (TopX.TopXEntry<String> specialization : commonSpecializations.entries){
-            System.out.println("\t" + specialization.data + ":  " + specialization.value);
+        for (int i = 0; i < commonSpecializations.entries.size(); ++i){
+            TopX.TopXEntry<String> specialization = commonSpecializations.entries.get(i);
+
+            System.out.println("\t" + (i + 1) + ". " + specialization.data + ":  " + specialization.value);
         }
 
         waitForEnter();
