@@ -34,9 +34,9 @@ Last submenu is dedicated for exports of hospital system data. In this menu the 
 
 After selecting the option will be created (if not already exists) directory exports in the root directory of the program and in this directory you can find files with exports in CSV format.
 
-* `patients.csv` is export of patients
-* `doctors.csv` is export of doctors
-* `appointments.csv` is export of appointments
+* `<date>-patients.csv` is export of patients
+* `<date>-doctors.csv` is export of doctors
+* `<date>-appointments.csv` is export of appointments
 
 <img alt="img_1.png" src="src/exportMenu.png" width="420"/>
 
