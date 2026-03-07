@@ -38,7 +38,7 @@ public class AppointmentMenu extends Menu{
         addOption("Show all appointments for patient", () -> showAllForPersonnel(PersonKinds.Patient));
         addOption("Show all appointments for doctor", () -> showAllForPersonnel(PersonKinds.Doctor));
         addOption("Show calendar for department", this::showDepartmentCalendar);
-        addOption("List appointments", this::showCalendar);
+        addOption("Show calendar", this::showCalendar);
         addOption("Back", this::end);
     }
 
