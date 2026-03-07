@@ -372,6 +372,7 @@ public class Hospital {
      */
     public GeneralPacket deleteAppointment(int id){
         try{
+            database.getAppointment(id); //Tests whether the appointment even exists
             database.deleteAppointment(id);
         } catch (DatabaseException e){
             return new GeneralPacket(e);
