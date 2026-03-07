@@ -53,6 +53,10 @@ While using the administrative system you will came a cross many types of inputs
 
 Every submenu can be exited (going back to main menu) by selecting options **Back**. And the program can be ended in the main menu by selecting option **End**. 
 
+### Forceful exit
+
+When you select wrong option and the administrative system already starts prompting you with inputs you can use key word **cancel** which will forcefully exit the inputting process.
+
 # Tips and tricks
 
 This section is dedicated for thing that could improve workflow of administration or maybe surprise user.
