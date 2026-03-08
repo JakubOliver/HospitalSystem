@@ -30,7 +30,7 @@ For example in the picture bellow you can example how to add new patient into ho
 
 <img alt="Adds patient into system via patient menu." src="src/addPatient.png" width="420"/>
 
-Last submenu is dedicated for exports of hospital system data. In this menu the user can create exports for the whole hospital system or can choose what data (patients, doctors or appointments) will be exported. 
+Last submenus are dedicated for exports and statistics of hospital system data. In these menus the user can create exports for the whole hospital system or can choose what data (patients, doctors or appointments) will be exported. 
 
 After selecting the option will be created (if not already exists) directory exports in the root directory of the program and in this directory you can find files with exports in CSV format.
 
@@ -40,9 +40,11 @@ After selecting the option will be created (if not already exists) directory exp
 
 <img alt="img_1.png" src="src/exportMenu.png" width="420"/>
 
+In the statistics submenu can user view basic statistics about hospital system such as number of patients and doctors, different averages, or statistics about most often diseases or specializations. 
+
 ## Types of inputs
 
-While using the administrative system you will came a cross many types of inputs. Below you can see specification of each one:
+While using the administrative system you will come a cross many types of inputs. Below you can see specification of each one:
 
 * Text: this type of input you will be prompted while filling information about names, anamnesis etc. The only requirement for this input is that the provided text must be not empty. So if you wish to have patient with name "45afa#@" it is possible but not advisable.
 * Integer: this type of input you will be prompted while filling information about identification number or selection options. The only requirements for this input is that the provided number is valid integer, so number such as 3.14 etc. are not valid.
@@ -65,6 +67,4 @@ Firstly the whole administrative system is build with idea in mind that every ru
 
 ![img.png](src/multipleWindows.png)
 
-When we talk about adding new appointments and more specifically when user selects the option to create new patient or doctor then it is important to know that, this process is independent of the appointment generation, because we did not want the user to prompt whole new patient and doctor again. So if you successfully create patient or doctor in this process but unfortunately the creation of appointment did not go through, for example because the appointment was in conflict with doctor's schedule then in second attempt you should select name or Id of the patient or doctor, because he or she is already in the system. 
-
-This is not a technical bug, because deleting user and ensure the biggest atomicity of operation will be only another api call, but this approach make more sense for me. 
+When we talk about adding new appointments and more specifically when user selects the option to create new patient or doctor then it is important to know that, this process is independent of the appointment generation, because we did not want the user to prompt whole new patient and doctor again. So if you successfully create patient or doctor in this process but unfortunately the creation of appointment did not go through, for example because the appointment was in conflict with doctor's schedule then in second attempt you should select name or Id of the patient or doctor, because he or she is already in the system.
