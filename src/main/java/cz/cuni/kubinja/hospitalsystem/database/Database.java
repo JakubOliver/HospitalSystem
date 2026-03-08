@@ -316,18 +316,23 @@ public class Database {
         try (Connection connection = DriverManager.getConnection(url)) {
             connection.setAutoCommit(false);
 
-            int id = addPerson(connection, patientData.person(), Patient.getClassIdentifier());
-            addPatientDetails(connection, id, patientData.details());
+            try {
+                int id = addPerson(connection, patientData.person(), Patient.getClassIdentifier());
+                addPatientDetails(connection, id, patientData.details());
 
-            connection.commit();
+                connection.commit();
 
-            return new Patient(
-                    id,
-                    patientData.person().firstName(),
-                    patientData.person().lastName(),
-                    patientData.person().dateOfBirth(),
-                    patientData.details().anamnesis()
-            );
+                return new Patient(
+                        id,
+                        patientData.person().firstName(),
+                        patientData.person().lastName(),
+                        patientData.person().dateOfBirth(),
+                        patientData.details().anamnesis()
+                );
+            } catch (SQLException e) {
+                connection.rollback();
+                throw e;
+            }
         } catch  (SQLException e) {
             throw new DatabaseException(DatabaseException.patientInsertDatabaseError);
         }
@@ -359,11 +364,16 @@ public class Database {
         try (Connection connection = DriverManager.getConnection(url)){
             connection.setAutoCommit(false);
 
-            getPerson(connection, patient.getId(), Patient.getClassIdentifier()); //Check whether the person exists and if is patient
-            updatePerson(connection, patient);
-            updatePatientDetails(connection, patient);
+            try{
+                getPerson(connection, patient.getId(), Patient.getClassIdentifier()); //Check whether the person exists and if is patient
+                updatePerson(connection, patient);
+                updatePatientDetails(connection, patient);
 
-            connection.commit();
+                connection.commit();
+            } catch (SQLException e) {
+                connection.rollback();
+                throw e;
+            }
         }catch  (SQLException e) {
             throw new DatabaseException(DatabaseException.patientUpdateDatabaseError, e.getMessage());
         }
@@ -394,11 +404,16 @@ public class Database {
         try (Connection connection = DriverManager.getConnection(url)){
             connection.setAutoCommit(false);
 
-            deletePatientsDetails(connection, id);
-            deletePerson(connection, id);
-            deleteAppointmentsWherePerson(connection, id, PersonKinds.Patient);
+            try {
+                deletePatientsDetails(connection, id);
+                deletePerson(connection, id);
+                deleteAppointmentsWherePerson(connection, id, PersonKinds.Patient);
 
-            connection.commit();
+                connection.commit();
+            } catch (SQLException e){
+                connection.rollback();
+                throw e;
+            }
         } catch (SQLException e) {
             throw new DatabaseException(DatabaseException.patientDeleteDatabaseError, e.getMessage());
         }
@@ -516,15 +531,20 @@ public class Database {
         try (Connection connection = DriverManager.getConnection(url)) {
             connection.setAutoCommit(false);
 
-            int id = addPerson(connection, doctorData.person(), Doctor.getClassIdentifier());
-            addDoctorDetails(connection, id, doctorData.details());
+            try {
+                int id = addPerson(connection, doctorData.person(), Doctor.getClassIdentifier());
+                addDoctorDetails(connection, id, doctorData.details());
 
-            connection.commit();
+                connection.commit();
 
-            return new Doctor(
-                    new Person(id, doctorData.person()),
-                    doctorData.details()
-            );
+                return new Doctor(
+                        new Person(id, doctorData.person()),
+                        doctorData.details()
+                );
+            } catch (SQLException e){
+                connection.rollback();
+                throw e;
+            }
         } catch  (SQLException e) {
             throw new DatabaseException(DatabaseException.doctorInsertDatabaseError, e.getMessage());
         }
@@ -557,11 +577,16 @@ public class Database {
         try (Connection connection = DriverManager.getConnection(url)){
             connection.setAutoCommit(false);
 
-            getPerson(connection, doctor.getId(), Doctor.getClassIdentifier());
-            updatePerson(connection, doctor);
-            updateDoctorDetails(connection, doctor);
+            try {
+                getPerson(connection, doctor.getId(), Doctor.getClassIdentifier());
+                updatePerson(connection, doctor);
+                updateDoctorDetails(connection, doctor);
 
-            connection.commit();
+                connection.commit();
+            } catch (SQLException e) {
+                connection.rollback();
+                throw e;
+            }
         } catch (SQLException e){
             throw new DatabaseException(DatabaseException.doctorUpdateDatabaseError, e.getMessage());
         }
@@ -592,11 +617,16 @@ public class Database {
         try (Connection connection = DriverManager.getConnection(url)){
             connection.setAutoCommit(false);
 
-            deletePerson(connection, id);
-            deleteDoctorsDetails(connection, id);
-            deleteAppointmentsWherePerson(connection, id, PersonKinds.Doctor);
+            try {
+                deletePerson(connection, id);
+                deleteDoctorsDetails(connection, id);
+                deleteAppointmentsWherePerson(connection, id, PersonKinds.Doctor);
 
-            connection.commit();
+                connection.commit();
+            } catch (SQLException e) {
+                connection.rollback();
+                throw e;
+            }
         } catch (SQLException e){
             throw new DatabaseException(DatabaseException.doctorDeleteDatabaseError, e.getMessage());
         }
