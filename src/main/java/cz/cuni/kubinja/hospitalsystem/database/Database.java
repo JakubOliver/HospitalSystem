@@ -121,6 +121,11 @@ public class Database {
                     	FOREIGN KEY (doctor_id) REFERENCES people(id)
                     );
                     """);
+
+            // Foreign keys are present because at the beginning of the process I had in ming using this sqlite
+            // feature, but I came across multiple problems with enforcing it, so decided not to used it,
+            // but I did not want to change it here, because that would mean, that database with old data
+            // do not have same structure as the new ones.
         } catch (SQLException e) {
             throw new DatabaseException(DatabaseException.openingDatabaseError, e.getMessage());
         }
