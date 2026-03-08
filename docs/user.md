@@ -13,7 +13,7 @@ To run the program you have to be in root directory of git repository. This can 
 
 Program can be run in terminal by using following command: `mvn compile exec:java`.
 
-For the best working program and user experience it is advisable to use **Java 25** and also is required to have installed **Maven** (to run the start command).
+For the best working program and user experience it is necessary to use **Java 25** and also is required to have installed **Maven** (to run the start command).
 
 Note: It is also possible to run program directly inside IntelliJ, but it is not advised, because the IntelliJ terminal works differently than terminal in general and does not provide same options, for example running shell commands etc.
 
