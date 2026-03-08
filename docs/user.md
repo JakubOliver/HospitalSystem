@@ -2,6 +2,10 @@
 
 # How to run
 
+To build and run the program, you need:
+* [Maven](https://maven.apache.org/download.cgi)
+* JDK 25
+
 To run the program you have to be in root directory of git repository. This can be achieved by running this commands: 
 * using git: `git clone https://github.com/JakubOliver/HospitalSystem.git && cd HospitalSystem`
 * from zip: `unzip HospitalSystem.zip && cd HospitalSystem`
