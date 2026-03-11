@@ -236,72 +236,6 @@ public class Hospital {
     }
 
     /**
-     * Decides whether the time interval [start, end] is in the conflict (have overlap) with some appointment.
-     *
-     * @param appointments List of appointments that we want to check.
-     * @param start Start of the time interval.
-     * @param end End of the time interval.
-     * @return Whether the time interval is not in the conflict with the appointments.
-     */
-    private boolean haveTime(List<Appointment> appointments, LocalDateTime start, LocalDateTime end, Integer excludedId){
-        for (Appointment appointment : appointments){
-            if (excludedId != null && appointment.id == excludedId) {
-                continue;
-            }
-
-            if (appointment.inConflict(start, end)) return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Checks whether the data from which will be new appointment created satisfy criteria.
-     * <p>
-     * Such as: valid doctor and patient id, time interval does not collide with doctor or patient other appointments, time interval is in the correct form (starts and ends at full or half hour and is long at least 1 hour)
-     *
-     * @param appointmentData Appointment data which we want to validate whether satisfy criteria.
-     * @throws CalendarException Time interval is in the conflict or is not in correct form.
-     * @throws DatabaseException Error occurs while working with the database (mostly invalid id or general connection fault).
-     */
-    private void validateAppointmentData(AppointmentData appointmentData) throws CalendarException, DatabaseException {
-        validateAppointmentData(appointmentData, null);
-    }
-
-    /**
-     * Checks whether the data from which will be new appointment created satisfy criteria.
-     * <p>
-     * Such as: valid doctor and patient id, time interval does not collide with doctor or patient other appointments, time interval is in the correct form (starts and ends at full or half hour and is long at least 1 hour)
-     *
-     * @param appointmentData Appointment data which we want to validate whether satisfy criteria.
-     * @param excludedAppointmentId Optional appointment id that should be ignored during collision checks.
-     * @throws CalendarException Time interval is in the conflict or is not in correct form.
-     * @throws DatabaseException Error occurs while working with the database (mostly invalid id or general connection fault).
-     */
-    private void validateAppointmentData(AppointmentData appointmentData, Integer excludedAppointmentId) throws CalendarException, DatabaseException {
-        //Validate whether the patient and doctor exists and have correct type
-        database.getPatient(appointmentData.patientsId());
-        database.getDoctor(appointmentData.doctorsId());
-
-        if (!Calendar.timeIsValid(appointmentData.starTime(), appointmentData.endTime()))
-            throw new CalendarException(CalendarException.invalidTimes);
-
-        if (!haveTime(
-                database.getAppointmentsForPatient(appointmentData.patientsId()),
-                appointmentData.starTime(),
-                appointmentData.endTime(),
-                excludedAppointmentId
-        )) throw new CalendarException(CalendarException.timeCollisionWithPatient);
-
-        if (!haveTime(
-                database.getAppointmentsForDoctor(appointmentData.doctorsId()),
-                appointmentData.starTime(),
-                appointmentData.endTime(),
-                excludedAppointmentId
-        )) throw new CalendarException(CalendarException.timeCollisionWIthDoctor);
-    }
-
-    /**
      * Adds new appointment into the system.
      *
      * @param appointmentData Calendar Entry data that describes the new appointment.
@@ -309,14 +243,10 @@ public class Hospital {
      */
     public GeneralPacket addAppointment(AppointmentData appointmentData) {
         try {
-            validateAppointmentData(appointmentData);
+            if (!Calendar.timeIsValid(appointmentData.starTime(), appointmentData.endTime()))
+                throw new CalendarException(CalendarException.invalidTimes);
 
-            database.addAppointment(
-                    appointmentData.patientsId(),
-                    appointmentData.doctorsId(),
-                    appointmentData.starTime(),
-                    appointmentData.endTime()
-            );
+            database.checkAndAddAppointment(appointmentData);
 
             return new GeneralPacket();
         } catch (DatabaseException | CalendarException e){
@@ -348,16 +278,8 @@ public class Hospital {
      */
     public GeneralPacket updateAppointment(Appointment appointment){
         try {
-            validateAppointmentData(new AppointmentData(
-                    appointment.patientId,
-                    appointment.doctorId,
-                    appointment.startTime,
-                    appointment.endTime
-                ),
-                appointment.id);
-
             database.updateAppointment(appointment);
-        } catch (DatabaseException | CalendarException e) {
+        } catch (DatabaseException e) {
             return new GeneralPacket(e);
         }
 

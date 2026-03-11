@@ -2,10 +2,13 @@ package cz.cuni.kubinja.hospitalsystem.database;
 
 import cz.cuni.kubinja.hospitalsystem.calendar.Appointment;
 import cz.cuni.kubinja.hospitalsystem.calendar.Calendar;
+import cz.cuni.kubinja.hospitalsystem.calendar.CalendarException;
+import cz.cuni.kubinja.hospitalsystem.calendar.util.AppointmentData;
 import cz.cuni.kubinja.hospitalsystem.personnel.Doctor;
 import cz.cuni.kubinja.hospitalsystem.personnel.Patient;
 import cz.cuni.kubinja.hospitalsystem.personnel.Person;
 import cz.cuni.kubinja.hospitalsystem.personnel.util.*;
+import org.sqlite.SQLiteConfig;
 
 import java.sql.*;
 import java.text.MessageFormat;
@@ -13,6 +16,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * Interface for communication with SQLite database from Hospital system request.
@@ -53,6 +57,8 @@ public class Database {
     private static final String notExistingPatientIdentifierError = "Patient with this id does not exist!";
     private static final String notExistingDoctorIdentifierError = "Doctor with this id does not exist!";
     private static final String notExistingAppointmentIdentifierError = "Appointment with this id does not exist!";
+
+    private static final int lengthOfWaitingTimeInImmediate = 10000;
 
     /** Path to the database */
     private final String url;
@@ -456,12 +462,27 @@ public class Database {
      */
     public Patient getPatient(int id) throws DatabaseException {
         try (Connection connection = DriverManager.getConnection(url)){
+            return getPatient(connection, id);
+        } catch  (SQLException e) {
+            throw new DatabaseException(DatabaseException.patientGetDatabaseError, e.getMessage());
+        }
+    }
+
+    /**
+     * Returns patient based on provided id.
+     *
+     * @param connection Connection to the database.
+     * @param id Id of the patient we want to retrieve from database.
+     * @return patient based on provided id.
+     * @throws DatabaseException Error connected with the unability to successfully retrieve patients data from database.
+     */
+    public Patient getPatient(Connection connection, int id) throws DatabaseException {
+        try {
             Person person = getPerson(connection, id, Patient.getClassIdentifier());
             PatientsDetails details =  getPatientDetails(connection, id);
 
             return new Patient(person, details);
         } catch  (SQLException e) {
-            //System.out.println(e.getMessage());
             throw new DatabaseException(DatabaseException.patientGetDatabaseError, e.getMessage());
         }
     }
@@ -701,6 +722,22 @@ public class Database {
      */
     public Doctor getDoctor(int id) throws DatabaseException {
         try (Connection connection = DriverManager.getConnection(url)){
+            return getDoctor(connection, id);
+        } catch (SQLException e) {
+            throw new DatabaseException(DatabaseException.doctorGetDatabaseError, e.getMessage());
+        }
+    }
+
+    /**
+     * Returns Doctor with corresponding id.
+     *
+     * @param connection Connection to the database.
+     * @param id Id of the doctor.
+     * @return Doctor with corresponding id.
+     * @throws DatabaseException Error connected with failure of retrieving doctor from database.
+     */
+    public Doctor getDoctor(Connection connection, int id) throws DatabaseException {
+        try {
             Person person = getPerson(connection, id, Doctor.getClassIdentifier());
             DoctorDetails details = getDoctorDetails(connection, id);
 
@@ -708,6 +745,7 @@ public class Database {
         } catch (SQLException e) {
             throw new DatabaseException(DatabaseException.doctorGetDatabaseError, e.getMessage());
         }
+
     }
 
     /**
@@ -718,10 +756,10 @@ public class Database {
      * @param department Department where the doctor works and where will be the appointment.
      * @param startTime Starting time of appointment.
      * @param endTime Ending time of appointment.
-     * @throws DatabaseException Error connected to the failure of storing new appointment.
+     * @throws SQLException Error connected to the failure of storing new appointment.
      */
-    public void addAppointment(int patientId, int doctorId, String department, LocalDateTime startTime, LocalDateTime endTime) throws DatabaseException {
-        try (Connection connection = DriverManager.getConnection(url); PreparedStatement statement = connection.prepareStatement(insertAppointment)) {
+    private void addAppointment(Connection connection, int patientId, int doctorId, String department, LocalDateTime startTime, LocalDateTime endTime) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(insertAppointment)) {
             statement.setInt(1, patientId);
             statement.setInt(2, doctorId);
             statement.setString(3, department);
@@ -729,9 +767,6 @@ public class Database {
             statement.setString(5, endTime.toString());
 
             statement.executeUpdate();
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            throw new DatabaseException(DatabaseException.appointmentInsertDatabaseError);
         }
     }
 
@@ -742,10 +777,10 @@ public class Database {
      * @param doctor Doctor connected to the appointment.
      * @param startTime Starting time of appointment.
      * @param endTime Ending time of appointment.
-     * @throws DatabaseException Error connected to the failure of storing new appointment.
+     * @throws SQLException Error connected to the failure of storing new appointment.
      */
-    public void addAppointment(Patient patient, Doctor doctor, LocalDateTime startTime, LocalDateTime endTime) throws DatabaseException {
-        addAppointment(patient.getId(), doctor.getId(), doctor.getDepartment(), startTime, endTime);
+    private void addAppointment(Connection connection, Patient patient, Doctor doctor, LocalDateTime startTime, LocalDateTime endTime) throws SQLException {
+        addAppointment(connection, patient.getId(), doctor.getId(), doctor.getDepartment(), startTime, endTime);
     }
 
     /**
@@ -755,12 +790,88 @@ public class Database {
      * @param doctorId Doctor's identification number.
      * @param startTime Starting time of the appointment.
      * @param endTime Ending time of the appointment.
-     * @throws DatabaseException Error connected to the failure of storing new appointment.
+     * @throws SQLException Error connected to the failure of storing new appointment.
      */
-    public void addAppointment(int patientId, int doctorId, LocalDateTime startTime, LocalDateTime endTime) throws DatabaseException {
+    private void addAppointment(Connection connection, int patientId, int doctorId, LocalDateTime startTime, LocalDateTime endTime) throws SQLException, DatabaseException {
         Doctor doctor = getDoctor(doctorId);
 
-        addAppointment(patientId, doctorId, doctor.getDepartment(), startTime, endTime);
+        addAppointment(connection, patientId, doctorId, doctor.getDepartment(), startTime, endTime);
+    }
+
+    /**
+     * Checks whether the data from which will be new appointment created satisfy criteria.
+     * <p>
+     * Such as: valid doctor and patient id, time interval does not collide with doctor or patient other appointments, time interval is in the correct form (starts and ends at full or half hour and is long at least 1 hour)
+     *
+     * @param connection Connection to the database.
+     * @param appointmentData Appointment data which we want to validate whether satisfy criteria.
+     * @throws DatabaseException  Error occurs while working with the database (mostly invalid id or general connection fault).
+     * @throws CalendarException Time interval is in the conflict or is not in correct form.
+     */
+    private void validateAppointmentData(Connection connection, AppointmentData appointmentData) throws DatabaseException,  CalendarException {
+        //Validate whether the patient and doctor exists and have correct type
+        getPatient(connection, appointmentData.patientsId());
+        getDoctor(connection, appointmentData.doctorsId());
+
+        if (!Calendar.haveTime(
+                getAppointmentsForPatient(connection, appointmentData.patientsId()),
+                appointmentData.starTime(),
+                appointmentData.endTime()
+        )) throw new CalendarException(CalendarException.timeCollisionWithPatient);
+
+        if (!Calendar.haveTime(
+                getAppointmentsForDoctor(connection, appointmentData.doctorsId()),
+                appointmentData.starTime(),
+                appointmentData.endTime()
+        )) throw new CalendarException(CalendarException.timeCollisionWIthDoctor);
+
+    }
+
+    /**
+     * Provides SQL connection properties for IMMEDIATE BEGIN for writing with longer waiting time.
+     *
+     * @return SQL connection properties for IMMEDIATE BEGIN for writing with longer waiting time.
+     */
+    private Properties getImmediateProperties() {
+        SQLiteConfig immediateConfig = new SQLiteConfig();
+        immediateConfig.setTransactionMode(SQLiteConfig.TransactionMode.IMMEDIATE);
+        immediateConfig.setBusyTimeout(lengthOfWaitingTimeInImmediate);
+
+        return immediateConfig.toProperties();
+    }
+
+    /**
+     * Checks the provided appointment data and adds the new appointments into the database.
+     * 
+     * @param appointmentData Information about the appointment.
+     * @throws DatabaseException Error connected to the failure of storing appointment into the database.
+     * @throws CalendarException Error connected to the invalid time intervals of appointment.
+     */
+    public void checkAndAddAppointment(AppointmentData appointmentData) throws DatabaseException, CalendarException {
+        try (Connection connection = DriverManager.getConnection(url, getImmediateProperties())){
+            connection.setAutoCommit(false);
+
+            try {
+                validateAppointmentData(connection, appointmentData);
+
+                addAppointment(
+                        connection,
+                        appointmentData.patientsId(),
+                        appointmentData.doctorsId(),
+                        appointmentData.starTime(),
+                        appointmentData.endTime()
+                );
+
+                connection.commit();
+            } catch (Exception e){
+                connection.rollback();
+
+                throw e;
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            throw new DatabaseException(DatabaseException.appointmentInsertDatabaseError);
+        }
     }
 
     /**
@@ -808,16 +919,35 @@ public class Database {
      * @throws DatabaseException Failure of updating data inside database. Invalid identifiers or connection errors.
      */
     public void updateAppointment(Appointment appointment) throws DatabaseException {
-        try(Connection connection = DriverManager.getConnection(url); PreparedStatement statement = connection.prepareStatement(updateAppointment)){
-            statement.setInt(1, appointment.patientId);
-            statement.setInt(2, appointment.doctorId);
-            statement.setString(3, appointment.department);
-            statement.setString(4, appointment.startTime.toString());
-            statement.setString(5, appointment.endTime.toString());
-            statement.setInt(6, appointment.id);
+        try(Connection connection = DriverManager.getConnection(url, getImmediateProperties())){
+            connection.setAutoCommit(false);
 
-            statement.executeUpdate();
-        } catch (SQLException e) {
+            try {
+                validateAppointmentData(connection, new AppointmentData(
+                        appointment.patientId,
+                        appointment.doctorId,
+                        appointment.startTime,
+                        appointment.endTime
+                ));
+
+                try(PreparedStatement statement = connection.prepareStatement(updateAppointment)) {
+                    statement.setInt(1, appointment.patientId);
+                    statement.setInt(2, appointment.doctorId);
+                    statement.setString(3, appointment.department);
+                    statement.setString(4, appointment.startTime.toString());
+                    statement.setString(5, appointment.endTime.toString());
+                    statement.setInt(6, appointment.id);
+
+                    statement.executeUpdate();
+                }
+
+                connection.commit();
+            } catch (SQLException e) {
+                connection.rollback();
+
+                throw e;
+            }
+        } catch (SQLException | CalendarException e) {
             throw new DatabaseException(DatabaseException.appointmentUpdateDatabaseError, e.getMessage());
         }
     }
@@ -831,7 +961,24 @@ public class Database {
      * @throws DatabaseException Error connected with failure of retrieving appointments from the database.
      */
     private List<Appointment> getAppointmentsForPersonnel(int id, String column) throws DatabaseException {
-        try(Connection connection = DriverManager.getConnection(url); PreparedStatement statement = connection.prepareStatement(MessageFormat.format(getAppointmentBySomeId, column))) {
+        try(Connection connection = DriverManager.getConnection(url)) {
+            return getAppointmentsForPersonnel(connection, id, column);
+        } catch (SQLException e) {
+            throw new DatabaseException(DatabaseException.appointmentGetDatabaseError, e.getMessage());
+        }
+    }
+
+    /**
+     * Returns list of appointments connected to the person with the provided id.
+     *
+     * @param connection Connection to the database.
+     * @param id Identification number of the person.
+     * @param column Identification text of the column which will be checked of the id match.
+     * @return List of appointments connected to the person with the provided id.
+     * @throws DatabaseException Error connected with failure of retrieving appointments from the database.
+     */
+    private List<Appointment> getAppointmentsForPersonnel(Connection connection, int id, String column) throws DatabaseException {
+        try(PreparedStatement statement = connection.prepareStatement(MessageFormat.format(getAppointmentBySomeId, column))) {
             statement.setInt(1, id);
 
             ResultSet result = statement.executeQuery();
@@ -859,6 +1006,18 @@ public class Database {
     }
 
     /**
+     * Returns list of appointments for patient with provided id.
+     *
+     * @param connection Connection to the database.
+     * @param id Identification number of the patient.
+     * @return List of appointments for patient.
+     * @throws DatabaseException Error connected with the connection to the database.
+     */
+    public List<Appointment> getAppointmentsForPatient(Connection connection, int id) throws DatabaseException {
+        return getAppointmentsForPersonnel(connection, id, "patient_id");
+    }
+
+    /**
      * Returns list of appointments for doctor with provided id.
      *
      * @param id Identification number of the doctor.
@@ -867,6 +1026,18 @@ public class Database {
      */
     public List<Appointment> getAppointmentsForDoctor(int id) throws DatabaseException {
         return getAppointmentsForPersonnel(id, "doctor_id");
+    }
+
+    /**
+     * Returns list of appointments for doctor with provided id.
+     *
+     * @param connection Connection to the database.
+     * @param id Identification number of the doctor.
+     * @return List of appointments for doctor with provided id.
+     * @throws DatabaseException Error connected with the connection to the database.
+     */
+    public List<Appointment> getAppointmentsForDoctor(Connection connection, int id) throws DatabaseException {
+        return getAppointmentsForPersonnel(connection, id, "doctor_id");
     }
 
     /**

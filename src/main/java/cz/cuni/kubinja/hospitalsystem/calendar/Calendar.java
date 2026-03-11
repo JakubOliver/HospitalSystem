@@ -222,4 +222,37 @@ public class Calendar {
 
         return appearances;
     }
+
+    /**
+     * Decides whether the time interval [start, end] is in the conflict (have overlap) with some appointment.
+     *
+     * @param appointments List of appointments that we want to check.
+     * @param start Start of the time interval.
+     * @param end End of the time interval.
+     * @return Whether the time interval is not in the conflict with the appointments.
+     */
+    public static  boolean haveTime(List<Appointment> appointments, LocalDateTime start, LocalDateTime end){
+        return haveTime(appointments, start, end, null);
+    }
+
+    /**
+     * Decides whether the time interval [start, end] is in the conflict (have overlap) with some appointment.
+     *
+     * @param appointments List of appointments that we want to check.
+     * @param start Start of the time interval.
+     * @param end End of the time interval.
+     * @param excludedId Identification number of the appointment that will not be checked against the time intervals.
+     * @return Whether the time interval is not in the conflict with the appointments.
+     */
+    public static boolean haveTime(List<Appointment> appointments, LocalDateTime start, LocalDateTime end, Integer excludedId){
+        for (Appointment appointment : appointments){
+            if (excludedId != null && appointment.id == excludedId) {
+                continue;
+            }
+
+            if (appointment.inConflict(start, end)) return false;
+        }
+
+        return true;
+    }
 }
