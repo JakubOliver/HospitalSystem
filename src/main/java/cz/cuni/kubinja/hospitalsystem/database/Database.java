@@ -809,6 +809,21 @@ public class Database {
      * @throws CalendarException Time interval is in the conflict or is not in correct form.
      */
     private void validateAppointmentData(Connection connection, AppointmentData appointmentData) throws DatabaseException,  CalendarException {
+        validateAppointmentData(connection,appointmentData, null);
+    }
+
+    /**
+     * Checks whether the data from which will be new appointment created satisfy criteria.
+     * <p>
+     * Such as: valid doctor and patient id, time interval does not collide with doctor or patient other appointments, time interval is in the correct form (starts and ends at full or half hour and is long at least 1 hour)
+     *
+     * @param connection Connection to the database.
+     * @param appointmentData Appointment data which we want to validate whether satisfy criteria.
+     * @param id Identification number of the appointment.
+     * @throws DatabaseException  Error occurs while working with the database (mostly invalid id or general connection fault).
+     * @throws CalendarException Time interval is in the conflict or is not in correct form.
+     */
+    private void validateAppointmentData(Connection connection, AppointmentData appointmentData, Integer id) throws DatabaseException,  CalendarException {
         //Validate whether the patient and doctor exists and have correct type
         getPatient(connection, appointmentData.patientsId());
         getDoctor(connection, appointmentData.doctorsId());
@@ -816,13 +831,15 @@ public class Database {
         if (!Calendar.haveTime(
                 getAppointmentsForPatient(connection, appointmentData.patientsId()),
                 appointmentData.starTime(),
-                appointmentData.endTime()
+                appointmentData.endTime(),
+                id
         )) throw new CalendarException(CalendarException.timeCollisionWithPatient);
 
         if (!Calendar.haveTime(
                 getAppointmentsForDoctor(connection, appointmentData.doctorsId()),
                 appointmentData.starTime(),
-                appointmentData.endTime()
+                appointmentData.endTime(),
+                id
         )) throw new CalendarException(CalendarException.timeCollisionWIthDoctor);
 
     }
@@ -923,12 +940,16 @@ public class Database {
             connection.setAutoCommit(false);
 
             try {
-                validateAppointmentData(connection, new AppointmentData(
-                        appointment.patientId,
-                        appointment.doctorId,
-                        appointment.startTime,
-                        appointment.endTime
-                ));
+                validateAppointmentData(
+                        connection,
+                        new AppointmentData(
+                            appointment.patientId,
+                            appointment.doctorId,
+                            appointment.startTime,
+                            appointment.endTime
+                        ),
+                        appointment.id
+                );
 
                 try(PreparedStatement statement = connection.prepareStatement(updateAppointment)) {
                     statement.setInt(1, appointment.patientId);
