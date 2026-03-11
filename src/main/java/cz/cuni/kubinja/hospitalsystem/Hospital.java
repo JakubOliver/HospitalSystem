@@ -278,8 +278,11 @@ public class Hospital {
      */
     public GeneralPacket updateAppointment(Appointment appointment){
         try {
+            if (!Calendar.timeIsValid(appointment.startTime, appointment.endTime))
+                throw new CalendarException(CalendarException.invalidTimes);
+
             database.updateAppointment(appointment);
-        } catch (DatabaseException e) {
+        } catch (DatabaseException | CalendarException e) {
             return new GeneralPacket(e);
         }
 
