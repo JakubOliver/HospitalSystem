@@ -1,4 +1,6 @@
-import cz.cuni.kubinja.hospitalsystem.TUI.PatientMenu;
+package cz.cuni.kubinja.hospitalsystem.TUI.tests;
+
+import cz.cuni.kubinja.hospitalsystem.TUI.internal.PatientMenu;
 import cz.cuni.kubinja.hospitalsystem.core.database.exceptions.DatabaseException;
 import cz.cuni.kubinja.hospitalsystem.core.personnel.Doctor;
 import cz.cuni.kubinja.hospitalsystem.core.personnel.Patient;

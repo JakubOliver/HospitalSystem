@@ -1,3 +1,5 @@
+package cz.cuni.kubinja.hospitalsystem.TUI.tests;
+
 import cz.cuni.kubinja.hospitalsystem.TUI.internal.DoctorMenu;
 import cz.cuni.kubinja.hospitalsystem.TUI.internal.ExportMenu;
 import cz.cuni.kubinja.hospitalsystem.TUI.MainMenu;
