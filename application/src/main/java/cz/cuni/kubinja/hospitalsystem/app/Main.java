@@ -35,7 +35,7 @@ public class Main {
         if (args.length > 0 && args[0].equals("-t")) {
             cz.cuni.kubinja.hospitalsystem.TUI.MainMenu mainMenu = new cz.cuni.kubinja.hospitalsystem.TUI.MainMenu(hospital);
         } else {
-            cz.cuni.kubinja.hospitalsystem.GUI.MainMenu.main(args);
+            cz.cuni.kubinja.hospitalsystem.GUI.MainGUI.main(args);
         }
 
     }

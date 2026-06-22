@@ -1,23 +1,24 @@
 package cz.cuni.kubinja.hospitalsystem.GUI;
 
+import cz.cuni.kubinja.hospitalsystem.GUI.internal.Page;
 import cz.cuni.kubinja.hospitalsystem.GUI.internal.PatientMenu;
-import cz.cuni.kubinja.hospitalsystem.menu.Page;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-public class MainMenu extends Application{
-    Page[] menues = {new PatientMenu()};
+public class MainMenu {
+    Page[] tiles;
+    Stage primaryStage;
 
-    public static void main(String[] args) {
-        launch(args);
-    }
+    MainMenu(Stage primaryStage){
+        this.primaryStage = primaryStage;
 
-    @Override
-    public void start(Stage primaryStage) throws Exception {
+        this.tiles = new Page[]{new PatientMenu(primaryStage)};
+
         VBox root = new VBox();
         root.setAlignment(Pos.TOP_CENTER);
 
@@ -32,7 +33,7 @@ public class MainMenu extends Application{
     }
 
     private void addMenu(VBox root){
-        for (Page menu : menues){
+        for (Page menu : tiles){
             root.getChildren().add(createMenuEntry(menu));
         }
     }
@@ -40,7 +41,11 @@ public class MainMenu extends Application{
     private VBox createMenuEntry(Page entryPage){
         VBox entry = new VBox();
 
-        entry.getChildren().add(new Label("Patient"));
+        Button button = new Button(entryPage.getTitle());
+        entry.getChildren().add(button);
+        button.setOnAction(event -> {
+            entryPage.define();
+        });
 
         return entry;
     }
