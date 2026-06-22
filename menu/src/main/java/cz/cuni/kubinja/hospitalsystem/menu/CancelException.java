@@ -1,4 +1,4 @@
-package cz.cuni.kubinja.hospitalsystem.TUI.internal;
+package cz.cuni.kubinja.hospitalsystem.menu;
 
 /**
  * Custom exception which is thrown when the user does not comply with the process of inputting and forcefully exit.

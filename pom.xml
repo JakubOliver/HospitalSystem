@@ -13,6 +13,7 @@
         <module>TUI</module>
         <module>application</module>
         <module>test-support</module>
+        <module>menu</module>
     </modules>
 
     <properties>

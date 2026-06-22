@@ -10,6 +10,8 @@ import cz.cuni.kubinja.hospitalsystem.core.personnel.util.DoctorDetails;
 import cz.cuni.kubinja.hospitalsystem.core.personnel.util.PatientsDetails;
 import cz.cuni.kubinja.hospitalsystem.core.personnel.util.PersonData;
 
+import cz.cuni.kubinja.hospitalsystem.menu.*;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;

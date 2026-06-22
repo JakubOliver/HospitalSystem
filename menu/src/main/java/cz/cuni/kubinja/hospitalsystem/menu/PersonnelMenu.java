@@ -1,4 +1,4 @@
-package cz.cuni.kubinja.hospitalsystem.TUI.internal;
+package cz.cuni.kubinja.hospitalsystem.menu;
 
 /**
  * Denotes what basic operations should every menu providing operation with person should implement.

@@ -8,6 +8,7 @@ import cz.cuni.kubinja.hospitalsystem.core.personnel.Person;
 import cz.cuni.kubinja.hospitalsystem.core.personnel.util.PatientData;
 import cz.cuni.kubinja.hospitalsystem.core.personnel.util.PatientsDetails;
 import cz.cuni.kubinja.hospitalsystem.core.personnel.util.PersonData;
+import cz.cuni.kubinja.hospitalsystem.menu.PersonnelMenu;
 
 import java.util.List;
 import java.util.Scanner;

@@ -1,4 +1,4 @@
-package cz.cuni.kubinja.hospitalsystem.TUI.internal;
+package cz.cuni.kubinja.hospitalsystem.menu;
 
 /**
  * Denotes what every menu page has to offer.

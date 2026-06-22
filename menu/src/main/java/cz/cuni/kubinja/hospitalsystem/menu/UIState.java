@@ -1,4 +1,4 @@
-package cz.cuni.kubinja.hospitalsystem.TUI.internal;
+package cz.cuni.kubinja.hospitalsystem.menu;
 
 /**
  * Denotes the state in which the UI should be.
