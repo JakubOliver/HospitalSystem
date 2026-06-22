@@ -9,27 +9,27 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>application</artifactId>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>3.6.1</version>
-                <configuration>
-                    <mainClass>cz.cuni.kubinja.hospitalsystem.app.Main</mainClass>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+    <artifactId>GUI</artifactId>
 
     <properties>
         <maven.compiler.source>25</maven.compiler.source>
         <maven.compiler.target>25</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <javafx.version>25.0.2</javafx.version>
     </properties>
+
     <dependencies>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.example</groupId>
             <artifactId>core</artifactId>
@@ -38,13 +38,7 @@
         </dependency>
         <dependency>
             <groupId>org.example</groupId>
-            <artifactId>TUI</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.example</groupId>
-            <artifactId>GUI</artifactId>
+            <artifactId>menu</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
