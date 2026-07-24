@@ -1,52 +1,43 @@
 package cz.cuni.kubinja.hospitalsystem.GUI;
 
-import cz.cuni.kubinja.hospitalsystem.GUI.internal.Page;
+import cz.cuni.kubinja.hospitalsystem.GUI.internal.AppointmentMenu;
+import cz.cuni.kubinja.hospitalsystem.GUI.internal.DoctorMenu;
+import cz.cuni.kubinja.hospitalsystem.GUI.internal.ExportMenu;
+import cz.cuni.kubinja.hospitalsystem.GUI.internal.MenuPage;
+import cz.cuni.kubinja.hospitalsystem.GUI.internal.Navigator;
 import cz.cuni.kubinja.hospitalsystem.GUI.internal.PatientMenu;
-import javafx.application.Application;
-import javafx.geometry.Pos;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
+import cz.cuni.kubinja.hospitalsystem.GUI.internal.ReportsMenu;
+import javafx.scene.layout.GridPane;
 
-public class MainMenu {
-    Page[] tiles;
-    Stage primaryStage;
-
-    MainMenu(Stage primaryStage){
-        this.primaryStage = primaryStage;
-
-        this.tiles = new Page[]{new PatientMenu(primaryStage)};
-
-        VBox root = new VBox();
-        root.setAlignment(Pos.TOP_CENTER);
-
-        Label title = new Label("Hospital System");
-        root.getChildren().add(title);
-
-        addMenu(root);
-
-        Scene scene = new Scene(root, 300, 250);
-        primaryStage.setScene(scene);
-        primaryStage.show();
+/**
+ * Main crossroad to all GUI sections.
+ */
+public class MainMenu extends MenuPage {
+    public MainMenu(Navigator navigator) {
+        super(navigator);
     }
 
-    private void addMenu(VBox root){
-        for (Page menu : tiles){
-            root.getChildren().add(createMenuEntry(menu));
-        }
+    @Override
+    public String getTitle() {
+        return "Hospital System";
     }
 
-    private VBox createMenuEntry(Page entryPage){
-        VBox entry = new VBox();
+    @Override
+    protected void addOptions(GridPane options) {
+        addOption(options, "Patients", () -> navigator.navigate(new PatientMenu(navigator)));
+        addOption(options, "Doctors", () -> navigator.navigate(new DoctorMenu(navigator)));
+        addOption(options, "Calendar", () -> navigator.navigate(new AppointmentMenu(navigator)));
+        addOption(options, "Export", () -> navigator.navigate(new ExportMenu(navigator)));
+        addOption(options, "Statistics", () -> navigator.navigate(new ReportsMenu(navigator)));
+    }
 
-        Button button = new Button(entryPage.getTitle());
-        entry.getChildren().add(button);
-        button.setOnAction(event -> {
-            entryPage.define();
-        });
+    @Override
+    protected String getFooterButtonText() {
+        return "End";
+    }
 
-        return entry;
+    @Override
+    protected Runnable getFooterButtonAction() {
+        return navigator::close;
     }
 }
