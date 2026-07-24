@@ -54,7 +54,7 @@ jobs:
         cache: maven
 
     - name: Generate Javadoc
-      run: mvn -B javadoc:javadoc
+      run: mvn -B javadoc:aggregate
     
     - name: Upload Javadoc artifact
       uses: actions/upload-artifact@v4
