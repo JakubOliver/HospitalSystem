@@ -15,7 +15,7 @@ import javafx.scene.layout.VBox;
 /**
  * Page for retrieving and deleting a patient.
  */
-final class DeletePatientPage extends PatientActionPage {
+final class DeletePatientPage extends PersonnelActionPage {
     private IdInput idInput;
     private VBox details;
     private Button delete;
@@ -42,7 +42,7 @@ final class DeletePatientPage extends PatientActionPage {
         delete.setStyle("-fx-text-fill: #b00020;");
         delete.setOnAction(event -> confirmDelete());
 
-        idInput = new IdInput("Load", this::loadPatient);
+        idInput = new IdInput("Patient", "Load", this::loadPatient);
         idInput.textProperty().addListener((observable, oldValue, newValue) -> clearPatient());
 
         VBox body = new VBox(22, idInput, new Separator(), details, delete);
@@ -51,14 +51,17 @@ final class DeletePatientPage extends PatientActionPage {
     }
 
     private void loadPatient() {
-        DataPacket<Patient> packet = hospital.getPatient(idInput.getPatientId());
+        DataPacket<Patient> packet = hospital.getPatient(idInput.getPersonnelId());
         if (showApiError(packet)) {
             clearPatient();
             return;
         }
 
         loadedPatient = packet.data;
-        details.getChildren().setAll(patientDetails(loadedPatient));
+        details.getChildren().setAll(personnelDetails(
+                loadedPatient,
+                new Detail("Anamnesis", loadedPatient.getAnamnesis())
+        ));
         delete.setDisable(false);
     }
 

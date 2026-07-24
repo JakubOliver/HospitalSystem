@@ -11,7 +11,7 @@ import javafx.scene.layout.VBox;
 /**
  * Page for finding and displaying a patient by ID.
  */
-final class FindPatientPage extends PatientActionPage {
+final class FindPatientPage extends PersonnelActionPage {
     private IdInput idInput;
     private VBox details;
 
@@ -29,7 +29,7 @@ final class FindPatientPage extends PatientActionPage {
         details = new VBox();
         details.setAlignment(Pos.TOP_CENTER);
 
-        idInput = new IdInput("Find", this::findPatient);
+        idInput = new IdInput("Patient", "Find", this::findPatient);
         idInput.textProperty().addListener(
                 (observable, oldValue, newValue) -> details.getChildren().clear()
         );
@@ -40,12 +40,15 @@ final class FindPatientPage extends PatientActionPage {
     }
 
     private void findPatient() {
-        DataPacket<Patient> packet = hospital.getPatient(idInput.getPatientId());
+        DataPacket<Patient> packet = hospital.getPatient(idInput.getPersonnelId());
         if (showApiError(packet)) {
             details.getChildren().clear();
             return;
         }
 
-        details.getChildren().setAll(patientDetails(packet.data));
+        details.getChildren().setAll(personnelDetails(
+                packet.data,
+                new Detail("Anamnesis", packet.data.getAnamnesis())
+        ));
     }
 }

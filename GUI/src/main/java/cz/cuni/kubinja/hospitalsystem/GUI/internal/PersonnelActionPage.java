@@ -2,7 +2,7 @@ package cz.cuni.kubinja.hospitalsystem.GUI.internal;
 
 import cz.cuni.kubinja.hospitalsystem.core.Hospital;
 import cz.cuni.kubinja.hospitalsystem.core.packet.GeneralPacket;
-import cz.cuni.kubinja.hospitalsystem.core.personnel.Patient;
+import cz.cuni.kubinja.hospitalsystem.core.personnel.Person;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -16,13 +16,13 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 /**
- * Shared page structure and feedback behavior for patient workflows.
+ * Shared page structure and feedback behavior for personnel workflows.
  */
-abstract class PatientActionPage implements Page {
+abstract class PersonnelActionPage implements Page {
     protected final Navigator navigator;
     protected final Hospital hospital;
 
-    PatientActionPage(Navigator navigator, Hospital hospital) {
+    PersonnelActionPage(Navigator navigator, Hospital hospital) {
         this.navigator = navigator;
         this.hospital = hospital;
     }
@@ -82,20 +82,26 @@ abstract class PatientActionPage implements Page {
         navigator.back();
     }
 
-    protected GridPane patientDetails(Patient patient) {
+    protected GridPane personnelDetails(Person person, Detail... additionalDetails) {
         GridPane details = new GridPane();
         details.setHgap(18);
         details.setVgap(12);
         details.setAlignment(Pos.TOP_CENTER);
 
-        addDetail(details, 0, "ID", Integer.toString(patient.getId()));
-        addDetail(details, 1, "First name", patient.getFirstName());
-        addDetail(details, 2, "Last name", patient.getLastName());
-        addDetail(details, 3, "Date of birth", patient.getDateOfBirth().toString());
-        addDetail(details, 4, "Anamnesis", patient.getAnamnesis());
+        addDetail(details, 0, "ID", Integer.toString(person.getId()));
+        addDetail(details, 1, "First name", person.getFirstName());
+        addDetail(details, 2, "Last name", person.getLastName());
+        addDetail(details, 3, "Date of birth", person.getDateOfBirth().toString());
+
+        for (int index = 0; index < additionalDetails.length; index++) {
+            Detail detail = additionalDetails[index];
+            addDetail(details, index + 4, detail.name(), detail.value());
+        }
 
         return details;
     }
+
+    protected record Detail(String name, String value) {}
 
     private void addDetail(GridPane details, int row, String name, String value) {
         Label nameLabel = new Label(name + ":");

@@ -12,7 +12,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 /**
- * Patient ID entry with inline validation and an associated action.
+ * Personnel ID entry with inline validation and an associated action.
  */
 final class IdInput extends VBox {
     private final TextField id = new TextField();
@@ -20,11 +20,11 @@ final class IdInput extends VBox {
     private final Button action = new Button();
     private final BooleanProperty valid = new SimpleBooleanProperty(false);
 
-    IdInput(String actionText, Runnable actionHandler) {
+    IdInput(String personnelName, String actionText, Runnable actionHandler) {
         super(6);
         setAlignment(Pos.CENTER);
 
-        id.setPromptText("Patient ID");
+        id.setPromptText(personnelName + " ID");
         id.setMaxWidth(180);
 
         action.setText(actionText);
@@ -34,7 +34,7 @@ final class IdInput extends VBox {
 
         error.setStyle("-fx-text-fill: #b00020; -fx-font-size: 11px;");
 
-        HBox row = new HBox(10, new Label("Patient ID:"), id, action);
+        HBox row = new HBox(10, new Label(personnelName + " ID:"), id, action);
         row.setAlignment(Pos.CENTER);
         getChildren().addAll(row, error);
 
@@ -42,7 +42,7 @@ final class IdInput extends VBox {
         validate();
     }
 
-    int getPatientId() {
+    int getPersonnelId() {
         return InputValidator.parseInteger(id.getText());
     }
 
@@ -53,9 +53,9 @@ final class IdInput extends VBox {
     private void validate() {
         String message;
         if (!InputValidator.hasText(id.getText())) {
-            message = "Enter a patient ID.";
+            message = "Enter an ID.";
         } else if (!InputValidator.isPositiveInteger(id.getText())) {
-            message = "Patient ID must be a positive integer.";
+            message = "ID must be a positive integer.";
         } else {
             message = "";
         }

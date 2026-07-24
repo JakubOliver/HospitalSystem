@@ -17,7 +17,7 @@ import javafx.scene.layout.VBox;
 /**
  * Page for retrieving and editing a patient.
  */
-final class EditPatientPage extends PatientActionPage {
+final class EditPatientPage extends PersonnelActionPage {
     private final BooleanProperty patientLoaded = new SimpleBooleanProperty(false);
     private IdInput idInput;
     private PatientForm form;
@@ -44,7 +44,7 @@ final class EditPatientPage extends PatientActionPage {
         save.disableProperty().bind(patientLoaded.not().or(form.validProperty().not()));
         save.setOnAction(event -> savePatient());
 
-        idInput = new IdInput("Load", this::loadPatient);
+        idInput = new IdInput("Patient", "Load", this::loadPatient);
         idInput.textProperty().addListener((observable, oldValue, newValue) -> patientLoaded.set(false));
 
         VBox body = new VBox(22, idInput, new Separator(), form, save);
@@ -53,7 +53,7 @@ final class EditPatientPage extends PatientActionPage {
     }
 
     private void loadPatient() {
-        DataPacket<Patient> packet = hospital.getPatient(idInput.getPatientId());
+        DataPacket<Patient> packet = hospital.getPatient(idInput.getPersonnelId());
         if (showApiError(packet)) {
             patientLoaded.set(false);
             return;
