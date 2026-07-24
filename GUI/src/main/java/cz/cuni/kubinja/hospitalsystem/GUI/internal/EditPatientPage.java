@@ -45,7 +45,9 @@ final class EditPatientPage extends PersonnelActionPage {
         save.setOnAction(event -> savePatient());
 
         idInput = new IdInput("Patient", "Load", this::loadPatient);
-        idInput.textProperty().addListener((observable, oldValue, newValue) -> patientLoaded.set(false));
+        idInput.textProperty().addListener(
+                (observable, oldValue, newValue) -> patientLoaded.set(false)
+        );
 
         VBox body = new VBox(22, idInput, new Separator(), form, save);
         body.setAlignment(Pos.TOP_CENTER);
@@ -71,6 +73,7 @@ final class EditPatientPage extends PersonnelActionPage {
                 new Person(loadedPatientId, patientData.person()),
                 patientData.details()
         ));
+
         if (!showApiError(packet)) {
             complete("Patient " + loadedPatientId + " was updated.");
         }
