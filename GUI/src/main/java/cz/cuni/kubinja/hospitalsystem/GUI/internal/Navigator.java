@@ -10,9 +10,6 @@ import java.util.Deque;
  * Controls navigation within the application's single primary window.
  */
 public final class Navigator {
-    private static final double WIDTH = 420;
-    private static final double HEIGHT = 780;
-
     private final Stage stage;
     private final Deque<Page> history = new ArrayDeque<>();
     private Page currentPage;
@@ -46,6 +43,11 @@ public final class Navigator {
     private void show(Page page) {
         currentPage = page;
         stage.setTitle(page.getTitle());
-        stage.setScene(new Scene(page.createContent(), WIDTH, HEIGHT));
+        stage.setScene(new Scene(
+                page.createContent(),
+                page.getPreferredWidth(),
+                page.getPreferredHeight()
+        ));
+        stage.centerOnScreen();
     }
 }

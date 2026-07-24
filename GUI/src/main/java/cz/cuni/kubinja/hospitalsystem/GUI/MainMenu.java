@@ -7,14 +7,18 @@ import cz.cuni.kubinja.hospitalsystem.GUI.internal.MenuPage;
 import cz.cuni.kubinja.hospitalsystem.GUI.internal.Navigator;
 import cz.cuni.kubinja.hospitalsystem.GUI.internal.PatientMenu;
 import cz.cuni.kubinja.hospitalsystem.GUI.internal.ReportsMenu;
+import cz.cuni.kubinja.hospitalsystem.core.Hospital;
 import javafx.scene.layout.GridPane;
 
 /**
  * Main crossroad to all GUI sections.
  */
 public class MainMenu extends MenuPage {
-    public MainMenu(Navigator navigator) {
+    private final Hospital hospital;
+
+    public MainMenu(Navigator navigator, Hospital hospital) {
         super(navigator);
+        this.hospital = hospital;
     }
 
     @Override
@@ -24,7 +28,7 @@ public class MainMenu extends MenuPage {
 
     @Override
     protected void addOptions(GridPane options) {
-        addOption(options, "Patients", () -> navigator.navigate(new PatientMenu(navigator)));
+        addOption(options, "Patients", () -> navigator.navigate(new PatientMenu(navigator, hospital)));
         addOption(options, "Doctors", () -> navigator.navigate(new DoctorMenu(navigator)));
         addOption(options, "Calendar", () -> navigator.navigate(new AppointmentMenu(navigator)));
         addOption(options, "Export", () -> navigator.navigate(new ExportMenu(navigator)));

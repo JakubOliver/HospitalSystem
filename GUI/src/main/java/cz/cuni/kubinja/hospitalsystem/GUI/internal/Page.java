@@ -8,4 +8,12 @@ import javafx.scene.Parent;
 public interface Page {
     String getTitle();
     Parent createContent();
+
+    default double getPreferredWidth() {
+        return 420;
+    }
+
+    default double getPreferredHeight() {
+        return 780;
+    }
 }

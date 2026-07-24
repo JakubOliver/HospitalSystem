@@ -1,7 +1,6 @@
 package cz.cuni.kubinja.hospitalsystem.TUI.internal;
 
 import cz.cuni.kubinja.hospitalsystem.core.Hospital;
-import cz.cuni.kubinja.hospitalsystem.core.calendar.Calendar;
 import cz.cuni.kubinja.hospitalsystem.core.packet.GeneralPacket;
 import cz.cuni.kubinja.hospitalsystem.core.personnel.Doctor;
 import cz.cuni.kubinja.hospitalsystem.core.personnel.Patient;
@@ -302,10 +301,10 @@ public abstract class Menu implements Page{
         while (!acquiredCorrectInteger) {
             line = getString(question);
 
-            try{
-                number = Integer.parseInt(line.trim());
+            if (InputValidator.isInteger(line)) {
+                number = InputValidator.parseInteger(line);
                 acquiredCorrectInteger = true;
-            } catch (NumberFormatException e){
+            } else {
                 System.out.println("Invalid input: not a valid number");
             }
         }
@@ -331,7 +330,7 @@ public abstract class Menu implements Page{
                 throw new CancelException(CancelException.userCancel);
             }
 
-            if (!line.isEmpty()){
+            if (InputValidator.hasText(line)){
                 return line;
             } else if (defaultValue != null) {
                 return defaultValue;
@@ -371,7 +370,7 @@ public abstract class Menu implements Page{
             try{
                 date = LocalDate.parse(line.trim());
 
-                if (!Calendar.isWithinValidDates(date)){
+                if (!InputValidator.isValidPersonnelDate(date)){
                     System.out.println("Invalid input: date have to be between year 1900 and present");
                 } else {
                     acquireCorrectDate = true;
@@ -417,7 +416,7 @@ public abstract class Menu implements Page{
             try{
                 date =  LocalDateTime.parse(line.trim());
 
-                if (!Calendar.isAppointmentWithinValidDateTime(date)){
+                if (!InputValidator.isValidAppointmentDateTime(date)){
                     System.out.println("Invalid input: date have to be between year 2000-01-01 and 3000-01-01.");
                 } else {
                     acquireCorrectDateTime = true;
