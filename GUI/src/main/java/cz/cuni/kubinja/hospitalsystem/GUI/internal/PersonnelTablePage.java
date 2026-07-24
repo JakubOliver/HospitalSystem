@@ -24,7 +24,7 @@ import java.util.List;
  *
  * @param <T> Type of personnel displayed in the table.
  */
-abstract class PersonnelTablePage<T extends Person> extends PersonnelActionPage {
+abstract class PersonnelTablePage<T extends Person> extends ActionPage {
     private TableView<T> table;
 
     PersonnelTablePage(Navigator navigator, Hospital hospital) {

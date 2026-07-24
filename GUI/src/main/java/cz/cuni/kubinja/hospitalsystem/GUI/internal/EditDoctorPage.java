@@ -17,7 +17,7 @@ import javafx.scene.layout.VBox;
 /**
  * Page for retrieving and editing a doctor.
  */
-final class EditDoctorPage extends PersonnelActionPage {
+final class EditDoctorPage extends ActionPage {
     private final BooleanProperty doctorLoaded = new SimpleBooleanProperty(false);
     private IdInput idInput;
     private DoctorForm form;

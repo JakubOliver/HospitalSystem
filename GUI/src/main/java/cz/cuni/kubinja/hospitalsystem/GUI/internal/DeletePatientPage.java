@@ -15,7 +15,7 @@ import javafx.scene.layout.VBox;
 /**
  * Page for retrieving and deleting a patient.
  */
-final class DeletePatientPage extends PersonnelActionPage {
+final class DeletePatientPage extends ActionPage {
     private IdInput idInput;
     private VBox details;
     private Button delete;

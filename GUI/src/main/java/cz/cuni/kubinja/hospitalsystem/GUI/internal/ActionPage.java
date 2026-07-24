@@ -16,13 +16,13 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 /**
- * Shared page structure and feedback behavior for personnel workflows.
+ * Shared page structure, navigation and feedback behavior for action workflows.
  */
-abstract class PersonnelActionPage implements Page {
+abstract class ActionPage implements Page {
     protected final Navigator navigator;
     protected final Hospital hospital;
 
-    PersonnelActionPage(Navigator navigator, Hospital hospital) {
+    ActionPage(Navigator navigator, Hospital hospital) {
         this.navigator = navigator;
         this.hospital = hospital;
     }
@@ -72,14 +72,24 @@ abstract class PersonnelActionPage implements Page {
         return true;
     }
 
+    protected void showUnexpectedError(Throwable throwable) {
+        Exception exception = throwable instanceof Exception error
+                ? error
+                : new Exception(throwable);
+        showApiError(new GeneralPacket(exception));
+    }
+
     protected void complete(String message) {
+        showSuccess(message);
+        navigator.back();
+    }
+
+    protected void showSuccess(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Hospital System");
         alert.setHeaderText("Operation completed");
         alert.setContentText(message);
         alert.showAndWait();
-
-        navigator.back();
     }
 
     protected GridPane personnelDetails(Person person, Detail... additionalDetails) {
