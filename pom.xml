@@ -7,6 +7,15 @@
     <groupId>org.example</groupId>
     <artifactId>HospitalSystem</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <modules>
+        <module>core</module>
+        <module>TUI</module>
+        <module>application</module>
+        <module>test-support</module>
+        <module>menu</module>
+        <module>GUI</module>
+    </modules>
 
     <properties>
         <maven.compiler.source>25</maven.compiler.source>
@@ -65,9 +74,11 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.6.1</version>
+                <!--
                 <configuration>
-                    <mainClass>cz.cuni.kubinja.hospitalsystem.Main</mainClass>
+                    <mainClass>cz.cuni.kubinja.hospitalsystem.app.Main</mainClass>
                 </configuration>
+                -->
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
