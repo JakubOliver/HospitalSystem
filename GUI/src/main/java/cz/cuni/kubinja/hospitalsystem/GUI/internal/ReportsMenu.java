@@ -1,13 +1,17 @@
 package cz.cuni.kubinja.hospitalsystem.GUI.internal;
 
+import cz.cuni.kubinja.hospitalsystem.core.Hospital;
 import javafx.scene.layout.GridPane;
 
 /**
  * Menu containing hospital reporting actions.
  */
 public class ReportsMenu extends MenuPage {
-    public ReportsMenu(Navigator navigator) {
+    private final Hospital hospital;
+
+    public ReportsMenu(Navigator navigator, Hospital hospital) {
         super(navigator);
+        this.hospital = hospital;
     }
 
     @Override
@@ -17,6 +21,10 @@ public class ReportsMenu extends MenuPage {
 
     @Override
     protected void addOptions(GridPane options) {
-        addDisabledOption(options, "Show statistics");
+        addOption(
+                options,
+                "Show statistics",
+                () -> navigator.navigate(new StatisticsPage(navigator, hospital))
+        );
     }
 }

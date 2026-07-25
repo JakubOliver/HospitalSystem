@@ -32,7 +32,7 @@ public class MainMenu extends MenuPage {
         addOption(options, "Doctors", () -> navigator.navigate(new DoctorMenu(navigator, hospital)));
         addOption(options, "Calendar", () -> navigator.navigate(new AppointmentMenu(navigator)));
         addOption(options, "Export", () -> navigator.navigate(new ExportMenu(navigator, hospital)));
-        addOption(options, "Statistics", () -> navigator.navigate(new ReportsMenu(navigator)));
+        addOption(options, "Statistics", () -> navigator.navigate(new ReportsMenu(navigator, hospital)));
     }
 
     @Override
