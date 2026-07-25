@@ -2,6 +2,7 @@ package cz.cuni.kubinja.hospitalsystem.GUI.internal.appointment;
 
 import cz.cuni.kubinja.hospitalsystem.GUI.internal.ActionPage;
 import cz.cuni.kubinja.hospitalsystem.GUI.internal.Navigator;
+import com.calendarfx.model.Calendar;
 import com.calendarfx.model.CalendarSource;
 import com.calendarfx.model.Entry;
 import com.calendarfx.view.CalendarView;
@@ -115,6 +116,10 @@ final class CalendarPage extends ActionPage {
         calendarView.setShowSearchField(false);
         calendarView.setShowSearchResultsTray(false);
         calendarView.setShowPrintButton(false);
+
+        Calendar<Object> readOnlyCreationTarget = new Calendar<>("Appointments");
+        readOnlyCreationTarget.setReadOnly(true);
+        calendarView.setDefaultCalendarProvider(parameter -> readOnlyCreationTarget);
 
         calendarView.setCalendarSourceFactory(parameter -> null);
         calendarView.setEntryFactory(parameter -> null);
