@@ -1,3 +1,6 @@
+/**
+ * Provides general UI functionality.
+ */
 module menu {
     requires core;
 

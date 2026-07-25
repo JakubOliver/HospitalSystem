@@ -1,3 +1,6 @@
+/**
+ * Provides hospital data management, persistence, scheduling, exports and statistics.
+ */
 module core {
     requires org.xerial.sqlitejdbc;
     //requires test.support;

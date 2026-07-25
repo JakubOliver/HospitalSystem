@@ -1,3 +1,6 @@
+/**
+ * Provides the command-line user interface for the hospital system.
+ */
 module TUI {
     requires core;
     //requires test.support;
