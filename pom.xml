@@ -95,6 +95,22 @@
                 <version>3.6.3</version>
                 <configuration>
                     <!-- <show>private</show> -->
+                    <show>public</show>
+
+                    <additionalOptions>
+                        <option>--show-packages</option>
+                        <option>all</option>
+
+                        <option>--show-module-contents</option>
+                        <option>all</option>
+
+                        <option>--show-types</option>
+                        <option>public</option>
+
+                        <option>--show-members</option>
+                        <option>public</option>
+                    </additionalOptions>
+
                     <doctitle>Hospital System Documentation</doctitle>
                     <windowtitle>Hospital System Documentation</windowtitle>
                     <outputDirectory>${project.basedir}/docs</outputDirectory>
