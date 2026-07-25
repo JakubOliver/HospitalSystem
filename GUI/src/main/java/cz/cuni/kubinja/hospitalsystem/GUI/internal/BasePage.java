@@ -16,11 +16,11 @@ import javafx.scene.layout.VBox;
  * Shared control and layout construction for JavaFX pages.
  */
 public abstract class BasePage implements Page {
-    private static final String EMPHASIZED_TEXT_STYLE =
+    protected static final String EMPHASIZED_TEXT_STYLE =
             "-fx-font-weight: bold;";
-    private static final String PAGE_TITLE_STYLE =
+    protected static final String PAGE_TITLE_STYLE =
             "-fx-font-size: 22px; " + EMPHASIZED_TEXT_STYLE;
-    private static final String SECTION_TITLE_STYLE =
+    protected static final String SECTION_TITLE_STYLE =
             "-fx-font-size: 16px; " + EMPHASIZED_TEXT_STYLE;
 
     protected static final double ACTION_BUTTON_HEIGHT = 42;
@@ -28,9 +28,13 @@ public abstract class BasePage implements Page {
     protected static final double SECONDARY_BUTTON_WIDTH = 160;
     protected static final double PROGRESS_INDICATOR_SIZE = 42;
 
+    protected String getTitleStyle() {
+        return PAGE_TITLE_STYLE;
+    }
+
     protected final Label createPageTitle() {
         Label title = new Label(getTitle());
-        title.setStyle(PAGE_TITLE_STYLE);
+        title.setStyle(getTitleStyle());
 
         return title;
     }

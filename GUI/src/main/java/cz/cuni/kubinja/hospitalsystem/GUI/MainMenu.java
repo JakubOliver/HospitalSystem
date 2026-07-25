@@ -15,10 +15,17 @@ import javafx.scene.layout.GridPane;
  */
 public class MainMenu extends MenuPage {
     private final Hospital hospital;
+    protected static String PAGE_TITLE_STYLE =
+            "-fx-font-size: 40px; " + EMPHASIZED_TEXT_STYLE;
 
     public MainMenu(Navigator navigator, Hospital hospital) {
         super(navigator);
         this.hospital = hospital;
+    }
+
+    @Override
+    protected String getTitleStyle(){
+        return PAGE_TITLE_STYLE;
     }
 
     @Override
