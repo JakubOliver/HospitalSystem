@@ -3,22 +3,25 @@ package cz.cuni.kubinja.hospitalsystem.GUI.internal;
 import cz.cuni.kubinja.hospitalsystem.core.Hospital;
 import cz.cuni.kubinja.hospitalsystem.core.packet.GeneralPacket;
 import cz.cuni.kubinja.hospitalsystem.core.personnel.Person;
+import javafx.beans.property.BooleanProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.Separator;
+import javafx.scene.control.ButtonType;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
 /**
  * Shared page structure, navigation and feedback behavior for action workflows.
  */
-public abstract class ActionPage implements Page {
+public abstract class ActionPage extends BasePage {
     private static final String ERROR_TEXT_STYLE =
             "-fx-text-fill: #b00020;";
     private static final String INLINE_ERROR_TEXT_STYLE =
@@ -34,29 +37,19 @@ public abstract class ActionPage implements Page {
 
     @Override
     public final Parent createContent() {
-        VBox root = new VBox(20);
-        root.setPadding(new Insets(30, 36, 30, 36));
-        root.setAlignment(Pos.TOP_CENTER);
+        VBox root = createPageRoot(new Insets(30, 36, 30, 36));
 
-        Label title = new Label(getTitle());
-        title.setStyle("-fx-font-size: 22px; -fx-font-weight: bold;");
         Node body = createBody();
 
         if (shouldGrowBody()) {
             VBox.setVgrow(body, Priority.ALWAYS);
         }
 
-        Separator separator = new Separator();
-
-        Button back = new Button("Back");
-        back.setMinHeight(42);
-        back.setPrefWidth(160);
-        back.setOnAction(event -> navigator.back());
-
-        VBox footer = new VBox(18, separator, back);
-        footer.setAlignment(Pos.CENTER);
-
-        root.getChildren().addAll(title, body, footer);
+        root.getChildren().addAll(
+                createPageTitle(),
+                body,
+                createNavigationFooter("Back", navigator::back)
+        );
         return root;
     }
 
@@ -104,6 +97,52 @@ public abstract class ActionPage implements Page {
         alert.showAndWait();
     }
 
+    protected boolean confirmAction(
+            String title,
+            String header,
+            String content
+    ) {
+        Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmation.setTitle(title);
+        confirmation.setHeaderText(header);
+        confirmation.setContentText(content);
+        return confirmation.showAndWait().orElse(ButtonType.CANCEL)
+                == ButtonType.OK;
+    }
+
+    protected final <T> void runBackgroundOperation(
+            BooleanProperty busy,
+            Supplier<T> operation,
+            Consumer<T> onSuccess
+    ) {
+        runBackgroundOperation(
+                busy,
+                operation,
+                onSuccess,
+                this::showUnexpectedError
+        );
+    }
+
+    protected final <T> void runBackgroundOperation(
+            BooleanProperty busy,
+            Supplier<T> operation,
+            Consumer<T> onSuccess,
+            Consumer<Throwable> onFailure
+    ) {
+        busy.set(true);
+        BackgroundOperation.run(
+                operation,
+                result -> {
+                    busy.set(false);
+                    onSuccess.accept(result);
+                },
+                exception -> {
+                    busy.set(false);
+                    onFailure.accept(exception);
+                }
+        );
+    }
+
     /**
      * Applies the shared error color to a node.
      *
@@ -145,7 +184,7 @@ public abstract class ActionPage implements Page {
 
     private void addDetail(GridPane details, int row, String name, String value) {
         Label nameLabel = new Label(name + ":");
-        nameLabel.setStyle("-fx-font-weight: bold;");
+        applyEmphasizedTextStyle(nameLabel);
 
         Label valueLabel = new Label(value);
         valueLabel.setWrapText(true);
