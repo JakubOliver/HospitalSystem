@@ -1,5 +1,6 @@
-package cz.cuni.kubinja.hospitalsystem.GUI.internal;
+package cz.cuni.kubinja.hospitalsystem.GUI.internal.doctor;
 
+import cz.cuni.kubinja.hospitalsystem.GUI.internal.PersonnelForm;
 import cz.cuni.kubinja.hospitalsystem.core.personnel.Doctor;
 import cz.cuni.kubinja.hospitalsystem.core.personnel.util.DoctorData;
 import cz.cuni.kubinja.hospitalsystem.core.personnel.util.DoctorDetails;
@@ -38,7 +39,7 @@ final class DoctorForm extends PersonnelForm {
     }
 
     @Override
-    BooleanExpression validProperty() {
+    protected BooleanExpression validProperty() {
         return super.validProperty().and(detailsValid);
     }
 

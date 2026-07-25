@@ -1,9 +1,12 @@
-package cz.cuni.kubinja.hospitalsystem.GUI.internal;
+package cz.cuni.kubinja.hospitalsystem.GUI.internal.doctor;
 
+import cz.cuni.kubinja.hospitalsystem.GUI.internal.ActionPage;
+import cz.cuni.kubinja.hospitalsystem.GUI.internal.IdInput;
+import cz.cuni.kubinja.hospitalsystem.GUI.internal.Navigator;
 import cz.cuni.kubinja.hospitalsystem.core.Hospital;
 import cz.cuni.kubinja.hospitalsystem.core.packet.DataPacket;
 import cz.cuni.kubinja.hospitalsystem.core.packet.GeneralPacket;
-import cz.cuni.kubinja.hospitalsystem.core.personnel.Patient;
+import cz.cuni.kubinja.hospitalsystem.core.personnel.Doctor;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
@@ -13,21 +16,21 @@ import javafx.scene.control.Separator;
 import javafx.scene.layout.VBox;
 
 /**
- * Page for retrieving and deleting a patient.
+ * Page for retrieving and deleting a doctor.
  */
-final class DeletePatientPage extends ActionPage {
+final class DeleteDoctorPage extends ActionPage {
     private IdInput idInput;
     private VBox details;
     private Button delete;
-    private Patient loadedPatient;
+    private Doctor loadedDoctor;
 
-    DeletePatientPage(Navigator navigator, Hospital hospital) {
+    DeleteDoctorPage(Navigator navigator, Hospital hospital) {
         super(navigator, hospital);
     }
 
     @Override
     public String getTitle() {
-        return "Delete existing patient";
+        return "Delete existing doctor";
     }
 
     @Override
@@ -35,38 +38,41 @@ final class DeletePatientPage extends ActionPage {
         details = new VBox();
         details.setAlignment(Pos.TOP_CENTER);
 
-        delete = new Button("Delete patient");
+        delete = new Button("Delete doctor");
         delete.setMinHeight(42);
         delete.setPrefWidth(180);
         delete.setDisable(true);
-        delete.setStyle("-fx-text-fill: #b00020;");
+        applyErrorTextStyle(delete);
         delete.setOnAction(event -> confirmDelete());
 
-        idInput = new IdInput("Patient", "Load", this::loadPatient);
-        idInput.textProperty().addListener((observable, oldValue, newValue) -> clearPatient());
+        idInput = new IdInput("Doctor", "Load", this::loadDoctor);
+        idInput.textProperty().addListener(
+                (observable, oldValue, newValue) -> clearDoctor()
+        );
 
         VBox body = new VBox(22, idInput, new Separator(), details, delete);
         body.setAlignment(Pos.TOP_CENTER);
         return body;
     }
 
-    private void loadPatient() {
-        DataPacket<Patient> packet = hospital.getPatient(idInput.getPersonnelId());
+    private void loadDoctor() {
+        DataPacket<Doctor> packet = hospital.getDoctor(idInput.getPersonnelId());
         if (showApiError(packet)) {
-            clearPatient();
+            clearDoctor();
             return;
         }
 
-        loadedPatient = packet.data;
+        loadedDoctor = packet.data;
         details.getChildren().setAll(personnelDetails(
-                loadedPatient,
-                new Detail("Anamnesis", loadedPatient.getAnamnesis())
+                loadedDoctor,
+                new Detail("Specialization", loadedDoctor.getSpecialization()),
+                new Detail("Department", loadedDoctor.getDepartment())
         ));
         delete.setDisable(false);
     }
 
-    private void clearPatient() {
-        loadedPatient = null;
+    private void clearDoctor() {
+        loadedDoctor = null;
         if (details != null) {
             details.getChildren().clear();
         }
@@ -77,10 +83,10 @@ final class DeletePatientPage extends ActionPage {
 
     private void confirmDelete() {
         Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
-        confirmation.setTitle("Delete patient");
-        confirmation.setHeaderText("Delete patient " + loadedPatient.getId() + "?");
+        confirmation.setTitle("Delete doctor");
+        confirmation.setHeaderText("Delete doctor " + loadedDoctor.getId() + "?");
         confirmation.setContentText(
-                loadedPatient.getFirstName() + " " + loadedPatient.getLastName()
+                loadedDoctor.getFirstName() + " " + loadedDoctor.getLastName()
                         + "\nThis action cannot be undone."
         );
 
@@ -88,9 +94,9 @@ final class DeletePatientPage extends ActionPage {
             return;
         }
 
-        GeneralPacket packet = hospital.deletePatient(loadedPatient.getId());
+        GeneralPacket packet = hospital.deleteDoctor(loadedDoctor.getId());
         if (!showApiError(packet)) {
-            complete("Patient " + loadedPatient.getId() + " was deleted.");
+            complete("Doctor " + loadedDoctor.getId() + " was deleted.");
         }
     }
 }

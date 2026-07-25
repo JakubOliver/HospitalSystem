@@ -8,10 +8,10 @@ import java.util.function.Supplier;
 /**
  * Runs blocking work outside the JavaFX application thread.
  */
-final class BackgroundOperation {
+public final class BackgroundOperation {
     private BackgroundOperation() {}
 
-    static <T> void run(
+    public static <T> void run(
             Supplier<T> operation,
             Consumer<T> onSuccess,
             Consumer<Throwable> onFailure

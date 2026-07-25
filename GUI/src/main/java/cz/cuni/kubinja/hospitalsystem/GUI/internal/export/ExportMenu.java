@@ -1,5 +1,8 @@
-package cz.cuni.kubinja.hospitalsystem.GUI.internal;
+package cz.cuni.kubinja.hospitalsystem.GUI.internal.export;
 
+import cz.cuni.kubinja.hospitalsystem.GUI.internal.ActionPage;
+import cz.cuni.kubinja.hospitalsystem.GUI.internal.BackgroundOperation;
+import cz.cuni.kubinja.hospitalsystem.GUI.internal.Navigator;
 import cz.cuni.kubinja.hospitalsystem.core.Hospital;
 import cz.cuni.kubinja.hospitalsystem.core.packet.GeneralPacket;
 import javafx.beans.property.BooleanProperty;
@@ -13,7 +16,6 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
-
 import java.util.function.Supplier;
 
 /**

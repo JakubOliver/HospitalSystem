@@ -1,12 +1,12 @@
 package cz.cuni.kubinja.hospitalsystem.GUI;
 
-import cz.cuni.kubinja.hospitalsystem.GUI.internal.AppointmentMenu;
-import cz.cuni.kubinja.hospitalsystem.GUI.internal.DoctorMenu;
-import cz.cuni.kubinja.hospitalsystem.GUI.internal.ExportMenu;
 import cz.cuni.kubinja.hospitalsystem.GUI.internal.MenuPage;
 import cz.cuni.kubinja.hospitalsystem.GUI.internal.Navigator;
-import cz.cuni.kubinja.hospitalsystem.GUI.internal.PatientMenu;
-import cz.cuni.kubinja.hospitalsystem.GUI.internal.ReportsMenu;
+import cz.cuni.kubinja.hospitalsystem.GUI.internal.appointment.AppointmentMenu;
+import cz.cuni.kubinja.hospitalsystem.GUI.internal.doctor.DoctorMenu;
+import cz.cuni.kubinja.hospitalsystem.GUI.internal.export.ExportMenu;
+import cz.cuni.kubinja.hospitalsystem.GUI.internal.patient.PatientMenu;
+import cz.cuni.kubinja.hospitalsystem.GUI.internal.statistics.ReportsMenu;
 import cz.cuni.kubinja.hospitalsystem.core.Hospital;
 import javafx.scene.layout.GridPane;
 
@@ -30,9 +30,9 @@ public class MainMenu extends MenuPage {
     protected void addOptions(GridPane options) {
         addOption(options, "Patients", () -> navigator.navigate(new PatientMenu(navigator, hospital)));
         addOption(options, "Doctors", () -> navigator.navigate(new DoctorMenu(navigator, hospital)));
-        addOption(options, "Calendar", () -> navigator.navigate(new AppointmentMenu(navigator)));
+        addOption(options, "Calendar", () -> navigator.navigate(new AppointmentMenu(navigator, hospital)));
         addOption(options, "Export", () -> navigator.navigate(new ExportMenu(navigator, hospital)));
-        addOption(options, "Statistics", () -> navigator.navigate(new ReportsMenu(navigator)));
+        addOption(options, "Statistics", () -> navigator.navigate(new ReportsMenu(navigator, hospital)));
     }
 
     @Override

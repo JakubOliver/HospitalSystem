@@ -1,12 +1,13 @@
-package cz.cuni.kubinja.hospitalsystem.GUI.internal;
+package cz.cuni.kubinja.hospitalsystem.GUI.internal.doctor;
 
+import cz.cuni.kubinja.hospitalsystem.GUI.internal.Navigator;
+import cz.cuni.kubinja.hospitalsystem.GUI.internal.PersonnelTablePage;
 import cz.cuni.kubinja.hospitalsystem.core.Hospital;
 import cz.cuni.kubinja.hospitalsystem.core.packet.DataPacket;
 import cz.cuni.kubinja.hospitalsystem.core.personnel.Doctor;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-
 import java.util.List;
 
 /**

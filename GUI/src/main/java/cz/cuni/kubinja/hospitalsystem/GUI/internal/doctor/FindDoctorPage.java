@@ -1,5 +1,8 @@
-package cz.cuni.kubinja.hospitalsystem.GUI.internal;
+package cz.cuni.kubinja.hospitalsystem.GUI.internal.doctor;
 
+import cz.cuni.kubinja.hospitalsystem.GUI.internal.ActionPage;
+import cz.cuni.kubinja.hospitalsystem.GUI.internal.IdInput;
+import cz.cuni.kubinja.hospitalsystem.GUI.internal.Navigator;
 import cz.cuni.kubinja.hospitalsystem.core.Hospital;
 import cz.cuni.kubinja.hospitalsystem.core.packet.DataPacket;
 import cz.cuni.kubinja.hospitalsystem.core.personnel.Doctor;

@@ -20,6 +20,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.calendarfx</groupId>
+            <artifactId>view</artifactId>
+            <version>12.1.0</version>
+        </dependency>
+        <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
             <version>${javafx.version}</version>
