@@ -30,7 +30,7 @@ public class MainMenu extends MenuPage {
     protected void addOptions(GridPane options) {
         addOption(options, "Patients", () -> navigator.navigate(new PatientMenu(navigator, hospital)));
         addOption(options, "Doctors", () -> navigator.navigate(new DoctorMenu(navigator, hospital)));
-        addOption(options, "Calendar", () -> navigator.navigate(new AppointmentMenu(navigator)));
+        addOption(options, "Calendar", () -> navigator.navigate(new AppointmentMenu(navigator, hospital)));
         addOption(options, "Export", () -> navigator.navigate(new ExportMenu(navigator, hospital)));
         addOption(options, "Statistics", () -> navigator.navigate(new ReportsMenu(navigator, hospital)));
     }

@@ -4,6 +4,7 @@ import cz.cuni.kubinja.hospitalsystem.core.calendar.Appointment;
 import cz.cuni.kubinja.hospitalsystem.core.calendar.Calendar;
 import cz.cuni.kubinja.hospitalsystem.core.calendar.CalendarException;
 import cz.cuni.kubinja.hospitalsystem.core.calendar.AppointmentData;
+import cz.cuni.kubinja.hospitalsystem.core.calendar.AppointmentSummary;
 import cz.cuni.kubinja.hospitalsystem.core.database.Database;
 import cz.cuni.kubinja.hospitalsystem.core.database.exceptions.DatabaseException;
 import cz.cuni.kubinja.hospitalsystem.core.packet.GeneralPacket;
@@ -327,6 +328,58 @@ public class Hospital {
             };
 
             return new DataPacket<>(appointments.stream().map(Appointment::toString).toList());
+        } catch (DatabaseException e) {
+            return new DataPacket<>(e);
+        }
+    }
+
+    /**
+     * Returns typed summaries of all appointments.
+     *
+     * @return Appointment summaries ordered by time and identifier.
+     */
+    public DataPacket<List<AppointmentSummary>> getAppointmentSummaries() {
+        try {
+            return new DataPacket<>(database.getAppointmentSummaries());
+        } catch (DatabaseException e) {
+            return new DataPacket<>(e);
+        }
+    }
+
+    /**
+     * Returns a typed summary of one appointment.
+     *
+     * @param id Appointment identifier.
+     * @return Appointment summary.
+     */
+    public DataPacket<AppointmentSummary> getAppointmentSummary(int id) {
+        try {
+            return new DataPacket<>(database.getAppointmentSummary(id));
+        } catch (DatabaseException e) {
+            return new DataPacket<>(e);
+        }
+    }
+
+    /**
+     * Returns typed appointment summaries associated with one person.
+     *
+     * @param id Identification number of the person.
+     * @param kind Kind of personnel.
+     * @return Appointment summaries associated with the person.
+     */
+    public DataPacket<List<AppointmentSummary>> getAppointmentSummariesForPersonnel(
+            int id,
+            PersonKinds kind
+    ) {
+        try {
+            switch (kind) {
+                case Patient -> database.getPatient(id);
+                case Doctor -> database.getDoctor(id);
+            }
+
+            return new DataPacket<>(
+                    database.getAppointmentSummariesForPersonnel(id, kind)
+            );
         } catch (DatabaseException e) {
             return new DataPacket<>(e);
         }

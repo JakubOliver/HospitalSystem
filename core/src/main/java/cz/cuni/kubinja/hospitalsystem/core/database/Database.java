@@ -4,6 +4,7 @@ import cz.cuni.kubinja.hospitalsystem.core.calendar.Appointment;
 import cz.cuni.kubinja.hospitalsystem.core.calendar.Calendar;
 import cz.cuni.kubinja.hospitalsystem.core.calendar.CalendarException;
 import cz.cuni.kubinja.hospitalsystem.core.calendar.AppointmentData;
+import cz.cuni.kubinja.hospitalsystem.core.calendar.AppointmentSummary;
 import cz.cuni.kubinja.hospitalsystem.core.database.exceptions.DatabaseException;
 import cz.cuni.kubinja.hospitalsystem.core.personnel.Doctor;
 import cz.cuni.kubinja.hospitalsystem.core.personnel.Patient;
@@ -47,6 +48,39 @@ public class Database {
     private static final String getAppointmentById = "SELECT * FROM appointments WHERE id = ?";
     private static final String getAppointmentBySomeId = "SELECT * FROM appointments where {0} = ?";
     private static final String getAllAppointments = "SELECT * FROM appointments";
+    private static final String appointmentSummarySelect = """
+            SELECT
+                appointments.id,
+                appointments.patient_id,
+                patient.firstname AS patient_firstname,
+                patient.lastname AS patient_lastname,
+                appointments.doctor_id,
+                doctor.firstname AS doctor_firstname,
+                doctor.lastname AS doctor_lastname,
+                appointments.department,
+                appointments.start_time,
+                appointments.end_time
+            FROM appointments
+            JOIN people AS patient ON patient.id = appointments.patient_id
+            JOIN people AS doctor ON doctor.id = appointments.doctor_id
+            """;
+    private static final String appointmentSummaryOrder = """
+            ORDER BY appointments.start_time, appointments.end_time, appointments.id
+            """;
+    private static final String getAppointmentSummaries =
+            appointmentSummarySelect + appointmentSummaryOrder;
+    private static final String getAppointmentSummaryById =
+            appointmentSummarySelect
+                    + "WHERE appointments.id = ?\n"
+                    + appointmentSummaryOrder;
+    private static final String getAppointmentSummariesForPatient =
+            appointmentSummarySelect
+                    + "WHERE appointments.patient_id = ?\n"
+                    + appointmentSummaryOrder;
+    private static final String getAppointmentSummariesForDoctor =
+            appointmentSummarySelect
+                    + "WHERE appointments.doctor_id = ?\n"
+                    + appointmentSummaryOrder;
 
     private static final String deleteDoctorsDetails = "DELETE FROM doctors_details";
     private static final String deletePatientsDetails ="DELETE FROM patients_details";
@@ -1060,6 +1094,117 @@ public class Database {
      */
     public List<Appointment> getAppointmentsForDoctor(Connection connection, int id) throws DatabaseException {
         return getAppointmentsForPersonnel(connection, id, "doctor_id");
+    }
+
+    /**
+     * Returns summaries of all appointments ordered by time and identifier.
+     *
+     * @return Appointment summaries.
+     * @throws DatabaseException Error connected with retrieving appointment data.
+     */
+    public List<AppointmentSummary> getAppointmentSummaries() throws DatabaseException {
+        try (
+                Connection connection = DriverManager.getConnection(url);
+                PreparedStatement statement = connection.prepareStatement(
+                        getAppointmentSummaries
+                )
+        ) {
+            return readAppointmentSummaries(statement);
+        } catch (SQLException e) {
+            throw appointmentSummaryException(e);
+        }
+    }
+
+    /**
+     * Returns the summary of one appointment.
+     *
+     * @param id Appointment identifier.
+     * @return Appointment summary.
+     * @throws DatabaseException Error connected with retrieving appointment data.
+     */
+    public AppointmentSummary getAppointmentSummary(int id) throws DatabaseException {
+        try (
+                Connection connection = DriverManager.getConnection(url);
+                PreparedStatement statement = connection.prepareStatement(
+                        getAppointmentSummaryById
+                )
+        ) {
+            statement.setInt(1, id);
+            List<AppointmentSummary> appointments =
+                    readAppointmentSummaries(statement);
+            if (appointments.isEmpty()) {
+                throw new DatabaseException(notExistingAppointmentIdentifierError);
+            }
+
+            return appointments.getFirst();
+        } catch (SQLException e) {
+            throw appointmentSummaryException(e);
+        }
+    }
+
+    /**
+     * Returns appointment summaries associated with one person.
+     *
+     * @param id Person identifier.
+     * @param kind Kind of personnel used for filtering.
+     * @return Appointment summaries associated with the person.
+     * @throws DatabaseException Error connected with retrieving appointment data.
+     */
+    public List<AppointmentSummary> getAppointmentSummariesForPersonnel(
+            int id,
+            PersonKinds kind
+    ) throws DatabaseException {
+        try (
+                Connection connection = DriverManager.getConnection(url)
+        ) {
+            try (
+                    PreparedStatement statement = connection.prepareStatement(
+                            switch (kind) {
+                                case Patient ->
+                                        getAppointmentSummariesForPatient;
+                                case Doctor ->
+                                        getAppointmentSummariesForDoctor;
+                            }
+                    )
+            ) {
+                statement.setInt(1, id);
+                return readAppointmentSummaries(statement);
+            }
+        } catch (SQLException e) {
+            throw appointmentSummaryException(e);
+        }
+    }
+
+    private List<AppointmentSummary> readAppointmentSummaries(
+            PreparedStatement statement
+    ) throws SQLException {
+        try (ResultSet result = statement.executeQuery()) {
+            List<AppointmentSummary> appointments = new ArrayList<>();
+
+            while (result.next()) {
+                appointments.add(new AppointmentSummary(
+                        result.getInt("id"),
+                        result.getInt("patient_id"),
+                        result.getString("patient_firstname"),
+                        result.getString("patient_lastname"),
+                        result.getInt("doctor_id"),
+                        result.getString("doctor_firstname"),
+                        result.getString("doctor_lastname"),
+                        result.getString("department"),
+                        LocalDateTime.parse(result.getString("start_time")),
+                        LocalDateTime.parse(result.getString("end_time"))
+                ));
+            }
+
+            return appointments;
+        }
+    }
+
+    private DatabaseException appointmentSummaryException(SQLException exception) {
+        return new DatabaseException(
+                DatabaseException.appointmentGetDatabaseError,
+                exception.getMessage()
+        );
     }
 
     /**

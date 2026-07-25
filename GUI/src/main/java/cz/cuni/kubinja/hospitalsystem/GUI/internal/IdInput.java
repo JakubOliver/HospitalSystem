@@ -43,6 +43,10 @@ final class IdInput extends VBox {
     }
 
     int getPersonnelId() {
+        return getEntityId();
+    }
+
+    int getEntityId() {
         return InputValidator.parseInteger(id.getText());
     }
 
