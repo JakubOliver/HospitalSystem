@@ -1,6 +1,6 @@
 package cz.cuni.kubinja.hospitalsystem.GUI.internal.doctor;
 
-import cz.cuni.kubinja.hospitalsystem.GUI.internal.PersonnelForm;
+import cz.cuni.kubinja.hospitalsystem.GUI.internal.personnel.PersonnelForm;
 import cz.cuni.kubinja.hospitalsystem.core.personnel.Doctor;
 import cz.cuni.kubinja.hospitalsystem.core.personnel.util.DoctorData;
 import cz.cuni.kubinja.hospitalsystem.core.personnel.util.DoctorDetails;

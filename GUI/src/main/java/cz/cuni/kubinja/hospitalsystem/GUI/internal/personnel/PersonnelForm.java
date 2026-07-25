@@ -1,5 +1,6 @@
-package cz.cuni.kubinja.hospitalsystem.GUI.internal;
+package cz.cuni.kubinja.hospitalsystem.GUI.internal.personnel;
 
+import cz.cuni.kubinja.hospitalsystem.GUI.internal.ActionPage;
 import cz.cuni.kubinja.hospitalsystem.core.personnel.Person;
 import cz.cuni.kubinja.hospitalsystem.core.personnel.util.PersonData;
 import cz.cuni.kubinja.hospitalsystem.menu.InputValidator;

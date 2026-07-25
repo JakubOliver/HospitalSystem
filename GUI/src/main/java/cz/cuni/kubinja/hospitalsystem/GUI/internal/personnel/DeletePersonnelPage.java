@@ -1,5 +1,8 @@
-package cz.cuni.kubinja.hospitalsystem.GUI.internal;
+package cz.cuni.kubinja.hospitalsystem.GUI.internal.personnel;
 
+import cz.cuni.kubinja.hospitalsystem.GUI.internal.ActionPage;
+import cz.cuni.kubinja.hospitalsystem.GUI.internal.IdInput;
+import cz.cuni.kubinja.hospitalsystem.GUI.internal.Navigator;
 import cz.cuni.kubinja.hospitalsystem.core.Hospital;
 import cz.cuni.kubinja.hospitalsystem.core.packet.DataPacket;
 import cz.cuni.kubinja.hospitalsystem.core.packet.GeneralPacket;
@@ -41,7 +44,7 @@ public abstract class DeletePersonnelPage<T extends Person> extends PersonnelAct
                 "Delete " + personnelNameLowerCase()
         );
         delete.setDisable(true);
-        applyErrorTextStyle(delete);
+        ActionPage.applyErrorTextStyle(delete);
         delete.setOnAction(event -> confirmDelete());
 
         idInput = new IdInput(
@@ -66,7 +69,7 @@ public abstract class DeletePersonnelPage<T extends Person> extends PersonnelAct
 
     protected abstract GeneralPacket deletePersonnel(int id);
 
-    protected abstract Detail[] additionalDetails(T personnel);
+    protected abstract ActionPage.Detail[] additionalDetails(T personnel);
 
     private void loadPersonnel() {
         DataPacket<T> packet = getPersonnel(idInput.getPersonnelId());

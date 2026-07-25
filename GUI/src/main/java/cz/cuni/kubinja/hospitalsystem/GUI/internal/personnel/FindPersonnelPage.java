@@ -1,5 +1,8 @@
-package cz.cuni.kubinja.hospitalsystem.GUI.internal;
+package cz.cuni.kubinja.hospitalsystem.GUI.internal.personnel;
 
+import cz.cuni.kubinja.hospitalsystem.GUI.internal.ActionPage;
+import cz.cuni.kubinja.hospitalsystem.GUI.internal.IdInput;
+import cz.cuni.kubinja.hospitalsystem.GUI.internal.Navigator;
 import cz.cuni.kubinja.hospitalsystem.core.Hospital;
 import cz.cuni.kubinja.hospitalsystem.core.packet.DataPacket;
 import cz.cuni.kubinja.hospitalsystem.core.personnel.Person;
@@ -47,7 +50,7 @@ public abstract class FindPersonnelPage<T extends Person>
 
     protected abstract DataPacket<T> getPersonnel(int id);
 
-    protected abstract Detail[] additionalDetails(T personnel);
+    protected abstract ActionPage.Detail[] additionalDetails(T personnel);
 
     private void findPersonnel() {
         DataPacket<T> packet = getPersonnel(idInput.getPersonnelId());
