@@ -1,7 +1,6 @@
 package cz.cuni.kubinja.hospitalsystem.GUI.internal.export;
 
 import cz.cuni.kubinja.hospitalsystem.GUI.internal.ActionPage;
-import cz.cuni.kubinja.hospitalsystem.GUI.internal.BackgroundOperation;
 import cz.cuni.kubinja.hospitalsystem.GUI.internal.Navigator;
 import cz.cuni.kubinja.hospitalsystem.core.Hospital;
 import cz.cuni.kubinja.hospitalsystem.core.packet.GeneralPacket;
@@ -12,7 +11,6 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
-import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
@@ -24,7 +22,6 @@ import java.util.function.Supplier;
 public class ExportMenu extends ActionPage {
     private final BooleanProperty busy = new SimpleBooleanProperty(false);
     private Label status;
-    private ProgressIndicator progress;
 
     public ExportMenu(Navigator navigator, Hospital hospital) {
         super(navigator, hospital);
@@ -47,18 +44,7 @@ public class ExportMenu extends ActionPage {
 
     @Override
     protected Node createBody() {
-        GridPane options = new GridPane();
-        options.setHgap(14);
-        options.setVgap(12);
-        options.setAlignment(Pos.TOP_CENTER);
-
-        ColumnConstraints firstColumn = new ColumnConstraints();
-        firstColumn.setPercentWidth(50);
-        firstColumn.setFillWidth(true);
-        ColumnConstraints secondColumn = new ColumnConstraints();
-        secondColumn.setPercentWidth(50);
-        secondColumn.setFillWidth(true);
-        options.getColumnConstraints().addAll(firstColumn, secondColumn);
+        GridPane options = createTwoColumnOptionsGrid();
 
         addExportOption(
                 options,
@@ -85,10 +71,7 @@ public class ExportMenu extends ActionPage {
                 hospital::export
         );
 
-        progress = new ProgressIndicator();
-        progress.setMaxSize(42, 42);
-        progress.visibleProperty().bind(busy);
-        progress.managedProperty().bind(progress.visibleProperty());
+        ProgressIndicator progress = createProgressIndicator(busy);
 
         status = new Label("Exports are saved as dated CSV files in the exports directory.");
         status.setWrapText(true);
@@ -96,8 +79,7 @@ public class ExportMenu extends ActionPage {
         status.setAlignment(Pos.CENTER);
         status.setTextAlignment(TextAlignment.CENTER);
 
-        VBox body = new VBox(22, options, progress, status);
-        body.setAlignment(Pos.TOP_CENTER);
+        VBox body = createCenteredBox(22, options, progress, status);
         options.maxWidthProperty().bind(body.widthProperty().multiply(0.8));
         options.prefWidthProperty().bind(body.widthProperty().multiply(0.8));
         return body;
@@ -114,9 +96,7 @@ public class ExportMenu extends ActionPage {
             String description,
             Supplier<GeneralPacket> operation
     ) {
-        Button button = new Button(text);
-        button.setMinHeight(120);
-        button.setMaxWidth(Double.MAX_VALUE);
+        Button button = createMenuOptionButton(text);
         button.disableProperty().bind(busy);
         button.setOnAction(event -> runExport(description, operation));
 
@@ -127,13 +107,12 @@ public class ExportMenu extends ActionPage {
     }
 
     private void runExport(String description, Supplier<GeneralPacket> operation) {
-        busy.set(true);
         status.setText("Exporting " + description + "...");
 
-        BackgroundOperation.run(
+        runBackgroundOperation(
+                busy,
                 operation,
                 packet -> {
-                    busy.set(false);
                     if (showApiError(packet)) {
                         status.setText("Export failed.");
                         return;
@@ -146,7 +125,6 @@ public class ExportMenu extends ActionPage {
                     );
                 },
                 exception -> {
-                    busy.set(false);
                     status.setText("Export failed.");
                     showUnexpectedError(exception);
                 }

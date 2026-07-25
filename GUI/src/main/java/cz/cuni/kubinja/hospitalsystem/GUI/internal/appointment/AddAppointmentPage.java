@@ -1,17 +1,14 @@
 package cz.cuni.kubinja.hospitalsystem.GUI.internal.appointment;
 
 import cz.cuni.kubinja.hospitalsystem.GUI.internal.ActionPage;
-import cz.cuni.kubinja.hospitalsystem.GUI.internal.BackgroundOperation;
 import cz.cuni.kubinja.hospitalsystem.GUI.internal.Navigator;
 import cz.cuni.kubinja.hospitalsystem.core.Hospital;
 import cz.cuni.kubinja.hospitalsystem.core.packet.GeneralPacket;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressIndicator;
-import javafx.scene.layout.VBox;
 
 /**
  * Page for creating an appointment.
@@ -35,9 +32,7 @@ final class AddAppointmentPage extends ActionPage {
         form = new AppointmentForm();
         form.disableProperty().bind(ready.not().or(busy));
 
-        Button save = new Button("Save appointment");
-        save.setMinHeight(42);
-        save.setPrefWidth(190);
+        Button save = createActionButton("Save appointment");
         save.setDefaultButton(true);
         // The binds are a little bit strange way how in JavaFx can be encoded conditions with logic
         save.disableProperty().bind(
@@ -45,23 +40,16 @@ final class AddAppointmentPage extends ActionPage {
         );
         save.setOnAction(event -> saveAppointment());
 
-        ProgressIndicator progress = new ProgressIndicator();
-        progress.setMaxSize(42, 42);
-        progress.visibleProperty().bind(busy);
-        progress.managedProperty().bind(progress.visibleProperty());
-
-        VBox body = new VBox(18, progress, form, save);
-        body.setAlignment(Pos.TOP_CENTER);
+        ProgressIndicator progress = createProgressIndicator(busy);
         loadOptions();
-        return body;
+        return createCenteredBox(18, progress, form, save);
     }
 
     private void loadOptions() {
-        busy.set(true);
-        BackgroundOperation.run(
+        runBackgroundOperation(
+                busy,
                 () -> AppointmentOptions.load(hospital),
                 options -> {
-                    busy.set(false);
                     if (!options.successful()) {
                         showApiError(options.error());
                         return;
@@ -69,28 +57,19 @@ final class AddAppointmentPage extends ActionPage {
 
                     form.setOptions(options);
                     ready.set(true);
-                },
-                exception -> {
-                    busy.set(false);
-                    showUnexpectedError(exception);
                 }
         );
     }
 
     private void saveAppointment() {
-        busy.set(true);
-        BackgroundOperation.run(
+        runBackgroundOperation(
+                busy,
                 () -> hospital.addAppointment(form.getAppointmentData()),
-                this::finishSave,
-                exception -> {
-                    busy.set(false);
-                    showUnexpectedError(exception);
-                }
+                this::finishSave
         );
     }
 
     private void finishSave(GeneralPacket packet) {
-        busy.set(false);
         if (!showApiError(packet)) {
             complete("Appointment was added.");
         }

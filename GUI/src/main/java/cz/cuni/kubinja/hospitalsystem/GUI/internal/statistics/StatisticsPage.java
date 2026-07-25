@@ -1,17 +1,16 @@
 package cz.cuni.kubinja.hospitalsystem.GUI.internal.statistics;
 
 import cz.cuni.kubinja.hospitalsystem.GUI.internal.ActionPage;
-import cz.cuni.kubinja.hospitalsystem.GUI.internal.BackgroundOperation;
 import cz.cuni.kubinja.hospitalsystem.GUI.internal.Navigator;
 import cz.cuni.kubinja.hospitalsystem.core.Hospital;
-import cz.cuni.kubinja.hospitalsystem.core.packet.DataPacket;
 import cz.cuni.kubinja.hospitalsystem.core.statistics.HospitalStatistics;
 import cz.cuni.kubinja.hospitalsystem.core.statistics.HospitalStatistics.Occurrence;
 import cz.cuni.kubinja.hospitalsystem.core.statistics.HospitalStatistics.PatientVisits;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -31,8 +30,7 @@ import java.util.Locale;
  */
 final class StatisticsPage extends ActionPage {
     private final VBox statisticsContent = new VBox(22);
-    private final ProgressIndicator progress = new ProgressIndicator();
-    private final Button refresh = new Button("Refresh");
+    private final BooleanProperty loading = new SimpleBooleanProperty(false);
 
     StatisticsPage(Navigator navigator, Hospital hospital) {
         super(navigator, hospital);
@@ -56,29 +54,28 @@ final class StatisticsPage extends ActionPage {
         scrollPane.setFitToWidth(true);
         scrollPane.setStyle("-fx-background-color: transparent;");
 
-        progress.setMaxSize(48, 48);
-        progress.setVisible(false);
-        progress.setManaged(false);
+        ProgressIndicator progress = createProgressIndicator(loading, 48);
 
-        refresh.setMinHeight(42);
-        refresh.setPrefWidth(160);
+        Button refresh = createActionButton(
+                "Refresh",
+                SECONDARY_BUTTON_WIDTH
+        );
+        refresh.disableProperty().bind(loading);
         refresh.setOnAction(event -> loadStatistics());
 
-        VBox body = new VBox(14, progress, scrollPane, refresh);
-        body.setAlignment(Pos.TOP_CENTER);
+        VBox body = createCenteredBox(14, progress, scrollPane, refresh);
         VBox.setVgrow(scrollPane, Priority.ALWAYS);
         loadStatistics();
         return body;
     }
 
     private void loadStatistics() {
-        setLoading(true);
         statisticsContent.getChildren().setAll(new Label("Loading statistics..."));
 
-        BackgroundOperation.run(
+        runBackgroundOperation(
+                loading,
                 hospital::getStatistics,
                 packet -> {
-                    setLoading(false);
                     if (showApiError(packet)) {
                         showLoadError();
                         return;
@@ -87,7 +84,6 @@ final class StatisticsPage extends ActionPage {
                     showStatistics(packet.data);
                 },
                 exception -> {
-                    setLoading(false);
                     showLoadError();
                     showUnexpectedError(exception);
                 }
@@ -227,21 +223,15 @@ final class StatisticsPage extends ActionPage {
 
     private void addValue(GridPane grid, int row, String name, String value) {
         Label nameLabel = new Label(name + ":");
-        nameLabel.setStyle("-fx-font-weight: bold;");
+        applyEmphasizedTextStyle(nameLabel);
         grid.add(nameLabel, 0, row);
         grid.add(new Label(value), 1, row);
     }
 
     private Label sectionTitle(String text) {
         Label label = new Label(text);
-        label.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
+        applySectionTitleStyle(label);
         return label;
-    }
-
-    private void setLoading(boolean loading) {
-        progress.setVisible(loading);
-        progress.setManaged(loading);
-        refresh.setDisable(loading);
     }
 
     private void showLoadError() {

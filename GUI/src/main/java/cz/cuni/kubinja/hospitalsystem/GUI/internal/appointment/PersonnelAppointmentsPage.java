@@ -1,7 +1,6 @@
 package cz.cuni.kubinja.hospitalsystem.GUI.internal.appointment;
 
 import cz.cuni.kubinja.hospitalsystem.GUI.internal.ActionPage;
-import cz.cuni.kubinja.hospitalsystem.GUI.internal.BackgroundOperation;
 import cz.cuni.kubinja.hospitalsystem.GUI.internal.IdInput;
 import cz.cuni.kubinja.hospitalsystem.GUI.internal.Navigator;
 import cz.cuni.kubinja.hospitalsystem.core.Hospital;
@@ -10,7 +9,6 @@ import cz.cuni.kubinja.hospitalsystem.core.packet.DataPacket;
 import cz.cuni.kubinja.hospitalsystem.core.personnel.util.PersonKinds;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressIndicator;
@@ -61,9 +59,10 @@ final class PersonnelAppointmentsPage extends ActionPage {
             table.getItems().clear();
         });
 
-        Button refresh = new Button("Refresh");
-        refresh.setMinHeight(42);
-        refresh.setPrefWidth(160);
+        Button refresh = createActionButton(
+                "Refresh",
+                SECONDARY_BUTTON_WIDTH
+        );
         refresh.disableProperty().bind(busy);
         refresh.setOnAction(event -> {
             if (loadedPersonnelId > 0) {
@@ -71,13 +70,9 @@ final class PersonnelAppointmentsPage extends ActionPage {
             }
         });
 
-        ProgressIndicator progress = new ProgressIndicator();
-        progress.setMaxSize(42, 42);
-        progress.visibleProperty().bind(busy);
-        progress.managedProperty().bind(progress.visibleProperty());
+        ProgressIndicator progress = createProgressIndicator(busy);
 
-        VBox body = new VBox(14, idInput, progress, table, refresh);
-        body.setAlignment(Pos.TOP_CENTER);
+        VBox body = createCenteredBox(14, idInput, progress, table, refresh);
         VBox.setVgrow(table, Priority.ALWAYS);
         return body;
     }
@@ -88,15 +83,14 @@ final class PersonnelAppointmentsPage extends ActionPage {
     }
 
     private void loadAppointments(int personnelId) {
-        busy.set(true);
-        BackgroundOperation.run(
+        runBackgroundOperation(
+                busy,
                 () -> hospital.getAppointmentSummariesForPersonnel(
                         personnelId,
                         kind
                 ),
                 this::finishLoad,
                 exception -> {
-                    busy.set(false);
                     table.getItems().clear();
                     showUnexpectedError(exception);
                 }
@@ -104,7 +98,6 @@ final class PersonnelAppointmentsPage extends ActionPage {
     }
 
     private void finishLoad(DataPacket<List<AppointmentSummary>> packet) {
-        busy.set(false);
         if (showApiError(packet)) {
             table.getItems().clear();
             return;

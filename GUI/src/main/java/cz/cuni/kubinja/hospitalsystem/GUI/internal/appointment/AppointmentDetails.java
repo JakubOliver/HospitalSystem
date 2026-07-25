@@ -1,5 +1,6 @@
 package cz.cuni.kubinja.hospitalsystem.GUI.internal.appointment;
 
+import cz.cuni.kubinja.hospitalsystem.GUI.internal.BasePage;
 import cz.cuni.kubinja.hospitalsystem.core.calendar.AppointmentSummary;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -35,7 +36,7 @@ final class AppointmentDetails {
 
     private static void add(GridPane grid, int row, String name, String value) {
         Label nameLabel = new Label(name + ":");
-        nameLabel.setStyle("-fx-font-weight: bold;");
+        BasePage.applyEmphasizedTextStyle(nameLabel);
         grid.add(nameLabel, 0, row);
         grid.add(new Label(value), 1, row);
     }

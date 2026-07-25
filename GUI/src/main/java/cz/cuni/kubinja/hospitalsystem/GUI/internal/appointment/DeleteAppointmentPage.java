@@ -1,7 +1,6 @@
 package cz.cuni.kubinja.hospitalsystem.GUI.internal.appointment;
 
 import cz.cuni.kubinja.hospitalsystem.GUI.internal.ActionPage;
-import cz.cuni.kubinja.hospitalsystem.GUI.internal.BackgroundOperation;
 import cz.cuni.kubinja.hospitalsystem.GUI.internal.IdInput;
 import cz.cuni.kubinja.hospitalsystem.GUI.internal.Navigator;
 import cz.cuni.kubinja.hospitalsystem.core.Hospital;
@@ -10,11 +9,8 @@ import cz.cuni.kubinja.hospitalsystem.core.packet.DataPacket;
 import cz.cuni.kubinja.hospitalsystem.core.packet.GeneralPacket;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.Separator;
 import javafx.scene.layout.VBox;
@@ -41,12 +37,9 @@ final class DeleteAppointmentPage extends ActionPage {
 
     @Override
     protected Node createBody() {
-        details = new VBox();
-        details.setAlignment(Pos.TOP_CENTER);
+        details = createCenteredBox(0);
 
-        delete = new Button("Delete appointment");
-        delete.setMinHeight(42);
-        delete.setPrefWidth(190);
+        delete = createActionButton("Delete appointment");
         applyErrorTextStyle(delete);
         delete.disableProperty().bind(busy.or(appointmentLoaded.not()));
 
@@ -56,14 +49,11 @@ final class DeleteAppointmentPage extends ActionPage {
                 (observable, oldValue, newValue) -> clearAppointment()
         );
 
-        ProgressIndicator progress = new ProgressIndicator();
-        progress.setMaxSize(42, 42);
-        progress.visibleProperty().bind(busy);
-        progress.managedProperty().bind(progress.visibleProperty());
+        ProgressIndicator progress = createProgressIndicator(busy);
 
         delete.setOnAction(event -> confirmDelete());
 
-        VBox body = new VBox(
+        return createCenteredBox(
                 18,
                 progress,
                 idInput,
@@ -71,26 +61,19 @@ final class DeleteAppointmentPage extends ActionPage {
                 details,
                 delete
         );
-        body.setAlignment(Pos.TOP_CENTER);
-        return body;
     }
 
     private void loadAppointment() {
-        busy.set(true);
         clearAppointment();
         int appointmentId = idInput.getEntityId();
-        BackgroundOperation.run(
+        runBackgroundOperation(
+                busy,
                 () -> hospital.getAppointmentSummary(appointmentId),
-                this::finishLoad,
-                exception -> {
-                    busy.set(false);
-                    showUnexpectedError(exception);
-                }
+                this::finishLoad
         );
     }
 
     private void finishLoad(DataPacket<AppointmentSummary> packet) {
-        busy.set(false);
         if (showApiError(packet)) {
             return;
         }
@@ -109,33 +92,24 @@ final class DeleteAppointmentPage extends ActionPage {
     }
 
     private void confirmDelete() {
-        Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
-        confirmation.setTitle("Delete appointment");
-        confirmation.setHeaderText(
-                "Delete appointment " + loadedAppointment.id() + "?"
-        );
-        confirmation.setContentText(
+        if (!confirmAction(
+                "Delete appointment",
+                "Delete appointment " + loadedAppointment.id() + "?",
                 loadedAppointment.patientName() + " with "
                         + loadedAppointment.doctorName()
                         + "\nThis action cannot be undone."
-        );
-        if (confirmation.showAndWait().orElse(ButtonType.CANCEL) != ButtonType.OK) {
+        )) {
             return;
         }
 
-        busy.set(true);
-        BackgroundOperation.run(
+        runBackgroundOperation(
+                busy,
                 () -> hospital.deleteAppointment(loadedAppointment.id()),
-                this::finishDelete,
-                exception -> {
-                    busy.set(false);
-                    showUnexpectedError(exception);
-                }
+                this::finishDelete
         );
     }
 
     private void finishDelete(GeneralPacket packet) {
-        busy.set(false);
         if (!showApiError(packet)) {
             complete("Appointment " + loadedAppointment.id() + " was deleted.");
         }
