@@ -6,7 +6,7 @@ Administrative system for hospitals that provides options for managing patients,
 
 ## How to run
 
-To run the application, navigate to the root `HospitalSystem` directory and execute the command `mvn compile exec:java`.
+To run the application, navigate to the root `HospitalSystem` directory and execute the command `mvn compile -pl :application -am && mvn exec:java -pl :application`. 
 
 More detailed information on how to run and control the application can be found in the [User documentation](docs/user.md).
 
