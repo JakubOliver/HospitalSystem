@@ -14,6 +14,7 @@ import cz.cuni.kubinja.hospitalsystem.core.personnel.Person;
 import cz.cuni.kubinja.hospitalsystem.core.personnel.util.PersonKinds;
 import cz.cuni.kubinja.hospitalsystem.core.personnel.util.DoctorData;
 import cz.cuni.kubinja.hospitalsystem.core.personnel.util.PatientData;
+import cz.cuni.kubinja.hospitalsystem.core.statistics.HospitalStatistics;
 import cz.cuni.kubinja.hospitalsystem.core.util.Exportable;
 import cz.cuni.kubinja.hospitalsystem.core.util.ExportsUtil;
 
@@ -372,6 +373,23 @@ public class Hospital {
     public DataPacket<Calendar> getCalendar(){
         try{
             return new DataPacket<>(database.getCalendar());
+        } catch (DatabaseException e) {
+            return new DataPacket<>(e);
+        }
+    }
+
+    /**
+     * Calculates statistics about hospital personnel and appointments.
+     *
+     * @return Data packet containing an immutable statistics snapshot.
+     */
+    public DataPacket<HospitalStatistics> getStatistics() {
+        try {
+            return new DataPacket<>(HospitalStatisticsCalculator.calculate(
+                    database.getAllPatients(),
+                    database.getAllDoctors(),
+                    database.getCalendar()
+            ));
         } catch (DatabaseException e) {
             return new DataPacket<>(e);
         }

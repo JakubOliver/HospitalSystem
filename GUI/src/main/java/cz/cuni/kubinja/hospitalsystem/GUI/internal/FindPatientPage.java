@@ -11,7 +11,7 @@ import javafx.scene.layout.VBox;
 /**
  * Page for finding and displaying a patient by ID.
  */
-final class FindPatientPage extends PersonnelActionPage {
+final class FindPatientPage extends ActionPage {
     private IdInput idInput;
     private VBox details;
 

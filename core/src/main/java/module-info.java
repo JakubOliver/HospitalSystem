@@ -1,3 +1,6 @@
+/**
+ * Provides hospital data management, persistence, scheduling, exports and statistics.
+ */
 module core {
     requires org.xerial.sqlitejdbc;
     //requires test.support;
@@ -11,6 +14,7 @@ module core {
     exports cz.cuni.kubinja.hospitalsystem.core.calendar;
 
     exports cz.cuni.kubinja.hospitalsystem.core.packet;
+    exports cz.cuni.kubinja.hospitalsystem.core.statistics;
 
     exports cz.cuni.kubinja.hospitalsystem.core.util; //TODO: better
 }

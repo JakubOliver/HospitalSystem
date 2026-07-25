@@ -11,7 +11,7 @@ import javafx.scene.layout.VBox;
 /**
  * Page for creating a doctor.
  */
-final class AddDoctorPage extends PersonnelActionPage {
+final class AddDoctorPage extends ActionPage {
     AddDoctorPage(Navigator navigator, Hospital hospital) {
         super(navigator, hospital);
     }
