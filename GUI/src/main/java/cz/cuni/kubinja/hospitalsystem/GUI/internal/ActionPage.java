@@ -36,7 +36,10 @@ abstract class ActionPage implements Page {
         Label title = new Label(getTitle());
         title.setStyle("-fx-font-size: 22px; -fx-font-weight: bold;");
         Node body = createBody();
-        VBox.setVgrow(body, Priority.ALWAYS);
+
+        if (shouldGrowBody()) {
+            VBox.setVgrow(body, Priority.ALWAYS);
+        }
 
         Separator separator = new Separator();
 
@@ -58,6 +61,10 @@ abstract class ActionPage implements Page {
     }
 
     protected abstract Node createBody();
+
+    protected boolean shouldGrowBody() {
+        return true;
+    }
 
     protected boolean showApiError(GeneralPacket packet) {
         if (packet.successful) {
