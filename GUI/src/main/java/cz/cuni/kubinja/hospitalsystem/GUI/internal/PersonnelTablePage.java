@@ -7,7 +7,6 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -64,13 +63,13 @@ public abstract class PersonnelTablePage<T extends Person> extends ActionPage {
         table.getColumns().addAll(List.of(id, firstName, lastName, dateOfBirth));
         addSpecificColumns(table);
 
-        Button refresh = new Button("Refresh");
-        refresh.setMinHeight(42);
-        refresh.setPrefWidth(160);
+        Button refresh = createActionButton(
+                "Refresh",
+                SECONDARY_BUTTON_WIDTH
+        );
         refresh.setOnAction(event -> loadPersonnel());
 
-        VBox body = new VBox(16, table, refresh);
-        body.setAlignment(Pos.TOP_CENTER);
+        VBox body = createCenteredBox(16, table, refresh);
         VBox.setVgrow(table, Priority.ALWAYS);
         loadPersonnel();
         return body;

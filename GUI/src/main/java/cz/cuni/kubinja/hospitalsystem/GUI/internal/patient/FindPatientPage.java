@@ -1,57 +1,28 @@
 package cz.cuni.kubinja.hospitalsystem.GUI.internal.patient;
 
-import cz.cuni.kubinja.hospitalsystem.GUI.internal.ActionPage;
-import cz.cuni.kubinja.hospitalsystem.GUI.internal.IdInput;
+import cz.cuni.kubinja.hospitalsystem.GUI.internal.FindPersonnelPage;
 import cz.cuni.kubinja.hospitalsystem.GUI.internal.Navigator;
 import cz.cuni.kubinja.hospitalsystem.core.Hospital;
 import cz.cuni.kubinja.hospitalsystem.core.packet.DataPacket;
 import cz.cuni.kubinja.hospitalsystem.core.personnel.Patient;
-import javafx.geometry.Pos;
-import javafx.scene.Node;
-import javafx.scene.control.Separator;
-import javafx.scene.layout.VBox;
 
 /**
  * Page for finding and displaying a patient by ID.
  */
-final class FindPatientPage extends ActionPage {
-    private IdInput idInput;
-    private VBox details;
-
+final class FindPatientPage extends FindPersonnelPage<Patient> {
     FindPatientPage(Navigator navigator, Hospital hospital) {
-        super(navigator, hospital);
+        super(navigator, hospital, "Patient");
     }
 
     @Override
-    public String getTitle() {
-        return "Find patient by ID";
+    protected DataPacket<Patient> getPersonnel(int id) {
+        return hospital.getPatient(id);
     }
 
     @Override
-    protected Node createBody() {
-        details = new VBox();
-        details.setAlignment(Pos.TOP_CENTER);
-
-        idInput = new IdInput("Patient", "Find", this::findPatient);
-        idInput.textProperty().addListener(
-                (observable, oldValue, newValue) -> details.getChildren().clear()
-        );
-
-        VBox body = new VBox(22, idInput, new Separator(), details);
-        body.setAlignment(Pos.TOP_CENTER);
-        return body;
-    }
-
-    private void findPatient() {
-        DataPacket<Patient> packet = hospital.getPatient(idInput.getPersonnelId());
-        if (showApiError(packet)) {
-            details.getChildren().clear();
-            return;
-        }
-
-        details.getChildren().setAll(personnelDetails(
-                packet.data,
-                new Detail("Anamnesis", packet.data.getAnamnesis())
-        ));
+    protected Detail[] additionalDetails(Patient patient) {
+        return new Detail[]{
+                new Detail("Anamnesis", patient.getAnamnesis())
+        };
     }
 }
