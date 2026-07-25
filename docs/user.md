@@ -19,6 +19,28 @@ Note: It is also possible to run program directly inside IntelliJ, but it is not
 
 # Controls 
 
+# GUI
+
+Whole program can be controlled by user via graphical user interface (GUI).
+
+## Main menu
+
+First thing that the user sees when runs the program is main menu, where can user click to buttons which will take him to submenus with more specific options. Or exit via clicking on `End` button.
+
+![GUI Main menu of hospital system.](src/GUI_mainMenu.png)
+
+## Submenus
+
+In each submenu use can interact with specific actions regarding the domain of submenu. For example in the `Patients submenu` can user `add`, `edit`, `delete`, `find` or `list` patients. 
+
+![GUI Patients submentu](src/GUI_patientsSubmenu.png)
+
+## Operations 
+
+![GUI Add patient](src/GUI_addPatient.png)
+
+# TUI
+
 Whole program is controlled by user via terminal user interface (TUI). User is always prompted with the specific options and required actions, that help him to seamlessly control hospital system. 
 
 ## Main menu 
