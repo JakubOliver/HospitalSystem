@@ -22,6 +22,7 @@ public abstract class BasePage implements Page {
             "-fx-font-size: 22px; " + EMPHASIZED_TEXT_STYLE;
     protected static final String SECTION_TITLE_STYLE =
             "-fx-font-size: 16px; " + EMPHASIZED_TEXT_STYLE;
+    protected static final String DEFAULT_BUTTON_STYLE = "";
 
     protected static final double ACTION_BUTTON_HEIGHT = 42;
     protected static final double ACTION_BUTTON_WIDTH = 180;
@@ -39,27 +40,41 @@ public abstract class BasePage implements Page {
         return title;
     }
 
+    protected final Button createActionButton(String text, String style) {
+        return createActionButton(text, style, ACTION_BUTTON_WIDTH);
+    }
+
     protected final Button createActionButton(String text) {
-        return createActionButton(text, ACTION_BUTTON_WIDTH);
+        return createActionButton(text, DEFAULT_BUTTON_STYLE, ACTION_BUTTON_WIDTH);
+    }
+
+    protected final Button createActionButton(String text, double preferredWidth) {
+        return createActionButton(text, DEFAULT_BUTTON_STYLE, preferredWidth);
     }
 
     protected final Button createActionButton(
             String text,
+            String style,
             double preferredWidth
     ) {
         Button button = new Button(text);
         button.setMinHeight(ACTION_BUTTON_HEIGHT);
+        button.setStyle(style);
         button.setPrefWidth(preferredWidth);
 
         return button;
     }
 
-    protected final Button createMenuOptionButton(String text) {
-        Button button = createActionButton(text);
+    protected final Button createMenuOptionButton(String text, String style) {
+        Button button = createActionButton(text, style);
         button.setMinHeight(120);
         button.setMaxWidth(Double.MAX_VALUE);
 
         return button;
+    }
+
+    protected final Button createMenuOptionButton(String text) {
+        return createMenuOptionButton(text, DEFAULT_BUTTON_STYLE);
     }
 
     protected final VBox createCenteredBox(double spacing, Node... children) {

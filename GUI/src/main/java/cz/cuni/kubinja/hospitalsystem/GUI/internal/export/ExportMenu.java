@@ -1,6 +1,7 @@
 package cz.cuni.kubinja.hospitalsystem.GUI.internal.export;
 
 import cz.cuni.kubinja.hospitalsystem.GUI.internal.ActionPage;
+import cz.cuni.kubinja.hospitalsystem.GUI.internal.MenuPage;
 import cz.cuni.kubinja.hospitalsystem.GUI.internal.Navigator;
 import cz.cuni.kubinja.hospitalsystem.core.Hospital;
 import cz.cuni.kubinja.hospitalsystem.core.packet.GeneralPacket;
@@ -15,6 +16,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
 import java.util.function.Supplier;
+
+import static javafx.scene.shape.StrokeLineCap.BUTT;
 
 /**
  * Menu containing export actions.
@@ -96,7 +99,7 @@ public class ExportMenu extends ActionPage {
             String description,
             Supplier<GeneralPacket> operation
     ) {
-        Button button = createMenuOptionButton(text);
+        Button button = createMenuOptionButton(text, MenuPage.MENU_BUTTON_STYLE);
         button.disableProperty().bind(busy);
         button.setOnAction(event -> runExport(description, operation));
 

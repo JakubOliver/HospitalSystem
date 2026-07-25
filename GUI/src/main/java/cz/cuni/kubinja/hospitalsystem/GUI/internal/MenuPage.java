@@ -11,6 +11,8 @@ import javafx.scene.layout.VBox;
  */
 public abstract class MenuPage extends BasePage {
     protected final Navigator navigator;
+    public static final String MENU_BUTTON_STYLE =
+            "-fx-font-size: 16px; " + EMPHASIZED_TEXT_STYLE;
 
     protected MenuPage(Navigator navigator) {
         this.navigator = navigator;
@@ -67,6 +69,6 @@ public abstract class MenuPage extends BasePage {
     }
 
     private Button createMenuButton(String text) {
-        return createMenuOptionButton(text);
+        return createMenuOptionButton(text, MENU_BUTTON_STYLE);
     }
 }
