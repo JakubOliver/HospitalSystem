@@ -1,12 +1,12 @@
 package cz.cuni.kubinja.hospitalsystem.GUI;
 
-import cz.cuni.kubinja.hospitalsystem.GUI.internal.AppointmentMenu;
-import cz.cuni.kubinja.hospitalsystem.GUI.internal.DoctorMenu;
-import cz.cuni.kubinja.hospitalsystem.GUI.internal.ExportMenu;
 import cz.cuni.kubinja.hospitalsystem.GUI.internal.MenuPage;
 import cz.cuni.kubinja.hospitalsystem.GUI.internal.Navigator;
-import cz.cuni.kubinja.hospitalsystem.GUI.internal.PatientMenu;
-import cz.cuni.kubinja.hospitalsystem.GUI.internal.ReportsMenu;
+import cz.cuni.kubinja.hospitalsystem.GUI.internal.appointment.AppointmentMenu;
+import cz.cuni.kubinja.hospitalsystem.GUI.internal.doctor.DoctorMenu;
+import cz.cuni.kubinja.hospitalsystem.GUI.internal.export.ExportMenu;
+import cz.cuni.kubinja.hospitalsystem.GUI.internal.patient.PatientMenu;
+import cz.cuni.kubinja.hospitalsystem.GUI.internal.statistics.ReportsMenu;
 import cz.cuni.kubinja.hospitalsystem.core.Hospital;
 import javafx.scene.layout.GridPane;
 

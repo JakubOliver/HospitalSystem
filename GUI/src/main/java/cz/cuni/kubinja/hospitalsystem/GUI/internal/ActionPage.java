@@ -18,11 +18,11 @@ import javafx.scene.layout.VBox;
 /**
  * Shared page structure, navigation and feedback behavior for action workflows.
  */
-abstract class ActionPage implements Page {
+public abstract class ActionPage implements Page {
     protected final Navigator navigator;
     protected final Hospital hospital;
 
-    ActionPage(Navigator navigator, Hospital hospital) {
+    protected ActionPage(Navigator navigator, Hospital hospital) {
         this.navigator = navigator;
         this.hospital = hospital;
     }
@@ -118,7 +118,7 @@ abstract class ActionPage implements Page {
         return details;
     }
 
-    protected record Detail(String name, String value) {}
+    public record Detail(String name, String value) {}
 
     private void addDetail(GridPane details, int row, String name, String value) {
         Label nameLabel = new Label(name + ":");

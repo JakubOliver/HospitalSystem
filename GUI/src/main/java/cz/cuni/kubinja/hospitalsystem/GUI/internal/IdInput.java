@@ -14,13 +14,17 @@ import javafx.scene.layout.VBox;
 /**
  * Personnel ID entry with inline validation and an associated action.
  */
-final class IdInput extends VBox {
+public final class IdInput extends VBox {
     private final TextField id = new TextField();
     private final Label error = new Label();
     private final Button action = new Button();
     private final BooleanProperty valid = new SimpleBooleanProperty(false);
 
-    IdInput(String personnelName, String actionText, Runnable actionHandler) {
+    public IdInput(
+            String personnelName,
+            String actionText,
+            Runnable actionHandler
+    ) {
         super(6);
         setAlignment(Pos.CENTER);
 
@@ -42,15 +46,15 @@ final class IdInput extends VBox {
         validate();
     }
 
-    int getPersonnelId() {
+    public int getPersonnelId() {
         return getEntityId();
     }
 
-    int getEntityId() {
+    public int getEntityId() {
         return InputValidator.parseInteger(id.getText());
     }
 
-    StringProperty textProperty() {
+    public StringProperty textProperty() {
         return id.textProperty();
     }
 

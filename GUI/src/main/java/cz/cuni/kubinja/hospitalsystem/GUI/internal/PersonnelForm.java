@@ -19,7 +19,7 @@ import javafx.scene.layout.Priority;
 /**
  * Common editor fields and validation for patients and doctors.
  */
-abstract class PersonnelForm extends GridPane {
+public abstract class PersonnelForm extends GridPane {
     private final TextField firstName = new TextField();
     private final TextField lastName = new TextField();
     private final DatePicker dateOfBirth = new DatePicker();
@@ -29,7 +29,7 @@ abstract class PersonnelForm extends GridPane {
     private final Label dateOfBirthError = errorLabel();
     private final BooleanProperty commonValid = new SimpleBooleanProperty(false);
 
-    PersonnelForm() {
+    protected PersonnelForm() {
         setHgap(14);
         setVgap(6);
         setPadding(new Insets(10));
@@ -59,7 +59,7 @@ abstract class PersonnelForm extends GridPane {
         validate();
     }
 
-    BooleanExpression validProperty() {
+    protected BooleanExpression validProperty() {
         return commonValid;
     }
 

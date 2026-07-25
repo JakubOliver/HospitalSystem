@@ -1,4 +1,4 @@
 /**
- * Provides JavaFX pages, forms, navigation and background operations.
+ * Provides shared JavaFX page, form, navigation and background infrastructure.
  */
 package cz.cuni.kubinja.hospitalsystem.GUI.internal;
