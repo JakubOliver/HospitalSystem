@@ -180,6 +180,12 @@ public abstract class ActionPage extends BasePage {
         return details;
     }
 
+    /**
+     * Data wrapper for generic detail.
+     *
+     * @param name Name of the detail.
+     * @param value Value (text) of the detail.
+     */
     public record Detail(String name, String value) {}
 
     private void addDetail(GridPane details, int row, String name, String value) {

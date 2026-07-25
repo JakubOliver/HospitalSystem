@@ -14,15 +14,30 @@ public final class Navigator {
     private final Deque<Page> history = new ArrayDeque<>();
     private Page currentPage;
 
+    /**
+     * Constructor of Navigator class.
+     *
+     * @param stage Primary window of the application.
+     */
     public Navigator(Stage stage) {
         this.stage = stage;
     }
 
+    /**
+     * Initialize the application and shows the initial page.
+     *
+     * @param initialPage Initial page to show.
+     */
     public void start(Page initialPage) {
         show(initialPage);
         stage.show();
     }
 
+    /**
+     * Navigates to the specified page.
+     *
+     * @param page Page to navigate to.
+     */
     public void navigate(Page page) {
         if (currentPage != null) {
             history.push(currentPage);
@@ -30,12 +45,18 @@ public final class Navigator {
         show(page);
     }
 
+    /**
+     * Navigates back to the previous page.
+     */
     public void back() {
         if (!history.isEmpty()) {
             show(history.pop());
         }
     }
 
+    /**
+     * Closes the application.
+     */
     public void close() {
         stage.close();
     }

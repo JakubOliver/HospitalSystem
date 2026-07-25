@@ -8,9 +8,23 @@ import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 
+/**
+ * Main entry point of the application GUI.
+ */
 public class MainGUI extends Application {
     private static final String DATABASE_PATH = "jdbc:sqlite:database.db";
 
+    /**
+     * Constructor of MainGUI class.
+     */
+    public MainGUI() {}
+
+    /**
+     * Starts the application GUI.
+     *
+     * @param primaryStage the primary stage for this application, onto which
+     * the application scene can be set.
+     */
     @Override
     public void start(Stage primaryStage) {
         Hospital hospital;
@@ -30,6 +44,11 @@ public class MainGUI extends Application {
         navigator.start(new MainMenu(navigator, hospital));
     }
 
+    /**
+     * Main method of the application GUI.
+     *
+     * @param args Command line arguments.
+     */
     public static void main(String[] args) {
         launch(args);
     }

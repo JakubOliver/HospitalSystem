@@ -18,6 +18,12 @@ public class MainMenu extends MenuPage {
     protected static String PAGE_TITLE_STYLE =
             "-fx-font-size: 40px; " + EMPHASIZED_TEXT_STYLE;
 
+    /**
+     * Creates a new MainMenu instance.
+     *
+     * @param navigator 2-way navigation between pages.
+     * @param hospital Hospital instance.
+     */
     public MainMenu(Navigator navigator, Hospital hospital) {
         super(navigator);
         this.hospital = hospital;

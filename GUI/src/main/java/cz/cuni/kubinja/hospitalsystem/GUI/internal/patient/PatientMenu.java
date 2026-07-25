@@ -10,6 +10,12 @@ import cz.cuni.kubinja.hospitalsystem.core.Hospital;
 public class PatientMenu extends PersonnelMenuPage {
     private final Hospital hospital;
 
+    /**
+     * Creates patient menu page.
+     *
+     * @param navigator 2-way navigation between pages.
+     * @param hospital Hospital instance.
+     */
     public PatientMenu(Navigator navigator, Hospital hospital) {
         super(navigator, "Patient", "Patients");
         this.hospital = hospital;

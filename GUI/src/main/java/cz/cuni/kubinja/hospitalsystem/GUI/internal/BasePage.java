@@ -29,6 +29,11 @@ public abstract class BasePage implements Page {
     protected static final double SECONDARY_BUTTON_WIDTH = 160;
     protected static final double PROGRESS_INDICATOR_SIZE = 42;
 
+    /**
+     * Creates a new BasePage instance.
+     */
+    protected BasePage() {}
+
     protected String getTitleStyle() {
         return PAGE_TITLE_STYLE;
     }
@@ -148,10 +153,20 @@ public abstract class BasePage implements Page {
         return progress;
     }
 
+    /**
+     * Sets the style of the provided node to bold text.
+     *
+     * @param node Node whose style will be changed.
+     */
     public static void applyEmphasizedTextStyle(Node node) {
         node.setStyle(EMPHASIZED_TEXT_STYLE);
     }
 
+    /**
+     * Applies the shared section title style to a node.
+     *
+     * @param node Node displaying a section title.
+     */
     public static void applySectionTitleStyle(Node node) {
         node.setStyle(SECTION_TITLE_STYLE);
     }

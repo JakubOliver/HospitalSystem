@@ -11,6 +11,14 @@ import java.util.function.Supplier;
 public final class BackgroundOperation {
     private BackgroundOperation() {}
 
+    /**
+     * Runs the given operation in a background thread.
+     *
+     * @param operation Blocking operation to run.
+     * @param onSuccess Callback for successful completion of the operation.
+     * @param onFailure Callback for failure of the operation.
+     * @param <T> Type of the result of the operation.
+     */
     public static <T> void run(
             Supplier<T> operation,
             Consumer<T> onSuccess,

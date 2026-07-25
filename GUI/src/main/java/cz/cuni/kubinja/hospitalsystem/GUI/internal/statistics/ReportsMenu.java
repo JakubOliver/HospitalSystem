@@ -11,6 +11,12 @@ import javafx.scene.layout.GridPane;
 public class ReportsMenu extends MenuPage {
     private final Hospital hospital;
 
+    /**
+     * Creates reports menu page.
+     *
+     * @param navigator 2-way navigation between pages.
+     * @param hospital Hospital instance.
+     */
     public ReportsMenu(Navigator navigator, Hospital hospital) {
         super(navigator);
         this.hospital = hospital;

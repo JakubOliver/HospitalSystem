@@ -26,6 +26,12 @@ public class ExportMenu extends ActionPage {
     private final BooleanProperty busy = new SimpleBooleanProperty(false);
     private Label status;
 
+    /**
+     * Creates export menu page.
+     *
+     * @param navigator 2-way navigation between pages.
+     * @param hospital Hospital instance.
+     */
     public ExportMenu(Navigator navigator, Hospital hospital) {
         super(navigator, hospital);
     }

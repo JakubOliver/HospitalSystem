@@ -12,6 +12,12 @@ import javafx.scene.layout.GridPane;
 public class AppointmentMenu extends MenuPage {
     private final Hospital hospital;
 
+    /**
+     * Creates appointment menu page.
+     *
+     * @param navigator 2-way navigation between pages.
+     * @param hospital Hospital instance.
+     */
     public AppointmentMenu(Navigator navigator, Hospital hospital) {
         super(navigator);
         this.hospital = hospital;

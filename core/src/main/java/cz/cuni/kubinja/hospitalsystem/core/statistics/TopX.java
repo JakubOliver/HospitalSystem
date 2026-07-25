@@ -60,6 +60,8 @@ public final class TopX<T> {
 
     /**
      * Returns the stored entries from greatest to smallest value.
+     * 
+     * @return The stored entries from greatest to smallest value.
      */
     public List<TopXEntry<T>> entries() {
         return List.copyOf(entries);

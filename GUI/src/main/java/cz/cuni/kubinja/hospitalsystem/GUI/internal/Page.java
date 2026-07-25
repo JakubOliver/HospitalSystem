@@ -6,13 +6,30 @@ import javafx.scene.Parent;
  * A page that can be displayed by the GUI navigator.
  */
 public interface Page {
+    /**
+     * Returns the title of the page.
+     * @return Title of the page.
+     */
     String getTitle();
+
+    /**
+     * Creates the content of the page.
+     * @return Content of the page.
+     */
     Parent createContent();
 
+    /**
+     * Returns preferred width of the page.
+     * @return Preferred width of the page.
+     */
     default double getPreferredWidth() {
         return 420;
     }
 
+    /**
+     * Returns preferred height of the page.
+     * @return Preferred height of the page.
+     */
     default double getPreferredHeight() {
         return 780;
     }

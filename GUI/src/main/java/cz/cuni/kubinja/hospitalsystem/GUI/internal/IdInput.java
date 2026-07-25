@@ -20,6 +20,13 @@ public final class IdInput extends VBox {
     private final Button action = new Button();
     private final BooleanProperty valid = new SimpleBooleanProperty(false);
 
+    /**
+     * Constructor of IdInput class.
+     *
+     * @param personnelName Name of the personnel (patient or doctor)
+     * @param actionText Text of the action button
+     * @param actionHandler Handler for the action button
+     */
     public IdInput(
             String personnelName,
             String actionText,
@@ -46,14 +53,29 @@ public final class IdInput extends VBox {
         validate();
     }
 
+    /**
+     * Returns the ID of the personnel.
+     *
+     * @return ID of the personnel.
+     */
     public int getPersonnelId() {
         return getEntityId();
     }
 
+    /**
+     * Returns the ID of the entity.
+     *
+     * @return ID of the entity.
+     */
     public int getEntityId() {
         return InputValidator.parseInteger(id.getText());
     }
 
+    /**
+     * Returns the text property of the ID text field.
+     *
+     * @return The text property of the ID text field.
+     */
     public StringProperty textProperty() {
         return id.textProperty();
     }
