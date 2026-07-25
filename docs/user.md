@@ -11,7 +11,7 @@ To run the program you have to be in root directory of git repository. This can 
 * from zip: `unzip HospitalSystem.zip && cd HospitalSystem`
   * Name of the zip file can vary.
 
-Program can be run in terminal by using following command: `mvn compile exec:java`.
+Program can be run in terminal by using following command: `mvn install -pl :application -am -DskipTests && mvn exec:java -pl :application`.
 
 For the best working program and user experience it is necessary to use **Java 25** and also is required to have installed **Maven** (to run the start command).
 
