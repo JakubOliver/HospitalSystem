@@ -93,7 +93,7 @@ public abstract class PersonnelForm extends GridPane {
 
     protected static Label errorLabel() {
         Label label = new Label();
-        label.setStyle("-fx-text-fill: #b00020; -fx-font-size: 11px;");
+        ActionPage.applyInlineErrorTextStyle(label);
 
         return label;
     }

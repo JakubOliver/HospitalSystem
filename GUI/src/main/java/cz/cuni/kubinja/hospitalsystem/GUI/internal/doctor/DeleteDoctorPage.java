@@ -42,7 +42,7 @@ final class DeleteDoctorPage extends ActionPage {
         delete.setMinHeight(42);
         delete.setPrefWidth(180);
         delete.setDisable(true);
-        delete.setStyle("-fx-text-fill: #b00020;");
+        applyErrorTextStyle(delete);
         delete.setOnAction(event -> confirmDelete());
 
         idInput = new IdInput("Doctor", "Load", this::loadDoctor);

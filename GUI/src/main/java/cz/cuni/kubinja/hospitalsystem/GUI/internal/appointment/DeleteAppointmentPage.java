@@ -47,7 +47,7 @@ final class DeleteAppointmentPage extends ActionPage {
         delete = new Button("Delete appointment");
         delete.setMinHeight(42);
         delete.setPrefWidth(190);
-        delete.setStyle("-fx-text-fill: #b00020;");
+        applyErrorTextStyle(delete);
         delete.disableProperty().bind(busy.or(appointmentLoaded.not()));
 
         idInput = new IdInput("Appointment", "Load", this::loadAppointment);

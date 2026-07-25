@@ -1,5 +1,6 @@
 package cz.cuni.kubinja.hospitalsystem.GUI.internal.appointment;
 
+import cz.cuni.kubinja.hospitalsystem.GUI.internal.ActionPage;
 import cz.cuni.kubinja.hospitalsystem.core.calendar.Appointment;
 import cz.cuni.kubinja.hospitalsystem.core.calendar.AppointmentData;
 import cz.cuni.kubinja.hospitalsystem.core.calendar.Calendar;
@@ -207,7 +208,7 @@ final class AppointmentForm extends GridPane {
 
     private static Label errorLabel() {
         Label label = new Label();
-        label.setStyle("-fx-text-fill: #b00020; -fx-font-size: 11px;");
+        ActionPage.applyInlineErrorTextStyle(label);
         label.setWrapText(true);
         return label;
     }

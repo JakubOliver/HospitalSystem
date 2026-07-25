@@ -19,6 +19,11 @@ import javafx.scene.layout.VBox;
  * Shared page structure, navigation and feedback behavior for action workflows.
  */
 public abstract class ActionPage implements Page {
+    private static final String ERROR_TEXT_STYLE =
+            "-fx-text-fill: #b00020;";
+    private static final String INLINE_ERROR_TEXT_STYLE =
+            ERROR_TEXT_STYLE + " -fx-font-size: 11px;";
+
     protected final Navigator navigator;
     protected final Hospital hospital;
 
@@ -97,6 +102,24 @@ public abstract class ActionPage implements Page {
         alert.setHeaderText("Operation completed");
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    /**
+     * Applies the shared error color to a node.
+     *
+     * @param node Node that should use the error color.
+     */
+    public static void applyErrorTextStyle(Node node) {
+        node.setStyle(ERROR_TEXT_STYLE);
+    }
+
+    /**
+     * Applies the shared compact error-label style to a node.
+     *
+     * @param node Node displaying an inline validation error.
+     */
+    public static void applyInlineErrorTextStyle(Node node) {
+        node.setStyle(INLINE_ERROR_TEXT_STYLE);
     }
 
     protected GridPane personnelDetails(Person person, Detail... additionalDetails) {

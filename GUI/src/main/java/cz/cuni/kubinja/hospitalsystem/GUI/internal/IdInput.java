@@ -36,7 +36,7 @@ public final class IdInput extends VBox {
         action.setOnAction(event -> actionHandler.run());
         action.disableProperty().bind(valid.not());
 
-        error.setStyle("-fx-text-fill: #b00020; -fx-font-size: 11px;");
+        ActionPage.applyInlineErrorTextStyle(error);
 
         HBox row = new HBox(10, new Label(personnelName + " ID:"), id, action);
         row.setAlignment(Pos.CENTER);
