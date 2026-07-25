@@ -1,34 +1,18 @@
 package cz.cuni.kubinja.hospitalsystem.GUI.internal.patient;
 
-import cz.cuni.kubinja.hospitalsystem.GUI.internal.MenuPage;
 import cz.cuni.kubinja.hospitalsystem.GUI.internal.Navigator;
+import cz.cuni.kubinja.hospitalsystem.GUI.internal.PersonnelMenuPage;
 import cz.cuni.kubinja.hospitalsystem.core.Hospital;
-import cz.cuni.kubinja.hospitalsystem.menu.PersonnelMenu;
-import javafx.scene.layout.GridPane;
 
 /**
  * Menu containing the patient-related actions.
  */
-public class PatientMenu extends MenuPage implements PersonnelMenu {
+public class PatientMenu extends PersonnelMenuPage {
     private final Hospital hospital;
 
     public PatientMenu(Navigator navigator, Hospital hospital) {
-        super(navigator);
+        super(navigator, "Patient", "Patients");
         this.hospital = hospital;
-    }
-
-    @Override
-    public String getTitle() {
-        return "Patients";
-    }
-
-    @Override
-    protected void addOptions(GridPane options) {
-        addOption(options, "Add new patient", this::add);
-        addOption(options, "Edit existing patient", this::edit);
-        addOption(options, "Delete existing patient", this::delete);
-        addOption(options, "Find patient by ID", this::findById);
-        addOption(options, "Show all patients", this::all);
     }
 
     @Override
