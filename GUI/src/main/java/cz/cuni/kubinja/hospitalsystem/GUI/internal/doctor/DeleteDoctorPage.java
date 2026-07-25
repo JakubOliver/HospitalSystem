@@ -1,6 +1,6 @@
 package cz.cuni.kubinja.hospitalsystem.GUI.internal.doctor;
 
-import cz.cuni.kubinja.hospitalsystem.GUI.internal.DeletePersonnelPage;
+import cz.cuni.kubinja.hospitalsystem.GUI.internal.personnel.DeletePersonnelPage;
 import cz.cuni.kubinja.hospitalsystem.GUI.internal.Navigator;
 import cz.cuni.kubinja.hospitalsystem.core.Hospital;
 import cz.cuni.kubinja.hospitalsystem.core.packet.DataPacket;

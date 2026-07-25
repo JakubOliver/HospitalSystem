@@ -1,9 +1,9 @@
-package cz.cuni.kubinja.hospitalsystem.GUI.internal;
+package cz.cuni.kubinja.hospitalsystem.GUI.internal.personnel;
 
+import cz.cuni.kubinja.hospitalsystem.GUI.internal.MenuPage;
+import cz.cuni.kubinja.hospitalsystem.GUI.internal.Navigator;
 import cz.cuni.kubinja.hospitalsystem.menu.PersonnelMenu;
 import javafx.scene.layout.GridPane;
-
-import java.util.Locale;
 
 /**
  * Shared menu options for patient and doctor management.

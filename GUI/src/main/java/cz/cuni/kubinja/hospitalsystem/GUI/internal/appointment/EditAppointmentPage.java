@@ -1,7 +1,6 @@
 package cz.cuni.kubinja.hospitalsystem.GUI.internal.appointment;
 
 import cz.cuni.kubinja.hospitalsystem.GUI.internal.ActionPage;
-import cz.cuni.kubinja.hospitalsystem.GUI.internal.BackgroundOperation;
 import cz.cuni.kubinja.hospitalsystem.GUI.internal.IdInput;
 import cz.cuni.kubinja.hospitalsystem.GUI.internal.Navigator;
 import cz.cuni.kubinja.hospitalsystem.core.Hospital;
@@ -11,12 +10,10 @@ import cz.cuni.kubinja.hospitalsystem.core.packet.DataPacket;
 import cz.cuni.kubinja.hospitalsystem.core.packet.GeneralPacket;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.Separator;
-import javafx.scene.layout.VBox;
 
 /**
  * Page for loading and editing an appointment.
@@ -49,9 +46,7 @@ final class EditAppointmentPage extends ActionPage {
                 (observable, oldValue, newValue) -> appointmentLoaded.set(false)
         );
 
-        Button save = new Button("Save changes");
-        save.setMinHeight(42);
-        save.setPrefWidth(180);
+        Button save = createActionButton("Save changes");
         save.setDefaultButton(true);
         save.disableProperty().bind(
                 appointmentLoaded.not()
@@ -60,12 +55,10 @@ final class EditAppointmentPage extends ActionPage {
         );
         save.setOnAction(event -> saveAppointment());
 
-        ProgressIndicator progress = new ProgressIndicator();
-        progress.setMaxSize(42, 42);
-        progress.visibleProperty().bind(busy);
-        progress.managedProperty().bind(progress.visibleProperty());
+        ProgressIndicator progress = createProgressIndicator(busy);
 
-        VBox body = new VBox(
+        loadOptions();
+        return createCenteredBox(
                 18,
                 progress,
                 idInput,
@@ -73,17 +66,13 @@ final class EditAppointmentPage extends ActionPage {
                 form,
                 save
         );
-        body.setAlignment(Pos.TOP_CENTER);
-        loadOptions();
-        return body;
     }
 
     private void loadOptions() {
-        busy.set(true);
-        BackgroundOperation.run(
+        runBackgroundOperation(
+                busy,
                 () -> AppointmentOptions.load(hospital),
                 options -> {
-                    busy.set(false);
                     if (!options.successful()) {
                         showApiError(options.error());
                         return;
@@ -91,30 +80,21 @@ final class EditAppointmentPage extends ActionPage {
 
                     form.setOptions(options);
                     optionsReady.set(true);
-                },
-                exception -> {
-                    busy.set(false);
-                    showUnexpectedError(exception);
                 }
         );
     }
 
     private void loadAppointment() {
-        busy.set(true);
         appointmentLoaded.set(false);
         int appointmentId = idInput.getEntityId();
-        BackgroundOperation.run(
+        runBackgroundOperation(
+                busy,
                 () -> hospital.getAppointment(appointmentId),
-                packet -> finishLoad(appointmentId, packet),
-                exception -> {
-                    busy.set(false);
-                    showUnexpectedError(exception);
-                }
+                packet -> finishLoad(appointmentId, packet)
         );
     }
 
     private void finishLoad(int appointmentId, DataPacket<Appointment> packet) {
-        busy.set(false);
         if (showApiError(packet)) {
             return;
         }
@@ -134,19 +114,14 @@ final class EditAppointmentPage extends ActionPage {
                 data.endTime()
         );
 
-        busy.set(true);
-        BackgroundOperation.run(
+        runBackgroundOperation(
+                busy,
                 () -> hospital.updateAppointment(appointment),
-                this::finishSave,
-                exception -> {
-                    busy.set(false);
-                    showUnexpectedError(exception);
-                }
+                this::finishSave
         );
     }
 
     private void finishSave(GeneralPacket packet) {
-        busy.set(false);
         if (!showApiError(packet)) {
             complete("Appointment " + loadedAppointmentId + " was updated.");
         }

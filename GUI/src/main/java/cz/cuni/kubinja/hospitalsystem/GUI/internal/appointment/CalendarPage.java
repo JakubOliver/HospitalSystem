@@ -1,7 +1,6 @@
 package cz.cuni.kubinja.hospitalsystem.GUI.internal.appointment;
 
 import cz.cuni.kubinja.hospitalsystem.GUI.internal.ActionPage;
-import cz.cuni.kubinja.hospitalsystem.GUI.internal.BackgroundOperation;
 import cz.cuni.kubinja.hospitalsystem.GUI.internal.Navigator;
 import com.calendarfx.model.CalendarSource;
 import com.calendarfx.model.Entry;
@@ -69,9 +68,10 @@ final class CalendarPage extends ActionPage {
         department.disableProperty().bind(busy);
         department.setOnAction(event -> rebuildCalendar());
 
-        Button refresh = new Button("Refresh");
-        refresh.setMinHeight(38);
-        refresh.setPrefWidth(140);
+        Button refresh = createActionButton(
+                "Refresh",
+                SECONDARY_BUTTON_WIDTH
+        );
         refresh.disableProperty().bind(busy);
         refresh.setOnAction(event -> loadAppointments());
 
@@ -82,15 +82,17 @@ final class CalendarPage extends ActionPage {
         }
         controls.getChildren().add(refresh);
 
-        ProgressIndicator progress = new ProgressIndicator();
-        progress.setMaxSize(42, 42);
-        progress.visibleProperty().bind(busy);
-        progress.managedProperty().bind(progress.visibleProperty());
+        ProgressIndicator progress = createProgressIndicator(busy);
 
         status.setWrapText(true);
 
-        VBox body = new VBox(10, controls, progress, status, calendarView);
-        body.setAlignment(Pos.TOP_CENTER);
+        VBox body = createCenteredBox(
+                10,
+                controls,
+                progress,
+                status,
+                calendarView
+        );
         VBox.setVgrow(calendarView, Priority.ALWAYS);
         loadAppointments();
         return body;
@@ -131,13 +133,12 @@ final class CalendarPage extends ActionPage {
     }
 
     private void loadAppointments() {
-        busy.set(true);
         status.setText("Loading appointments...");
-        BackgroundOperation.run(
+        runBackgroundOperation(
+                busy,
                 hospital::getAppointmentSummaries,
                 this::finishLoad,
                 exception -> {
-                    busy.set(false);
                     appointments = List.of();
                     calendarView.getCalendarSources().clear();
                     status.setText("Appointments could not be loaded. Use Refresh to try again.");
@@ -147,7 +148,6 @@ final class CalendarPage extends ActionPage {
     }
 
     private void finishLoad(DataPacket<List<AppointmentSummary>> packet) {
-        busy.set(false);
         if (showApiError(packet)) {
             appointments = List.of();
             calendarView.getCalendarSources().clear();

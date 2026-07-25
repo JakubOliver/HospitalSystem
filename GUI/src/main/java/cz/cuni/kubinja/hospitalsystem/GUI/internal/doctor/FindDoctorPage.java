@@ -1,6 +1,6 @@
 package cz.cuni.kubinja.hospitalsystem.GUI.internal.doctor;
 
-import cz.cuni.kubinja.hospitalsystem.GUI.internal.FindPersonnelPage;
+import cz.cuni.kubinja.hospitalsystem.GUI.internal.personnel.FindPersonnelPage;
 import cz.cuni.kubinja.hospitalsystem.GUI.internal.Navigator;
 import cz.cuni.kubinja.hospitalsystem.core.Hospital;
 import cz.cuni.kubinja.hospitalsystem.core.packet.DataPacket;

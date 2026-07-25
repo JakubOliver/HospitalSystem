@@ -1,7 +1,7 @@
 package cz.cuni.kubinja.hospitalsystem.GUI.internal.patient;
 
 import cz.cuni.kubinja.hospitalsystem.GUI.internal.Navigator;
-import cz.cuni.kubinja.hospitalsystem.GUI.internal.PersonnelMenuPage;
+import cz.cuni.kubinja.hospitalsystem.GUI.internal.personnel.PersonnelMenuPage;
 import cz.cuni.kubinja.hospitalsystem.core.Hospital;
 
 /**
