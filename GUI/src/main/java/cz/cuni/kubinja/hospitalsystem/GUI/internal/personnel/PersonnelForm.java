@@ -21,6 +21,12 @@ import javafx.scene.layout.Priority;
  * Common editor fields and validation for patients and doctors.
  */
 public abstract class PersonnelForm extends GridPane {
+    private static final double HORIZONTAL_GAP = 14;
+    private static final double VERTICAL_GAP = 6;
+    private static final double FORM_PADDING = 10;
+    private static final double FORM_MAX_WIDTH = 650;
+    private static final double LABEL_COLUMN_MIN_WIDTH = 110;
+
     private final TextField firstName = new TextField();
     private final TextField lastName = new TextField();
     private final DatePicker dateOfBirth = new DatePicker();
@@ -31,17 +37,19 @@ public abstract class PersonnelForm extends GridPane {
     private final BooleanProperty commonValid = new SimpleBooleanProperty(false);
 
     protected PersonnelForm() {
-        setHgap(14);
-        setVgap(6);
-        setPadding(new Insets(10));
+        setHgap(HORIZONTAL_GAP);
+        setVgap(VERTICAL_GAP);
+        setPadding(new Insets(FORM_PADDING));
         setAlignment(Pos.TOP_CENTER);
-        setMaxWidth(650);
+        setMaxWidth(FORM_MAX_WIDTH);
 
         ColumnConstraints labels = new ColumnConstraints();
-        labels.setMinWidth(110);
+        labels.setMinWidth(LABEL_COLUMN_MIN_WIDTH);
+
         ColumnConstraints fields = new ColumnConstraints();
         fields.setHgrow(Priority.ALWAYS);
         fields.setFillWidth(true);
+
         getColumnConstraints().addAll(labels, fields);
 
         firstName.setPromptText("First name");

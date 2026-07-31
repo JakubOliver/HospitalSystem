@@ -41,27 +41,27 @@ public abstract class DeletePersonnelPage<T extends Person> extends PersonnelAct
         details = createCenteredBox(0);
 
         delete = createActionButton(
-                "Delete " + personnelNameLowerCase()
+            "Delete " + personnelNameLowerCase()
         );
         delete.setDisable(true);
         ActionPage.applyErrorTextStyle(delete);
         delete.setOnAction(event -> confirmDelete());
 
         idInput = new IdInput(
-                personnelName(),
-                "Load",
-                this::loadPersonnel
+            personnelName(),
+            "Load",
+            this::loadPersonnel
         );
         idInput.textProperty().addListener(
-                (observable, oldValue, newValue) -> clearPersonnel()
+            (observable, oldValue, newValue) -> clearPersonnel()
         );
 
         return createCenteredBox(
-                22,
-                idInput,
-                new Separator(),
-                details,
-                delete
+            22,
+            idInput,
+            new Separator(),
+            details,
+            delete
         );
     }
 
@@ -80,10 +80,10 @@ public abstract class DeletePersonnelPage<T extends Person> extends PersonnelAct
 
         loadedPersonnel = packet.data;
         details.getChildren().setAll(
-                personnelDetails(
-                        loadedPersonnel,
-                        additionalDetails(loadedPersonnel)
-                )
+            personnelDetails(
+                loadedPersonnel,
+                additionalDetails(loadedPersonnel)
+            )
         );
         delete.setDisable(false);
     }
@@ -100,12 +100,12 @@ public abstract class DeletePersonnelPage<T extends Person> extends PersonnelAct
 
     private void confirmDelete() {
         if (!confirmAction(
-                "Delete " + personnelNameLowerCase(),
-                "Delete " + personnelNameLowerCase() + " "
-                        + loadedPersonnel.getId() + "?",
-                loadedPersonnel.getFirstName() + " "
-                        + loadedPersonnel.getLastName()
-                        + "\nThis action cannot be undone."
+            "Delete " + personnelNameLowerCase(),
+            "Delete " + personnelNameLowerCase() + " "
+                + loadedPersonnel.getId() + "?",
+            loadedPersonnel.getFirstName() + " "
+                + loadedPersonnel.getLastName()
+                + "\nThis action cannot be undone."
         )) {
             return;
         }
@@ -113,8 +113,8 @@ public abstract class DeletePersonnelPage<T extends Person> extends PersonnelAct
         GeneralPacket packet = deletePersonnel(loadedPersonnel.getId());
         if (!showApiError(packet)) {
             complete(
-                    personnelName() + " " + loadedPersonnel.getId()
-                            + " was deleted."
+                personnelName() + " " + loadedPersonnel.getId()
+                    + " was deleted."
             );
         }
     }

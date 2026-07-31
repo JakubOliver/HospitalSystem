@@ -28,8 +28,8 @@ final class DeleteDoctorPage extends DeletePersonnelPage<Doctor> {
     @Override
     protected Detail[] additionalDetails(Doctor doctor) {
         return new Detail[]{
-                new Detail("Specialization", doctor.getSpecialization()),
-                new Detail("Department", doctor.getDepartment())
+            new Detail("Specialization", doctor.getSpecialization()),
+            new Detail("Department", doctor.getDepartment())
         };
     }
 }

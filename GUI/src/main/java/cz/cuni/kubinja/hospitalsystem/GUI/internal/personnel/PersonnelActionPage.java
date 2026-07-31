@@ -29,6 +29,6 @@ public abstract class PersonnelActionPage<T extends Person> extends ActionPage {
     }
 
     protected final String personnelNameLowerCase() {
-        return personnelName.toLowerCase(Locale.ROOT);
+        return personnelName.toLowerCase();
     }
 }

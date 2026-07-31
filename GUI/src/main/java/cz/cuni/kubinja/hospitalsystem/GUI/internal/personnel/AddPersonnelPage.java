@@ -30,9 +30,11 @@ public abstract class AddPersonnelPage<T extends Person> extends PersonnelAction
     @Override
     protected final Node createBody() {
         Node form = createPersonnelForm();
+
         Button save = createActionButton(
                 "Save " + personnelNameLowerCase()
         );
+
         save.setDefaultButton(true);
         save.disableProperty().bind(formValidProperty().not());
         save.setOnAction(event -> savePersonnel());
@@ -48,6 +50,7 @@ public abstract class AddPersonnelPage<T extends Person> extends PersonnelAction
 
     private void savePersonnel() {
         DataPacket<T> packet = addPersonnel();
+
         if (!showApiError(packet)) {
             complete(
                     personnelName() + " was added with ID "

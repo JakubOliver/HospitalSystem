@@ -28,7 +28,7 @@ final class DeletePatientPage extends DeletePersonnelPage<Patient> {
     @Override
     protected Detail[] additionalDetails(Patient patient) {
         return new Detail[]{
-                new Detail("Anamnesis", patient.getAnamnesis())
+            new Detail("Anamnesis", patient.getAnamnesis())
         };
     }
 }

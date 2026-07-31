@@ -25,14 +25,16 @@ final class DoctorForm extends PersonnelForm {
         specialization.setPromptText("Specialization");
         department.setPromptText("Department");
 
+        //TODO: create some mechanism that get already existing fields from PersonnelForm and then add to get index
+        // instead of hardcoding
         addField(6, "Specialization", specialization, specializationError);
         addField(8, "Department", department, departmentError);
 
         specialization.textProperty().addListener(
-                (observable, oldValue, newValue) -> validate()
+            (observable, oldValue, newValue) -> validate()
         );
         department.textProperty().addListener(
-                (observable, oldValue, newValue) -> validate()
+            (observable, oldValue, newValue) -> validate()
         );
 
         validate();
@@ -45,11 +47,11 @@ final class DoctorForm extends PersonnelForm {
 
     DoctorData getDoctorData() {
         return new DoctorData(
-                getPersonData(),
-                new DoctorDetails(
-                        specialization.getText().trim(),
-                        department.getText().trim()
-                )
+            getPersonData(),
+            new DoctorDetails(
+                specialization.getText().trim(),
+                department.getText().trim()
+            )
         );
     }
 
@@ -68,8 +70,8 @@ final class DoctorForm extends PersonnelForm {
         specializationError.setText(specializationValidation);
         departmentError.setText(departmentValidation);
         detailsValid.set(
-                specializationValidation.isEmpty()
-                        && departmentValidation.isEmpty()
+            specializationValidation.isEmpty()
+                && departmentValidation.isEmpty()
         );
     }
 }

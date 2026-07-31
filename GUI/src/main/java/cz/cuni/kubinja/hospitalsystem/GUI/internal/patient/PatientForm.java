@@ -24,6 +24,8 @@ final class PatientForm extends PersonnelForm {
         anamnesis.setPrefRowCount(4);
         anamnesis.setWrapText(true);
 
+        //TODO: create some mechanism that get already existing fields from PersonnelForm and then add to get index
+        // instead of hardcoding
         addField(6, "Anamnesis", anamnesis, anamnesisError);
 
         anamnesis.textProperty().addListener((observable, oldValue, newValue) -> validate());
@@ -38,8 +40,8 @@ final class PatientForm extends PersonnelForm {
 
     PatientData getPatientData() {
         return new PatientData(
-                getPersonData(),
-                new PatientsDetails(anamnesis.getText().trim())
+            getPersonData(),
+            new PatientsDetails(anamnesis.getText().trim())
         );
     }
 
