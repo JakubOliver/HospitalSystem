@@ -30,7 +30,7 @@ final class PersonnelSelector<T extends Person> extends VBox {
         setAlignment(Pos.TOP_LEFT);
 
         search.setPromptText("Search " + personnelName.toLowerCase(Locale.ROOT)
-                + " by ID or name");
+            + " by ID or name");
         choices.setPromptText("Select " + personnelName.toLowerCase(Locale.ROOT));
         choices.setMaxWidth(Double.MAX_VALUE);
         choices.setConverter(new StringConverter<>() {
@@ -41,7 +41,7 @@ final class PersonnelSelector<T extends Person> extends VBox {
                 }
 
                 return person.getId() + " – "
-                        + person.getFirstName() + " " + person.getLastName();
+                    + person.getFirstName() + " " + person.getLastName();
             }
 
             @Override
@@ -52,7 +52,7 @@ final class PersonnelSelector<T extends Person> extends VBox {
         choices.setItems(filteredChoices);
 
         search.textProperty().addListener(
-                (observable, oldValue, newValue) -> applyFilter(newValue)
+            (observable, oldValue, newValue) -> applyFilter(newValue)
         );
 
         getChildren().addAll(new Label(personnelName + ":"), search, choices);
@@ -73,26 +73,28 @@ final class PersonnelSelector<T extends Person> extends VBox {
 
     void selectById(int id) {
         search.clear();
+
         people.stream()
-                .filter(person -> person.getId() == id)
-                .findFirst()
-                .ifPresent(choices::setValue);
+            .filter(person -> person.getId() == id)
+            .findFirst()
+            .ifPresent(choices::setValue);
     }
 
     private void applyFilter(String value) {
         String query = value == null
-                ? ""
-                : value.trim().toLowerCase(Locale.ROOT);
+            ? ""
+            : value.trim().toLowerCase();
+
         filteredChoices.setPredicate(person -> {
             if (query.isEmpty()) {
                 return true;
             }
 
             return Integer.toString(person.getId()).contains(query)
-                    || person.getFirstName().toLowerCase(Locale.ROOT).contains(query)
-                    || person.getLastName().toLowerCase(Locale.ROOT).contains(query)
-                    || (person.getFirstName() + " " + person.getLastName())
-                    .toLowerCase(Locale.ROOT)
+                || person.getFirstName().toLowerCase().contains(query)
+                || person.getLastName().toLowerCase().contains(query)
+                || (person.getFirstName() + " " + person.getLastName())
+                    .toLowerCase()
                     .contains(query);
         });
     }

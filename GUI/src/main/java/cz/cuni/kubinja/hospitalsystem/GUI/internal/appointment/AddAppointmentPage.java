@@ -36,36 +36,38 @@ final class AddAppointmentPage extends ActionPage {
         save.setDefaultButton(true);
         // The binds are a little bit strange way how in JavaFx can be encoded conditions with logic
         save.disableProperty().bind(
-                ready.not().or(busy).or(form.validProperty().not())
+            ready.not().or(busy).or(form.validProperty().not())
         );
         save.setOnAction(event -> saveAppointment());
 
         ProgressIndicator progress = createProgressIndicator(busy);
+
         loadOptions();
+
         return createCenteredBox(18, progress, form, save);
     }
 
     private void loadOptions() {
         runBackgroundOperation(
-                busy,
-                () -> AppointmentOptions.load(hospital),
-                options -> {
-                    if (!options.successful()) {
-                        showApiError(options.error());
-                        return;
-                    }
-
-                    form.setOptions(options);
-                    ready.set(true);
+            busy,
+            () -> AppointmentOptions.load(hospital),
+            options -> {
+                if (!options.successful()) {
+                    showApiError(options.error());
+                    return;
                 }
+
+                form.setOptions(options);
+                ready.set(true);
+            }
         );
     }
 
     private void saveAppointment() {
         runBackgroundOperation(
-                busy,
-                () -> hospital.addAppointment(form.getAppointmentData()),
-                this::finishSave
+            busy,
+            () -> hospital.addAppointment(form.getAppointmentData()),
+            this::finishSave
         );
     }
 

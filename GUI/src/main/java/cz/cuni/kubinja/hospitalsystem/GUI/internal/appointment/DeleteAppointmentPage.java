@@ -54,12 +54,12 @@ final class DeleteAppointmentPage extends ActionPage {
         delete.setOnAction(event -> confirmDelete());
 
         return createCenteredBox(
-                18,
-                progress,
-                idInput,
-                new Separator(),
-                details,
-                delete
+            18,
+            progress,
+            idInput,
+            new Separator(),
+            details,
+            delete
         );
     }
 
@@ -67,9 +67,9 @@ final class DeleteAppointmentPage extends ActionPage {
         clearAppointment();
         int appointmentId = idInput.getEntityId();
         runBackgroundOperation(
-                busy,
-                () -> hospital.getAppointmentSummary(appointmentId),
-                this::finishLoad
+            busy,
+            () -> hospital.getAppointmentSummary(appointmentId),
+            this::finishLoad
         );
     }
 
@@ -93,19 +93,19 @@ final class DeleteAppointmentPage extends ActionPage {
 
     private void confirmDelete() {
         if (!confirmAction(
-                "Delete appointment",
-                "Delete appointment " + loadedAppointment.id() + "?",
-                loadedAppointment.patientName() + " with "
-                        + loadedAppointment.doctorName()
-                        + "\nThis action cannot be undone."
+            "Delete appointment",
+            "Delete appointment " + loadedAppointment.id() + "?",
+            loadedAppointment.patientName() + " with "
+                    + loadedAppointment.doctorName()
+                    + "\nThis action cannot be undone."
         )) {
             return;
         }
 
         runBackgroundOperation(
-                busy,
-                () -> hospital.deleteAppointment(loadedAppointment.id()),
-                this::finishDelete
+            busy,
+            () -> hospital.deleteAppointment(loadedAppointment.id()),
+            this::finishDelete
         );
     }
 

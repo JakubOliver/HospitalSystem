@@ -13,7 +13,7 @@ import java.time.format.DateTimeFormatter;
  */
 final class AppointmentDetails {
     private static final DateTimeFormatter DATE_TIME =
-            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     private AppointmentDetails() {}
 

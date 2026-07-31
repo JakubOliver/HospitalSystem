@@ -57,28 +57,28 @@ public class ExportMenu extends ActionPage {
         GridPane options = createTwoColumnOptionsGrid();
 
         addExportOption(
-                options,
-                "Export patients",
-                "patients",
-                hospital::exportPatients
+            options,
+            "Export patients",
+            "patients",
+            hospital::exportPatients
         );
         addExportOption(
-                options,
-                "Export doctors",
-                "doctors",
-                hospital::exportDoctors
+            options,
+            "Export doctors",
+            "doctors",
+            hospital::exportDoctors
         );
         addExportOption(
-                options,
-                "Export appointments",
-                "appointments",
-                hospital::exportAppointments
+            options,
+            "Export appointments",
+            "appointments",
+            hospital::exportAppointments
         );
         addExportOption(
-                options,
-                "Export all",
-                "all hospital data",
-                hospital::export
+            options,
+            "Export all",
+            "all hospital data",
+            hospital::export
         );
 
         ProgressIndicator progress = createProgressIndicator(busy);
@@ -120,24 +120,23 @@ public class ExportMenu extends ActionPage {
         status.setText("Exporting " + description + "...");
 
         runBackgroundOperation(
-                busy,
-                operation,
-                packet -> {
-                    if (showApiError(packet)) {
-                        status.setText("Export failed.");
-                        return;
-                    }
-
-                    status.setText("Export completed successfully.");
-                    showSuccess(
-                            "The " + description
-                                    + " export was saved in the exports directory."
-                    );
-                },
-                exception -> {
+            busy,
+            operation,
+            packet -> {
+                if (showApiError(packet)) {
                     status.setText("Export failed.");
-                    showUnexpectedError(exception);
+                    return;
                 }
+
+                status.setText("Export completed successfully.");
+                showSuccess(
+                    "The " + description + " export was saved in the exports directory."
+                );
+            },
+            exception -> {
+                status.setText("Export failed.");
+                showUnexpectedError(exception);
+            }
         );
     }
 }

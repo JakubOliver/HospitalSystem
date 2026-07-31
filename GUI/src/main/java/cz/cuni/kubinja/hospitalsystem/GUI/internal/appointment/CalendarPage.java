@@ -70,8 +70,8 @@ final class CalendarPage extends ActionPage {
         department.setOnAction(event -> rebuildCalendar());
 
         Button refresh = createActionButton(
-                "Refresh",
-                SECONDARY_BUTTON_WIDTH
+            "Refresh",
+            SECONDARY_BUTTON_WIDTH
         );
         refresh.disableProperty().bind(busy);
         refresh.setOnAction(event -> loadAppointments());
@@ -88,14 +88,16 @@ final class CalendarPage extends ActionPage {
         status.setWrapText(true);
 
         VBox body = createCenteredBox(
-                10,
-                controls,
-                progress,
-                status,
-                calendarView
+            10,
+            controls,
+            progress,
+            status,
+            calendarView
         );
         VBox.setVgrow(calendarView, Priority.ALWAYS);
+
         loadAppointments();
+
         return body;
     }
 
@@ -140,15 +142,15 @@ final class CalendarPage extends ActionPage {
     private void loadAppointments() {
         status.setText("Loading appointments...");
         runBackgroundOperation(
-                busy,
-                hospital::getAppointmentSummaries,
-                this::finishLoad,
-                exception -> {
-                    appointments = List.of();
-                    calendarView.getCalendarSources().clear();
-                    status.setText("Appointments could not be loaded. Use Refresh to try again.");
-                    showUnexpectedError(exception);
-                }
+            busy,
+            hospital::getAppointmentSummaries,
+            this::finishLoad,
+            exception -> {
+                appointments = List.of();
+                calendarView.getCalendarSources().clear();
+                status.setText("Appointments could not be loaded. Use Refresh to try again.");
+                showUnexpectedError(exception);
+            }
         );
     }
 
@@ -164,10 +166,10 @@ final class CalendarPage extends ActionPage {
         appointments = packet.data;
         if (departmentOnly) {
             List<String> departments = appointments.stream()
-                    .map(AppointmentSummary::department)
-                    .distinct()
-                    .sorted(String.CASE_INSENSITIVE_ORDER)
-                    .toList();
+                .map(AppointmentSummary::department)
+                .distinct()
+                .sorted(String.CASE_INSENSITIVE_ORDER)
+                .toList();
             department.getItems().setAll(departments);
 
             if (departments.contains(previousDepartment)) {
@@ -191,16 +193,16 @@ final class CalendarPage extends ActionPage {
         }
 
         CalendarSource source = CalendarFxAdapter.createSource(
-                appointments,
-                selectedDepartment
+            appointments,
+            selectedDepartment
         );
         calendarView.getCalendarSources().setAll(source);
         calendarView.refreshData();
 
         boolean empty = selectedDepartment == null
-                ? appointments.isEmpty()
-                : appointments.stream().noneMatch(
-                appointment -> appointment.department().equals(selectedDepartment)
+            ? appointments.isEmpty()
+            : appointments.stream().noneMatch(
+            appointment -> appointment.department().equals(selectedDepartment)
         );
         status.setText(empty ? "No appointments found." : "");
     }

@@ -33,6 +33,7 @@ public final class BackgroundOperation {
 
         //I tried to use same principal as uses standard library task with
         // succeeded/failured/canceled and used it as JavaFx background task
+        // using standard Supplier, Consumer instead of own functional interfaces
         task.setOnSucceeded(event -> onSuccess.accept(task.getValue()));
         task.setOnFailed(event -> onFailure.accept(task.getException()));
 

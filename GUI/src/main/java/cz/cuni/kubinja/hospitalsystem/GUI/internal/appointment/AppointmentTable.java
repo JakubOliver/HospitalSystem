@@ -26,51 +26,51 @@ final class AppointmentTable extends TableView<AppointmentSummary> {
         id.setMinWidth(55);
 
         TableColumn<AppointmentSummary, String> patient =
-                new TableColumn<>("Patient");
+            new TableColumn<>("Patient");
         patient.setCellValueFactory(cell -> new ReadOnlyStringWrapper(
-                cell.getValue().patientName()
-                        + " (" + cell.getValue().patientId() + ")"
+            cell.getValue().patientName()
+                    + " (" + cell.getValue().patientId() + ")"
         ));
 
         TableColumn<AppointmentSummary, String> doctor =
-                new TableColumn<>("Doctor");
+            new TableColumn<>("Doctor");
         doctor.setCellValueFactory(cell -> new ReadOnlyStringWrapper(
-                cell.getValue().doctorName()
-                        + " (" + cell.getValue().doctorId() + ")"
+            cell.getValue().doctorName()
+                    + " (" + cell.getValue().doctorId() + ")"
         ));
 
         TableColumn<AppointmentSummary, String> department =
-                new TableColumn<>("Department");
+            new TableColumn<>("Department");
         department.setCellValueFactory(
-                cell -> new ReadOnlyStringWrapper(cell.getValue().department())
+            cell -> new ReadOnlyStringWrapper(cell.getValue().department())
         );
 
         TableColumn<AppointmentSummary, LocalDate> date =
-                new TableColumn<>("Date");
+            new TableColumn<>("Date");
         date.setCellValueFactory(cell -> new ReadOnlyObjectWrapper<>(
-                cell.getValue().startTime().toLocalDate()
+            cell.getValue().startTime().toLocalDate()
         ));
 
         TableColumn<AppointmentSummary, LocalTime> start =
-                new TableColumn<>("Start");
+            new TableColumn<>("Start");
         start.setCellValueFactory(cell -> new ReadOnlyObjectWrapper<>(
-                cell.getValue().startTime().toLocalTime()
+            cell.getValue().startTime().toLocalTime()
         ));
 
         TableColumn<AppointmentSummary, LocalTime> end =
-                new TableColumn<>("End");
+            new TableColumn<>("End");
         end.setCellValueFactory(cell -> new ReadOnlyObjectWrapper<>(
-                cell.getValue().endTime().toLocalTime()
+            cell.getValue().endTime().toLocalTime()
         ));
 
         getColumns().addAll(List.of(
-                id,
-                patient,
-                doctor,
-                department,
-                date,
-                start,
-                end
+            id,
+            patient,
+            doctor,
+            department,
+            date,
+            start,
+            end
         ));
     }
 }

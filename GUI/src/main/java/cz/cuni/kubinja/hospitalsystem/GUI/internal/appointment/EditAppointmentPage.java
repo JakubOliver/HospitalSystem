@@ -49,9 +49,9 @@ final class EditAppointmentPage extends ActionPage {
         Button save = createActionButton("Save changes");
         save.setDefaultButton(true);
         save.disableProperty().bind(
-                appointmentLoaded.not()
-                        .or(busy)
-                        .or(form.validProperty().not())
+            appointmentLoaded.not()
+                .or(busy)
+                .or(form.validProperty().not())
         );
         save.setOnAction(event -> saveAppointment());
 
@@ -59,28 +59,28 @@ final class EditAppointmentPage extends ActionPage {
 
         loadOptions();
         return createCenteredBox(
-                18,
-                progress,
-                idInput,
-                new Separator(),
-                form,
-                save
+            18,
+            progress,
+            idInput,
+            new Separator(),
+            form,
+            save
         );
     }
 
     private void loadOptions() {
         runBackgroundOperation(
-                busy,
-                () -> AppointmentOptions.load(hospital),
-                options -> {
-                    if (!options.successful()) {
-                        showApiError(options.error());
-                        return;
-                    }
-
-                    form.setOptions(options);
-                    optionsReady.set(true);
+            busy,
+            () -> AppointmentOptions.load(hospital),
+            options -> {
+                if (!options.successful()) {
+                    showApiError(options.error());
+                    return;
                 }
+
+                form.setOptions(options);
+                optionsReady.set(true);
+            }
         );
     }
 
@@ -88,9 +88,9 @@ final class EditAppointmentPage extends ActionPage {
         appointmentLoaded.set(false);
         int appointmentId = idInput.getEntityId();
         runBackgroundOperation(
-                busy,
-                () -> hospital.getAppointment(appointmentId),
-                packet -> finishLoad(appointmentId, packet)
+            busy,
+            () -> hospital.getAppointment(appointmentId),
+            packet -> finishLoad(appointmentId, packet)
         );
     }
 
@@ -107,17 +107,17 @@ final class EditAppointmentPage extends ActionPage {
     private void saveAppointment() {
         AppointmentData data = form.getAppointmentData();
         Appointment appointment = new Appointment(
-                loadedAppointmentId,
-                form.getPatient(),
-                form.getDoctor(),
-                data.starTime(),
-                data.endTime()
+            loadedAppointmentId,
+            form.getPatient(),
+            form.getDoctor(),
+            data.starTime(),
+            data.endTime()
         );
 
         runBackgroundOperation(
-                busy,
-                () -> hospital.updateAppointment(appointment),
-                this::finishSave
+            busy,
+            () -> hospital.updateAppointment(appointment),
+            this::finishSave
         );
     }
 

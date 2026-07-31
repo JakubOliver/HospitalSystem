@@ -132,7 +132,8 @@ public class Calendar {
      * @return Whether the date is between 2000-01-01 00:00 and 3000-01-01 00:00
      */
     public static boolean isAppointmentWithinValidDateTime(LocalDateTime dateTime){
-        return dateTime.isAfter(lowestAvailableAppointmentDateTime) && dateTime.isBefore(highestAvailableAppointmentDateTime);
+        return !dateTime.isBefore(lowestAvailableAppointmentDateTime)
+                && dateTime.isBefore(highestAvailableAppointmentDateTime);
     }
 
     /**

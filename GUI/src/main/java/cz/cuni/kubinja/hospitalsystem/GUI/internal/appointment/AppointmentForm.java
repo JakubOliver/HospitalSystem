@@ -30,6 +30,11 @@ import java.util.List;
  * Shared fields and validation for creating and editing appointments.
  */
 final class AppointmentForm extends GridPane {
+    private static final double HORIZONTAL_GAP = 16;
+    private static final double VERTICAL_GAP = 8;
+    private static final double FORM_PADDING = 10;
+    private static final double FORM_MAX_WIDTH = 700;
+
     private final PersonnelSelector<Patient> patient = new PersonnelSelector<>("Patient");
     private final PersonnelSelector<Doctor> doctor = new PersonnelSelector<>("Doctor");
 
@@ -44,11 +49,11 @@ final class AppointmentForm extends GridPane {
     private final BooleanProperty valid = new SimpleBooleanProperty(false);
 
     AppointmentForm() {
-        setHgap(16);
-        setVgap(8);
-        setPadding(new Insets(10));
+        setHgap(HORIZONTAL_GAP);
+        setVgap(VERTICAL_GAP);
+        setPadding(new Insets(FORM_PADDING));
         setAlignment(Pos.TOP_CENTER);
-        setMaxWidth(700);
+        setMaxWidth(FORM_MAX_WIDTH);
 
         ColumnConstraints fields = new ColumnConstraints();
         fields.setHgrow(Priority.ALWAYS);
@@ -56,12 +61,12 @@ final class AppointmentForm extends GridPane {
         getColumnConstraints().add(fields);
 
         startTime.getItems().setAll(timeSlots(
-                LocalTime.of(Calendar.minStartingTime, 0),
-                LocalTime.of(Calendar.maxEndingTime - 1, 0)
+            LocalTime.of(Calendar.minStartingTime, 0),
+            LocalTime.of(Calendar.maxEndingTime - 1, 0)
         ));
         endTime.getItems().setAll(timeSlots(
-                LocalTime.of(Calendar.minStartingTime + 1, 0),
-                LocalTime.of(Calendar.maxEndingTime, 0)
+            LocalTime.of(Calendar.minStartingTime + 1, 0),
+            LocalTime.of(Calendar.maxEndingTime, 0)
         ));
 
         startTime.setValue(LocalTime.of(Calendar.minStartingTime, 0));
@@ -75,13 +80,13 @@ final class AppointmentForm extends GridPane {
         date.setDayCellFactory(picker -> new DateCell() {
             @Override
             public void updateItem(LocalDate item, boolean empty) {
-                super.updateItem(item, empty);
-                setDisable(
-                        empty
-                                || !InputValidator.isValidAppointmentDateTime(
-                                item.atStartOfDay().plusSeconds(1)
-                        )
-                );
+            super.updateItem(item, empty);
+            setDisable(
+                empty
+                || !InputValidator.isValidAppointmentDateTime(
+                    item.atStartOfDay()
+                )
+            );
             }
         });
 
@@ -97,20 +102,21 @@ final class AppointmentForm extends GridPane {
         add(timeError, 0, 9);
 
         patient.selectedProperty().addListener(
-                (observable, oldValue, newValue) -> validate()
+            (observable, oldValue, newValue) -> validate()
         );
         doctor.selectedProperty().addListener(
-                (observable, oldValue, newValue) -> validate()
+            (observable, oldValue, newValue) -> validate()
         );
         date.valueProperty().addListener(
-                (observable, oldValue, newValue) -> validate()
+            (observable, oldValue, newValue) -> validate()
         );
         startTime.valueProperty().addListener(
-                (observable, oldValue, newValue) -> validate()
+            (observable, oldValue, newValue) -> validate()
         );
         endTime.valueProperty().addListener(
-                (observable, oldValue, newValue) -> validate()
+            (observable, oldValue, newValue) -> validate()
         );
+
         validate();
     }
 
@@ -134,10 +140,10 @@ final class AppointmentForm extends GridPane {
 
     AppointmentData getAppointmentData() {
         return new AppointmentData(
-                patient.getSelected().getId(),
-                doctor.getSelected().getId(),
-                LocalDateTime.of(date.getValue(), startTime.getValue()),
-                LocalDateTime.of(date.getValue(), endTime.getValue())
+            patient.getSelected().getId(),
+            doctor.getSelected().getId(),
+            LocalDateTime.of(date.getValue(), startTime.getValue()),
+            LocalDateTime.of(date.getValue(), endTime.getValue())
         );
     }
 
@@ -155,10 +161,10 @@ final class AppointmentForm extends GridPane {
 
     private void validate() {
         String personnelMessage = patient.getSelected() == null
-                ? "Select a patient."
-                : doctor.getSelected() == null
-                ? "Select a doctor."
-                : "";
+            ? "Select a patient."
+            : doctor.getSelected() == null
+            ? "Select a doctor."
+            : "";
         String timeMessage = validateTime();
 
         personnelError.setText(personnelMessage);
@@ -168,9 +174,9 @@ final class AppointmentForm extends GridPane {
 
     private String validateTime() {
         if (
-                date.getValue() == null
-                || startTime.getValue() == null
-                || endTime.getValue() == null
+            date.getValue() == null
+            || startTime.getValue() == null
+            || endTime.getValue() == null
         ) {
             return "Select the appointment date and times.";
         }
@@ -178,8 +184,8 @@ final class AppointmentForm extends GridPane {
         LocalDateTime start = LocalDateTime.of(date.getValue(), startTime.getValue());
         LocalDateTime end = LocalDateTime.of(date.getValue(), endTime.getValue());
         if (
-                !InputValidator.isValidAppointmentDateTime(start)
-                || !InputValidator.isValidAppointmentDateTime(end)
+            !InputValidator.isValidAppointmentDateTime(start)
+            || !InputValidator.isValidAppointmentDateTime(end)
         ) {
             return "Date must be between 2000-01-01 and 3000-01-01.";
         }
@@ -190,7 +196,7 @@ final class AppointmentForm extends GridPane {
 
         if (Duration.between(start, end).toMinutes() < Calendar.minimumLengthOfAppointment) {
             return "Appointment must last at least "
-                    + Calendar.minimumLengthOfAppointment + " minutes.";
+                + Calendar.minimumLengthOfAppointment + " minutes.";
         }
 
         return "";

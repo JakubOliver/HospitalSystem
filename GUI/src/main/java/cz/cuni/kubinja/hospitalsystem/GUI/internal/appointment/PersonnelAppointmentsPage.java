@@ -27,9 +27,9 @@ final class PersonnelAppointmentsPage extends ActionPage {
     private int loadedPersonnelId;
 
     PersonnelAppointmentsPage(
-            Navigator navigator,
-            Hospital hospital,
-            PersonKinds kind
+        Navigator navigator,
+        Hospital hospital,
+        PersonKinds kind
     ) {
         super(navigator, hospital);
         this.kind = kind;
@@ -38,8 +38,8 @@ final class PersonnelAppointmentsPage extends ActionPage {
     @Override
     public String getTitle() {
         return kind == PersonKinds.Patient
-                ? "Patient appointments"
-                : "Doctor appointments";
+            ? "Patient appointments"
+            : "Doctor appointments";
     }
 
     @Override
@@ -60,8 +60,8 @@ final class PersonnelAppointmentsPage extends ActionPage {
         });
 
         Button refresh = createActionButton(
-                "Refresh",
-                SECONDARY_BUTTON_WIDTH
+            "Refresh",
+            SECONDARY_BUTTON_WIDTH
         );
         refresh.disableProperty().bind(busy);
         refresh.setOnAction(event -> {
@@ -84,16 +84,16 @@ final class PersonnelAppointmentsPage extends ActionPage {
 
     private void loadAppointments(int personnelId) {
         runBackgroundOperation(
-                busy,
-                () -> hospital.getAppointmentSummariesForPersonnel(
-                        personnelId,
-                        kind
-                ),
-                this::finishLoad,
-                exception -> {
-                    table.getItems().clear();
-                    showUnexpectedError(exception);
-                }
+            busy,
+            () -> hospital.getAppointmentSummariesForPersonnel(
+                    personnelId,
+                    kind
+            ),
+            this::finishLoad,
+            exception -> {
+                table.getItems().clear();
+                showUnexpectedError(exception);
+            }
         );
     }
 
