@@ -18,6 +18,7 @@ public abstract class PersonnelMenuPage extends MenuPage implements PersonnelMen
             String pluralName
     ) {
         super(navigator);
+
         this.singularName = singularName;
         this.pluralName = pluralName;
     }
@@ -31,6 +32,7 @@ public abstract class PersonnelMenuPage extends MenuPage implements PersonnelMen
     protected final void addOptions(GridPane options) {
         String name = singularName.toLowerCase();
         String names = pluralName.toLowerCase();
+
         addOption(options, "Add new " + name, this::add);
         addOption(options, "Edit existing " + name, this::edit);
         addOption(options, "Delete existing " + name, this::delete);

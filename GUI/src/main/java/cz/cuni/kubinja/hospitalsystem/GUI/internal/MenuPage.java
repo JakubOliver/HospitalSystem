@@ -10,6 +10,11 @@ import javafx.scene.layout.VBox;
  * Shared visual structure for all menu pages.
  */
 public abstract class MenuPage extends BasePage {
+    private static final double PAGE_VERTICAL_PADDING = 30;
+    private static final double PAGE_HORIZONTAL_PADDING = 24;
+    private static final double OPTIONS_WIDTH_RATIO = 0.8;
+    private static final double FOOTER_TOP_MARGIN = 24;
+
     protected final Navigator navigator;
     /** Style for menu buttons */
     public static final String MENU_BUTTON_STYLE =
@@ -21,13 +26,22 @@ public abstract class MenuPage extends BasePage {
 
     @Override
     public final Parent createContent() {
-        VBox root = createPageRoot(new Insets(30, 24, 30, 24));
+        VBox root = createPageRoot(new Insets(
+                PAGE_VERTICAL_PADDING,
+                PAGE_HORIZONTAL_PADDING,
+                PAGE_VERTICAL_PADDING,
+                PAGE_HORIZONTAL_PADDING
+        ));
 
         root.getChildren().add(createPageTitle());
 
         GridPane options = createTwoColumnOptionsGrid();
-        options.maxWidthProperty().bind(root.widthProperty().multiply(0.8));
-        options.prefWidthProperty().bind(root.widthProperty().multiply(0.8));
+        options.maxWidthProperty().bind(
+                root.widthProperty().multiply(OPTIONS_WIDTH_RATIO)
+        );
+        options.prefWidthProperty().bind(
+                root.widthProperty().multiply(OPTIONS_WIDTH_RATIO)
+        );
 
         addOptions(options);
         root.getChildren().add(options);
@@ -36,7 +50,7 @@ public abstract class MenuPage extends BasePage {
                 getFooterButtonText(),
                 getFooterButtonAction()
         );
-        VBox.setMargin(footer, new Insets(24, 0, 0, 0));
+        VBox.setMargin(footer, new Insets(FOOTER_TOP_MARGIN, 0, 0, 0));
         root.getChildren().add(footer);
 
         return root;
