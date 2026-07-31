@@ -26,9 +26,16 @@ public abstract class ActionPage extends BasePage {
             "-fx-text-fill: #b00020;";
     private static final String INLINE_ERROR_TEXT_STYLE =
             ERROR_TEXT_STYLE + " -fx-font-size: 11px;";
+    private static final double PAGE_VERTICAL_PADDING = 30;
+    private static final double PAGE_HORIZONTAL_PADDING = 36;
+    private static final double PREFERRED_WIDTH = 700;
+    private static final double DETAILS_HORIZONTAL_GAP = 18;
+    private static final double DETAILS_VERTICAL_GAP = 12;
+    private static final double DETAIL_VALUE_MAX_WIDTH = 450;
 
     protected final Navigator navigator;
     protected final Hospital hospital;
+    private int detailRow;
 
     protected ActionPage(Navigator navigator, Hospital hospital) {
         this.navigator = navigator;
@@ -37,7 +44,12 @@ public abstract class ActionPage extends BasePage {
 
     @Override
     public final Parent createContent() {
-        VBox root = createPageRoot(new Insets(30, 36, 30, 36));
+        VBox root = createPageRoot(new Insets(
+                PAGE_VERTICAL_PADDING,
+                PAGE_HORIZONTAL_PADDING,
+                PAGE_VERTICAL_PADDING,
+                PAGE_HORIZONTAL_PADDING
+        ));
 
         Node body = createBody();
 
@@ -55,7 +67,7 @@ public abstract class ActionPage extends BasePage {
 
     @Override
     public double getPreferredWidth() {
-        return 700;
+        return PREFERRED_WIDTH;
     }
 
     protected abstract Node createBody();
@@ -74,6 +86,7 @@ public abstract class ActionPage extends BasePage {
         alert.setHeaderText("The operation failed");
         alert.setContentText(packet.resolveStatus());
         alert.showAndWait();
+
         return true;
     }
 
@@ -81,6 +94,7 @@ public abstract class ActionPage extends BasePage {
         Exception exception = throwable instanceof Exception error
                 ? error
                 : new Exception(throwable);
+
         showApiError(new GeneralPacket(exception));
     }
 
@@ -103,9 +117,11 @@ public abstract class ActionPage extends BasePage {
             String content
     ) {
         Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
+
         confirmation.setTitle(title);
         confirmation.setHeaderText(header);
         confirmation.setContentText(content);
+
         return confirmation.showAndWait().orElse(ButtonType.CANCEL)
                 == ButtonType.OK;
     }
@@ -163,18 +179,19 @@ public abstract class ActionPage extends BasePage {
 
     protected GridPane personnelDetails(Person person, Detail... additionalDetails) {
         GridPane details = new GridPane();
-        details.setHgap(18);
-        details.setVgap(12);
+        detailRow = 0;
+
+        details.setHgap(DETAILS_HORIZONTAL_GAP);
+        details.setVgap(DETAILS_VERTICAL_GAP);
         details.setAlignment(Pos.TOP_CENTER);
 
-        addDetail(details, 0, "ID", Integer.toString(person.getId()));
-        addDetail(details, 1, "First name", person.getFirstName());
-        addDetail(details, 2, "Last name", person.getLastName());
-        addDetail(details, 3, "Date of birth", person.getDateOfBirth().toString());
+        addDetail(details, "ID", Integer.toString(person.getId()));
+        addDetail(details, "First name", person.getFirstName());
+        addDetail(details, "Last name", person.getLastName());
+        addDetail(details, "Date of birth", person.getDateOfBirth().toString());
 
-        for (int index = 0; index < additionalDetails.length; index++) {
-            Detail detail = additionalDetails[index];
-            addDetail(details, index + 4, detail.name(), detail.value());
+        for (Detail detail : additionalDetails) {
+            addDetail(details, detail.name(), detail.value());
         }
 
         return details;
@@ -188,15 +205,17 @@ public abstract class ActionPage extends BasePage {
      */
     public record Detail(String name, String value) {}
 
-    private void addDetail(GridPane details, int row, String name, String value) {
+    private void addDetail(GridPane details, String name, String value) {
         Label nameLabel = new Label(name + ":");
         applyEmphasizedTextStyle(nameLabel);
 
         Label valueLabel = new Label(value);
         valueLabel.setWrapText(true);
-        valueLabel.setMaxWidth(450);
+        valueLabel.setMaxWidth(DETAIL_VALUE_MAX_WIDTH);
 
-        details.add(nameLabel, 0, row);
-        details.add(valueLabel, 1, row);
+        details.add(nameLabel, 0, detailRow);
+        details.add(valueLabel, 1, detailRow);
+
+        detailRow++;
     }
 }
