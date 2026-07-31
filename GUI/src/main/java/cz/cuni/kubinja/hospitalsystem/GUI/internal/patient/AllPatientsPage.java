@@ -32,7 +32,7 @@ final class AllPatientsPage extends PersonnelTablePage<Patient> {
     protected void addSpecificColumns(TableView<Patient> table) {
         TableColumn<Patient, String> anamnesis = new TableColumn<>("Anamnesis");
         anamnesis.setCellValueFactory(
-                cell -> new SimpleStringProperty(cell.getValue().getAnamnesis())
+            cell -> new SimpleStringProperty(cell.getValue().getAnamnesis())
         );
         table.getColumns().add(anamnesis);
     }

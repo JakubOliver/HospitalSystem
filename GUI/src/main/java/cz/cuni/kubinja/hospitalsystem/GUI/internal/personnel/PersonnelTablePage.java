@@ -49,31 +49,33 @@ public abstract class PersonnelTablePage<T extends Person> extends ActionPage {
 
         TableColumn<T, String> firstName = new TableColumn<>("First name");
         firstName.setCellValueFactory(
-                cell -> new SimpleStringProperty(cell.getValue().getFirstName())
+            cell -> new SimpleStringProperty(cell.getValue().getFirstName())
         );
 
         TableColumn<T, String> lastName = new TableColumn<>("Last name");
         lastName.setCellValueFactory(
-                cell -> new SimpleStringProperty(cell.getValue().getLastName())
+            cell -> new SimpleStringProperty(cell.getValue().getLastName())
         );
 
         TableColumn<T, LocalDate> dateOfBirth = new TableColumn<>("Date of birth");
         dateOfBirth.setCellValueFactory(
-                cell -> new SimpleObjectProperty<>(cell.getValue().getDateOfBirth())
+            cell -> new SimpleObjectProperty<>(cell.getValue().getDateOfBirth())
         );
 
         table.getColumns().addAll(List.of(id, firstName, lastName, dateOfBirth));
         addSpecificColumns(table);
 
         Button refresh = createActionButton(
-                "Refresh",
-                SECONDARY_BUTTON_WIDTH
+            "Refresh",
+            SECONDARY_BUTTON_WIDTH
         );
         refresh.setOnAction(event -> loadPersonnel());
 
         VBox body = createCenteredBox(16, table, refresh);
         VBox.setVgrow(table, Priority.ALWAYS);
+
         loadPersonnel();
+
         return body;
     }
 

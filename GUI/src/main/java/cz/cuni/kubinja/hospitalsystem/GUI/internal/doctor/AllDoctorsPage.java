@@ -32,12 +32,12 @@ final class AllDoctorsPage extends PersonnelTablePage<Doctor> {
     protected void addSpecificColumns(TableView<Doctor> table) {
         TableColumn<Doctor, String> specialization = new TableColumn<>("Specialization");
         specialization.setCellValueFactory(
-                cell -> new SimpleStringProperty(cell.getValue().getSpecialization())
+            cell -> new SimpleStringProperty(cell.getValue().getSpecialization())
         );
 
         TableColumn<Doctor, String> department = new TableColumn<>("Department");
         department.setCellValueFactory(
-                cell -> new SimpleStringProperty(cell.getValue().getDepartment())
+            cell -> new SimpleStringProperty(cell.getValue().getDepartment())
         );
 
         table.getColumns().addAll(List.of(specialization, department));

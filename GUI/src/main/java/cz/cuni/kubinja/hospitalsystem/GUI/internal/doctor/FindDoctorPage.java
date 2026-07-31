@@ -22,8 +22,8 @@ final class FindDoctorPage extends FindPersonnelPage<Doctor> {
     @Override
     protected Detail[] additionalDetails(Doctor doctor) {
         return new Detail[]{
-                new Detail("Specialization", doctor.getSpecialization()),
-                new Detail("Department", doctor.getDepartment())
+            new Detail("Specialization", doctor.getSpecialization()),
+            new Detail("Department", doctor.getDepartment())
         };
     }
 }

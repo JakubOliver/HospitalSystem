@@ -1,6 +1,5 @@
 package cz.cuni.kubinja.hospitalsystem.GUI.internal.personnel;
 
-import cz.cuni.kubinja.hospitalsystem.GUI.internal.IdInput;
 import cz.cuni.kubinja.hospitalsystem.GUI.internal.Navigator;
 import cz.cuni.kubinja.hospitalsystem.core.Hospital;
 import cz.cuni.kubinja.hospitalsystem.core.packet.DataPacket;
@@ -45,25 +44,25 @@ public abstract class EditPersonnelPage<T extends Person> extends PersonnelActio
         Button save = createActionButton("Save changes");
         save.setDefaultButton(true);
         save.disableProperty().bind(
-                personnelLoaded.not().or(formValidProperty().not())
+            personnelLoaded.not().or(formValidProperty().not())
         );
         save.setOnAction(event -> savePersonnel());
 
         idInput = new IdInput(
-                personnelName(),
-                "Load",
-                this::loadPersonnel
+            personnelName(),
+            "Load",
+            this::loadPersonnel
         );
         idInput.textProperty().addListener(
-                (observable, oldValue, newValue) -> personnelLoaded.set(false)
+            (observable, oldValue, newValue) -> personnelLoaded.set(false)
         );
 
         return createCenteredBox(
-                22,
-                idInput,
-                new Separator(),
-                form,
-                save
+            22,
+            idInput,
+            new Separator(),
+            form,
+            save
         );
     }
 
@@ -93,7 +92,7 @@ public abstract class EditPersonnelPage<T extends Person> extends PersonnelActio
         GeneralPacket packet = updatePersonnel(loadedPersonnelId);
         if (!showApiError(packet)) {
             complete(
-                    personnelName() + " " + loadedPersonnelId + " was updated."
+                personnelName() + " " + loadedPersonnelId + " was updated."
             );
         }
     }

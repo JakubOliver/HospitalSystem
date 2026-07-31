@@ -31,10 +31,12 @@ public final class BackgroundOperation {
             }
         };
 
+        //I tried to use same principal as uses standard library task with
+        // succeeded/failured/canceled and used it as JavaFx background task
         task.setOnSucceeded(event -> onSuccess.accept(task.getValue()));
         task.setOnFailed(event -> onFailure.accept(task.getException()));
 
-        Thread thread = new Thread(task, "hospital-system-background-operation");
+        Thread thread = new Thread(task);
         thread.setDaemon(true);
         thread.start();
     }

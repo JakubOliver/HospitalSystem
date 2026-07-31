@@ -1,7 +1,6 @@
 package cz.cuni.kubinja.hospitalsystem.GUI.internal.personnel;
 
 import cz.cuni.kubinja.hospitalsystem.GUI.internal.ActionPage;
-import cz.cuni.kubinja.hospitalsystem.GUI.internal.IdInput;
 import cz.cuni.kubinja.hospitalsystem.GUI.internal.Navigator;
 import cz.cuni.kubinja.hospitalsystem.core.Hospital;
 import cz.cuni.kubinja.hospitalsystem.core.packet.DataPacket;
@@ -15,8 +14,7 @@ import javafx.scene.layout.VBox;
  *
  * @param <T> Type of personnel being displayed.
  */
-public abstract class FindPersonnelPage<T extends Person>
-        extends PersonnelActionPage<T> {
+public abstract class FindPersonnelPage<T extends Person> extends PersonnelActionPage<T> {
     private VBox details;
     private IdInput idInput;
 
@@ -37,12 +35,12 @@ public abstract class FindPersonnelPage<T extends Person>
     protected final Node createBody() {
         details = createCenteredBox(0);
         idInput = new IdInput(
-                personnelName(),
-                "Find",
-                this::findPersonnel
+            personnelName(),
+            "Find",
+            this::findPersonnel
         );
         idInput.textProperty().addListener(
-                (observable, oldValue, newValue) -> details.getChildren().clear()
+            (observable, oldValue, newValue) -> details.getChildren().clear()
         );
 
         return createCenteredBox(22, idInput, new Separator(), details);
@@ -60,7 +58,7 @@ public abstract class FindPersonnelPage<T extends Person>
         }
 
         details.getChildren().setAll(
-                personnelDetails(packet.data, additionalDetails(packet.data))
+            personnelDetails(packet.data, additionalDetails(packet.data))
         );
     }
 }

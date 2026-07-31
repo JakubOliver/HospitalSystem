@@ -1,5 +1,6 @@
-package cz.cuni.kubinja.hospitalsystem.GUI.internal;
+package cz.cuni.kubinja.hospitalsystem.GUI.internal.personnel;
 
+import cz.cuni.kubinja.hospitalsystem.GUI.internal.ActionPage;
 import cz.cuni.kubinja.hospitalsystem.menu.InputValidator;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -15,6 +16,11 @@ import javafx.scene.layout.VBox;
  * Personnel ID entry with inline validation and an associated action.
  */
 public final class IdInput extends VBox {
+    private static final double VERTICAL_SPACING = 6;
+    private static final double ID_FIELD_MAX_WIDTH = 180;
+    private static final double ACTION_BUTTON_MIN_WIDTH = 100;
+    private static final double ROW_SPACING = 10;
+
     private final TextField id = new TextField();
     private final Label error = new Label();
     private final Button action = new Button();
@@ -32,20 +38,25 @@ public final class IdInput extends VBox {
             String actionText,
             Runnable actionHandler
     ) {
-        super(6);
+        super(VERTICAL_SPACING);
         setAlignment(Pos.CENTER);
 
         id.setPromptText(personnelName + " ID");
-        id.setMaxWidth(180);
+        id.setMaxWidth(ID_FIELD_MAX_WIDTH);
 
         action.setText(actionText);
-        action.setMinWidth(100);
+        action.setMinWidth(ACTION_BUTTON_MIN_WIDTH);
         action.setOnAction(event -> actionHandler.run());
         action.disableProperty().bind(valid.not());
 
         ActionPage.applyInlineErrorTextStyle(error);
 
-        HBox row = new HBox(10, new Label(personnelName + " ID:"), id, action);
+        HBox row = new HBox(
+            ROW_SPACING,
+            new Label(personnelName + " ID:"),
+            id,
+            action
+        );
         row.setAlignment(Pos.CENTER);
         getChildren().addAll(row, error);
 
