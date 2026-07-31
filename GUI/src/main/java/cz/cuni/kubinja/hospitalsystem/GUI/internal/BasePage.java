@@ -28,6 +28,10 @@ public abstract class BasePage implements Page {
     protected static final double ACTION_BUTTON_WIDTH = 180;
     protected static final double SECONDARY_BUTTON_WIDTH = 160;
     protected static final double PROGRESS_INDICATOR_SIZE = 42;
+    protected static final double PAGE_CONTENT_SPACING = 20;
+    protected static final double OPTIONS_HORIZONTAL_GAP = 14;
+    protected static final double OPTIONS_VERTICAL_GAP = 12;
+    protected static final double NAVIGATION_FOOTER_SPACING = 18;
 
     /**
      * Creates a new BasePage instance.
@@ -90,7 +94,7 @@ public abstract class BasePage implements Page {
     }
 
     protected final VBox createPageRoot(Insets padding) {
-        VBox root = createCenteredBox(20);
+        VBox root = createCenteredBox(PAGE_CONTENT_SPACING);
         root.setPadding(padding);
 
         return root;
@@ -99,8 +103,8 @@ public abstract class BasePage implements Page {
     protected final GridPane createTwoColumnOptionsGrid() {
         GridPane options = new GridPane();
         options.setAlignment(Pos.TOP_CENTER);
-        options.setHgap(14);
-        options.setVgap(12);
+        options.setHgap(OPTIONS_HORIZONTAL_GAP);
+        options.setVgap(OPTIONS_VERTICAL_GAP);
 
         ColumnConstraints firstColumn = new ColumnConstraints();
         firstColumn.setPercentWidth(50);
@@ -126,7 +130,11 @@ public abstract class BasePage implements Page {
         button.setMaxWidth(SECONDARY_BUTTON_WIDTH);
         button.setOnAction(event -> action.run());
 
-        VBox footer = new VBox(18, new Separator(), button);
+        VBox footer = new VBox(
+                NAVIGATION_FOOTER_SPACING,
+                new Separator(),
+                button
+        );
         footer.setAlignment(Pos.CENTER);
 
         return footer;
