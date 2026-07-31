@@ -6,6 +6,9 @@ import javafx.scene.Parent;
  * A page that can be displayed by the GUI navigator.
  */
 public interface Page {
+    public double DEFAULT_WIDTH = 1000;
+    public double DEFAULT_HEIGHT = 780;
+
     /**
      * Returns the title of the page.
      * @return Title of the page.
@@ -23,7 +26,7 @@ public interface Page {
      * @return Preferred width of the page.
      */
     default double getPreferredWidth() {
-        return 420;
+        return DEFAULT_WIDTH;
     }
 
     /**
@@ -31,6 +34,6 @@ public interface Page {
      * @return Preferred height of the page.
      */
     default double getPreferredHeight() {
-        return 780;
+        return DEFAULT_HEIGHT;
     }
 }

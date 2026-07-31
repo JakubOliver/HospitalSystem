@@ -3,6 +3,7 @@ package cz.cuni.kubinja.hospitalsystem.GUI.internal.export;
 import cz.cuni.kubinja.hospitalsystem.GUI.internal.ActionPage;
 import cz.cuni.kubinja.hospitalsystem.GUI.internal.MenuPage;
 import cz.cuni.kubinja.hospitalsystem.GUI.internal.Navigator;
+import cz.cuni.kubinja.hospitalsystem.GUI.internal.Page;
 import cz.cuni.kubinja.hospitalsystem.core.Hospital;
 import cz.cuni.kubinja.hospitalsystem.core.packet.GeneralPacket;
 import javafx.beans.property.BooleanProperty;
@@ -43,12 +44,12 @@ public class ExportMenu extends ActionPage {
 
     @Override
     public double getPreferredWidth() {
-        return 560;
+        return Page.DEFAULT_WIDTH;
     }
 
     @Override
     public double getPreferredHeight() {
-        return 560;
+        return Page.DEFAULT_HEIGHT;
     }
 
     @Override
