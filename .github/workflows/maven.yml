@@ -36,7 +36,12 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Run tests
+      - name: Run tests on Ubuntu
+        if: runner.os == 'Linux'
+        run: xvfb-run -a --server-args="-screen 0 1920x1080x24" mvn -B verify
+
+      - name: Run tests on Windows
+        if: runner.os == 'Windows'
         run: mvn -B verify
 
   pages:
