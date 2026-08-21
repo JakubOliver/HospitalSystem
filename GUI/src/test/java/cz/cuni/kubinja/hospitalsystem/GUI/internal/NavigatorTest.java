@@ -1,4 +1,4 @@
-package cz.cuni.kubinja.hospitalsystem.GUI.tests.internal;
+package cz.cuni.kubinja.hospitalsystem.GUI.internal;
 
 import javafx.scene.Parent;
 import javafx.scene.control.Label;

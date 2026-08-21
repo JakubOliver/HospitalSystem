@@ -1,4 +1,4 @@
-package cz.cuni.kubinja.hospitalsystem.GUI.tests.testing;
+package cz.cuni.kubinja.hospitalsystem.GUI.testing;
 
 import cz.cuni.kubinja.hospitalsystem.GUI.internal.Navigator;
 import cz.cuni.kubinja.hospitalsystem.GUI.internal.Page;
