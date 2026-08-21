@@ -42,8 +42,8 @@ public abstract class GuiTestBase {
 
     protected final Patient addSamplePatient() {
         DataPacket<Patient> packet = hospital.addPatient(new PatientData(
-                new PersonData("Alice", "Novak", SAMPLE_BIRTH_DATE),
-                new PatientsDetails("Routine examination")
+                new PersonData("Pepa", "Novak", SAMPLE_BIRTH_DATE),
+                new PatientsDetails("Broken leg")
         ));
 
         assertTrue(packet.successful, packet::resolveStatus);
@@ -52,7 +52,7 @@ public abstract class GuiTestBase {
 
     protected final Doctor addSampleDoctor() {
         DataPacket<Doctor> packet = hospital.addDoctor(new DoctorData(
-                new PersonData("David", "Smith", LocalDate.of(1985, 3, 20)),
+                new PersonData("Pepa", "Novak", LocalDate.of(1985, 3, 20)),
                 new DoctorDetails("Cardiology", "Cardiology")
         ));
 

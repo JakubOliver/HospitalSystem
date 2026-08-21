@@ -47,6 +47,8 @@ class MenuNavigationTest extends GuiTestBase {
         )));
     }
 
+    //GUI tests with filtering by text and what robot "sees" are not
+    // 100% reliable, so they can be little bit flaky and sometimes create false positive
     @Test
     void patientMenuCanNavigateBackToMainMenu(FxRobot robot) {
         robot.clickOn("Patients");

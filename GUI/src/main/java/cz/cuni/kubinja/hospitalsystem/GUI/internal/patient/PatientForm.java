@@ -23,6 +23,8 @@ final class PatientForm extends PersonnelForm {
         anamnesis.setPromptText("Anamnesis");
         anamnesis.setPrefRowCount(4);
         anamnesis.setWrapText(true);
+        anamnesis.setId("anamnesis");
+        anamnesisError.setId("anamnesis-error");
 
         //TODO: create some mechanism that get already existing fields from PersonnelForm and then add to get index
         // instead of hardcoding

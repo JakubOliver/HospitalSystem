@@ -57,6 +57,13 @@ public abstract class PersonnelForm extends GridPane {
         dateOfBirth.setPromptText("YYYY-MM-DD");
         dateOfBirth.setEditable(false);
 
+        firstName.setId("first-name");
+        lastName.setId("last-name");
+        dateOfBirth.setId("date-of-birth");
+        firstNameError.setId("first-name-error");
+        lastNameError.setId("last-name-error");
+        dateOfBirthError.setId("date-of-birth-error");
+
         addField(0, "First name", firstName, firstNameError);
         addField(2, "Last name", lastName, lastNameError);
         addField(4, "Date of birth", dateOfBirth, dateOfBirthError);

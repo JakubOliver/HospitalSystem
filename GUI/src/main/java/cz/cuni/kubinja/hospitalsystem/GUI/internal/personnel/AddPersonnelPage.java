@@ -35,6 +35,7 @@ public abstract class AddPersonnelPage<T extends Person> extends PersonnelAction
                 "Save " + personnelNameLowerCase()
         );
 
+        save.setId("save-personnel");
         save.setDefaultButton(true);
         save.disableProperty().bind(formValidProperty().not());
         save.setOnAction(event -> savePersonnel());

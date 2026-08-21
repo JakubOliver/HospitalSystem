@@ -42,6 +42,7 @@ public abstract class DeletePersonnelPage<T extends Person> extends PersonnelAct
         delete = createActionButton(
             "Delete " + personnelNameLowerCase()
         );
+        delete.setId("delete-personnel");
         delete.setDisable(true);
         ActionPage.applyErrorTextStyle(delete);
         delete.setOnAction(event -> confirmDelete());

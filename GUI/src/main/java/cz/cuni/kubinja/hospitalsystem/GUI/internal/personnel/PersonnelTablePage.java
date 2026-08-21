@@ -40,6 +40,7 @@ public abstract class PersonnelTablePage<T extends Person> extends ActionPage {
     @Override
     protected final Node createBody() {
         table = new TableView<>();
+        table.setId("personnel-table");
         table.setPlaceholder(new Label(getEmptyMessage()));
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
 
@@ -69,6 +70,7 @@ public abstract class PersonnelTablePage<T extends Person> extends ActionPage {
             "Refresh",
             SECONDARY_BUTTON_WIDTH
         );
+        refresh.setId("refresh-personnel");
         refresh.setOnAction(event -> loadPersonnel());
 
         VBox body = createCenteredBox(16, table, refresh);
