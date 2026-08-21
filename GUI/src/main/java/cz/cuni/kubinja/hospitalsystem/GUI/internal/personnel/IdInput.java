@@ -43,13 +43,16 @@ public final class IdInput extends VBox {
 
         id.setPromptText(personnelName + " ID");
         id.setMaxWidth(ID_FIELD_MAX_WIDTH);
+        id.setId("entity-id");
 
         action.setText(actionText);
         action.setMinWidth(ACTION_BUTTON_MIN_WIDTH);
         action.setOnAction(event -> actionHandler.run());
         action.disableProperty().bind(valid.not());
+        action.setId("entity-id-action");
 
         ActionPage.applyInlineErrorTextStyle(error);
+        error.setId("entity-id-error");
 
         HBox row = new HBox(
             ROW_SPACING,

@@ -21,7 +21,7 @@ public final class FxTestNodes {
 
     public static void setText(FxRobot robot, String selector, String value) {
         TextInputControl control = robot.lookup(selector)
-                .queryAs(TextInputControl.class);
+            .queryAs(TextInputControl.class);
         robot.interact(() -> control.setText(value));
     }
 
