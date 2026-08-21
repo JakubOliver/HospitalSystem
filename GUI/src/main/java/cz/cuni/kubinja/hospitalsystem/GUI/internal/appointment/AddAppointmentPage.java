@@ -34,7 +34,6 @@ final class AddAppointmentPage extends ActionPage {
 
         Button save = createActionButton("Save appointment");
         save.setDefaultButton(true);
-        // The binds are a little bit strange way how in JavaFx can be encoded conditions with logic
         save.disableProperty().bind(
             ready.not().or(busy).or(form.validProperty().not())
         );
