@@ -24,6 +24,10 @@ final class DoctorForm extends PersonnelForm {
     DoctorForm() {
         specialization.setPromptText("Specialization");
         department.setPromptText("Department");
+        specialization.setId("specialization");
+        department.setId("department");
+        specializationError.setId("specialization-error");
+        departmentError.setId("department-error");
 
         //TODO: create some mechanism that get already existing fields from PersonnelForm and then add to get index
         // instead of hardcoding
