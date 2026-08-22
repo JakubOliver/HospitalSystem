@@ -43,7 +43,7 @@ final class AddAppointmentPage extends ActionPage {
 
         loadOptions();
 
-        return createCenteredBox(18, progress, form, save);
+        return createCenteredBox(ActionPage.DEFAULT_CENTERED_BOX_SPACING, progress, form, save);
     }
 
     private void loadOptions() {

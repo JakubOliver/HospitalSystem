@@ -22,6 +22,7 @@ import java.util.function.Supplier;
  * Shared page structure, navigation and feedback behavior for action workflows.
  */
 public abstract class ActionPage extends BasePage {
+    protected static final double DEFAULT_CENTERED_BOX_SPACING = 18;
     private static final String ERROR_TEXT_STYLE =
             "-fx-text-fill: #b00020;";
     private static final String INLINE_ERROR_TEXT_STYLE =

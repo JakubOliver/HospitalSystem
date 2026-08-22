@@ -101,10 +101,10 @@ public class ExportMenu extends ActionPage {
     }
 
     private void addExportOption(
-            GridPane options,
-            String text,
-            String description,
-            Supplier<GeneralPacket> operation
+        GridPane options,
+        String text,
+        String description,
+        Supplier<GeneralPacket> operation
     ) {
         Button button = createMenuOptionButton(text, MenuPage.MENU_BUTTON_STYLE);
         button.disableProperty().bind(busy);

@@ -28,6 +28,10 @@ import java.util.List;
  * Read-only CalendarFX page for all departments or one selected department.
  */
 final class CalendarPage extends ActionPage {
+    private final static double DEFAULT_CENTERED_BOX_SPACING = 10;
+    private final static double DEFAULT_HBOX_SPACING = 12;
+    private final static double DEFAULT_MIN_WIDTH = 220;
+
     private final boolean departmentOnly;
     private final BooleanProperty busy = new SimpleBooleanProperty(false);
     private final ComboBox<String> department = new ComboBox<>();
@@ -65,7 +69,7 @@ final class CalendarPage extends ActionPage {
         configureCalendar();
 
         department.setPromptText("Select department");
-        department.setMinWidth(220);
+        department.setMinWidth(DEFAULT_MIN_WIDTH);
         department.disableProperty().bind(busy);
         department.setOnAction(event -> rebuildCalendar());
 
@@ -76,7 +80,7 @@ final class CalendarPage extends ActionPage {
         refresh.disableProperty().bind(busy);
         refresh.setOnAction(event -> loadAppointments());
 
-        HBox controls = new HBox(12);
+        HBox controls = new HBox(DEFAULT_HBOX_SPACING);
         controls.setAlignment(Pos.CENTER);
         if (departmentOnly) {
             controls.getChildren().add(department);
@@ -88,7 +92,7 @@ final class CalendarPage extends ActionPage {
         status.setWrapText(true);
 
         VBox body = createCenteredBox(
-            10,
+            DEFAULT_CENTERED_BOX_SPACING,
             controls,
             progress,
             status,

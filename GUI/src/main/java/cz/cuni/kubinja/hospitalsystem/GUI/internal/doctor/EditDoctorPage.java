@@ -46,8 +46,8 @@ final class EditDoctorPage extends EditPersonnelPage<Doctor> {
     protected GeneralPacket updatePersonnel(int id) {
         DoctorData data = form.getDoctorData();
         return hospital.updateDoctor(new Doctor(
-                new Person(id, data.person()),
-                data.details()
+            new Person(id, data.person()),
+            data.details()
         ));
     }
 }

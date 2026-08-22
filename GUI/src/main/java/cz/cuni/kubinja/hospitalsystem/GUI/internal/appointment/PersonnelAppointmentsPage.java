@@ -86,8 +86,8 @@ final class PersonnelAppointmentsPage extends ActionPage {
         runBackgroundOperation(
             busy,
             () -> hospital.getAppointmentSummariesForPersonnel(
-                    personnelId,
-                    kind
+                personnelId,
+                kind
             ),
             this::finishLoad,
             exception -> {

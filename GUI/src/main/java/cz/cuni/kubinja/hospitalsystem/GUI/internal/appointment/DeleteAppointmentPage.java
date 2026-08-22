@@ -19,6 +19,8 @@ import javafx.scene.layout.VBox;
  * Page for loading and deleting an appointment.
  */
 final class DeleteAppointmentPage extends ActionPage {
+    private final static double DEFAULT_VBOX_SPACING = 0;
+
     private final BooleanProperty busy = new SimpleBooleanProperty(false);
     private final BooleanProperty appointmentLoaded = new SimpleBooleanProperty(false);
     private IdInput idInput;
@@ -37,7 +39,7 @@ final class DeleteAppointmentPage extends ActionPage {
 
     @Override
     protected Node createBody() {
-        details = createCenteredBox(0);
+        details = createCenteredBox(DEFAULT_VBOX_SPACING);
 
         delete = createActionButton("Delete appointment");
         applyErrorTextStyle(delete);
@@ -46,7 +48,7 @@ final class DeleteAppointmentPage extends ActionPage {
         idInput = new IdInput("Appointment", "Load", this::loadAppointment);
         idInput.disableProperty().bind(busy);
         idInput.textProperty().addListener(
-                (observable, oldValue, newValue) -> clearAppointment()
+            (observable, oldValue, newValue) -> clearAppointment()
         );
 
         ProgressIndicator progress = createProgressIndicator(busy);
@@ -54,7 +56,7 @@ final class DeleteAppointmentPage extends ActionPage {
         delete.setOnAction(event -> confirmDelete());
 
         return createCenteredBox(
-            18,
+            ActionPage.DEFAULT_CENTERED_BOX_SPACING,
             progress,
             idInput,
             new Separator(),
@@ -96,8 +98,8 @@ final class DeleteAppointmentPage extends ActionPage {
             "Delete appointment",
             "Delete appointment " + loadedAppointment.id() + "?",
             loadedAppointment.patientName() + " with "
-                    + loadedAppointment.doctorName()
-                    + "\nThis action cannot be undone."
+                + loadedAppointment.doctorName()
+                + "\nThis action cannot be undone."
         )) {
             return;
         }

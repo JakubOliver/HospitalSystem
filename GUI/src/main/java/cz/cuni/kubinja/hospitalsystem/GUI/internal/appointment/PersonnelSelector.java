@@ -20,13 +20,15 @@ import java.util.Locale;
  * @param <T> Type of personnel being selected.
  */
 final class PersonnelSelector<T extends Person> extends VBox {
+    private final static double DEFAULT_VBOX_SPACING = 6;
+
     private final TextField search = new TextField();
     private final ComboBox<T> choices = new ComboBox<>();
     private final ObservableList<T> people = FXCollections.observableArrayList();
     private final FilteredList<T> filteredChoices = new FilteredList<>(people);
 
     PersonnelSelector(String personnelName) {
-        super(6);
+        super(DEFAULT_VBOX_SPACING);
         setAlignment(Pos.TOP_LEFT);
 
         String selectorName = personnelName.toLowerCase(Locale.ROOT);

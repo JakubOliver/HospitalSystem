@@ -43,7 +43,7 @@ final class EditAppointmentPage extends ActionPage {
         idInput = new IdInput("Appointment", "Load", this::loadAppointment);
         idInput.disableProperty().bind(optionsReady.not().or(busy));
         idInput.textProperty().addListener(
-                (observable, oldValue, newValue) -> appointmentLoaded.set(false)
+            (observable, oldValue, newValue) -> appointmentLoaded.set(false)
         );
 
         Button save = createActionButton("Save changes");

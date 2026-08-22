@@ -96,6 +96,8 @@ final class AppointmentForm extends GridPane {
             }
         });
 
+        // TODO: create some automatic/dynamic system for assigning row indexes
+        //  but add is super gridpane function so would need to create some wrapper etc.
         add(patient, 0, 0);
         add(doctor, 0, 1);
         add(personnelError, 0, 2);

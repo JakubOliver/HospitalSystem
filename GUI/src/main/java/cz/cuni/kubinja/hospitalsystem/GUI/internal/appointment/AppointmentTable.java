@@ -21,7 +21,7 @@ final class AppointmentTable extends TableView<AppointmentSummary> {
 
         TableColumn<AppointmentSummary, Number> id = new TableColumn<>("ID");
         id.setCellValueFactory(
-                cell -> new ReadOnlyIntegerWrapper(cell.getValue().id())
+            cell -> new ReadOnlyIntegerWrapper(cell.getValue().id())
         );
         id.setMinWidth(55);
 
@@ -29,14 +29,14 @@ final class AppointmentTable extends TableView<AppointmentSummary> {
             new TableColumn<>("Patient");
         patient.setCellValueFactory(cell -> new ReadOnlyStringWrapper(
             cell.getValue().patientName()
-                    + " (" + cell.getValue().patientId() + ")"
+                + " (" + cell.getValue().patientId() + ")"
         ));
 
         TableColumn<AppointmentSummary, String> doctor =
             new TableColumn<>("Doctor");
         doctor.setCellValueFactory(cell -> new ReadOnlyStringWrapper(
             cell.getValue().doctorName()
-                    + " (" + cell.getValue().doctorId() + ")"
+                + " (" + cell.getValue().doctorId() + ")"
         ));
 
         TableColumn<AppointmentSummary, String> department =

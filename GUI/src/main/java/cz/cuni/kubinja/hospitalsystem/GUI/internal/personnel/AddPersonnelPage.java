@@ -32,7 +32,7 @@ public abstract class AddPersonnelPage<T extends Person> extends PersonnelAction
         Node form = createPersonnelForm();
 
         Button save = createActionButton(
-                "Save " + personnelNameLowerCase()
+            "Save " + personnelNameLowerCase()
         );
 
         save.setId("save-personnel");
@@ -54,8 +54,8 @@ public abstract class AddPersonnelPage<T extends Person> extends PersonnelAction
 
         if (!showApiError(packet)) {
             complete(
-                    personnelName() + " was added with ID "
-                            + packet.data.getId() + "."
+                personnelName() + " was added with ID "
+                    + packet.data.getId() + "."
             );
         }
     }

@@ -49,36 +49,36 @@ public class AppointmentMenu extends MenuPage {
             options,
             "Show all appointments for patient",
             () -> navigator.navigate(new PersonnelAppointmentsPage(
-                    navigator,
-                    hospital,
-                    PersonKinds.Patient
+                navigator,
+                hospital,
+                PersonKinds.Patient
             ))
         );
         addOption(
             options,
             "Show all appointments for doctor",
             () -> navigator.navigate(new PersonnelAppointmentsPage(
-                    navigator,
-                    hospital,
-                    PersonKinds.Doctor
+                navigator,
+                hospital,
+                PersonKinds.Doctor
             ))
         );
         addOption(
             options,
             "Show calendar for department",
             () -> navigator.navigate(new CalendarPage(
-                    navigator,
-                    hospital,
-                    true
+                navigator,
+                hospital,
+                true
             ))
         );
         addOption(
             options,
             "Show calendar",
             () -> navigator.navigate(new CalendarPage(
-                    navigator,
-                    hospital,
-                    false
+                navigator,
+                hospital,
+                false
             ))
         );
     }
