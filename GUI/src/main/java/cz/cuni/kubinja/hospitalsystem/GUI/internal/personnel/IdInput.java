@@ -34,9 +34,9 @@ public final class IdInput extends VBox {
      * @param actionHandler Handler for the action button
      */
     public IdInput(
-            String personnelName,
-            String actionText,
-            Runnable actionHandler
+        String personnelName,
+        String actionText,
+        Runnable actionHandler
     ) {
         super(VERTICAL_SPACING);
         setAlignment(Pos.CENTER);

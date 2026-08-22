@@ -16,9 +16,9 @@ public abstract class PersonnelActionPage<T extends Person> extends ActionPage {
     private final String personnelName;
 
     protected PersonnelActionPage(
-            Navigator navigator,
-            Hospital hospital,
-            String personnelName
+        Navigator navigator,
+        Hospital hospital,
+        String personnelName
     ) {
         super(navigator, hospital);
         this.personnelName = personnelName;

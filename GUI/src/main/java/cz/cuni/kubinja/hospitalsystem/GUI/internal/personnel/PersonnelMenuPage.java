@@ -13,9 +13,9 @@ public abstract class PersonnelMenuPage extends MenuPage implements PersonnelMen
     private final String pluralName;
 
     protected PersonnelMenuPage(
-            Navigator navigator,
-            String singularName,
-            String pluralName
+        Navigator navigator,
+        String singularName,
+        String pluralName
     ) {
         super(navigator);
 

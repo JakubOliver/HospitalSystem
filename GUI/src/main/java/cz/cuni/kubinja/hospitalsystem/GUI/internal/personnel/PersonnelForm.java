@@ -81,9 +81,9 @@ public abstract class PersonnelForm extends GridPane {
 
     protected final PersonData getPersonData() {
         return new PersonData(
-                firstName.getText().trim(),
-                lastName.getText().trim(),
-                dateOfBirth.getValue()
+            firstName.getText().trim(),
+            lastName.getText().trim(),
+            dateOfBirth.getValue()
         );
     }
 
@@ -123,9 +123,9 @@ public abstract class PersonnelForm extends GridPane {
         lastNameError.setText(lastError);
         dateOfBirthError.setText(dateError);
         commonValid.set(
-                firstError.isEmpty()
-                        && lastError.isEmpty()
-                        && dateError.isEmpty()
+            firstError.isEmpty()
+                && lastError.isEmpty()
+                && dateError.isEmpty()
         );
     }
 
@@ -135,7 +135,7 @@ public abstract class PersonnelForm extends GridPane {
         }
 
         return InputValidator.isValidPersonnelDate(dateOfBirth.getValue())
-                ? ""
-                : "Date must be after 1900-01-01 and not in the future.";
+            ? ""
+            : "Date must be after 1900-01-01 and not in the future.";
     }
 }

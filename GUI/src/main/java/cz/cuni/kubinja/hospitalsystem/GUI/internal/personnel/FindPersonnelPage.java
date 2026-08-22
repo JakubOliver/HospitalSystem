@@ -19,9 +19,9 @@ public abstract class FindPersonnelPage<T extends Person> extends PersonnelActio
     private IdInput idInput;
 
     protected FindPersonnelPage(
-            Navigator navigator,
-            Hospital hospital,
-            String personnelName
+        Navigator navigator,
+        Hospital hospital,
+        String personnelName
     ) {
         super(navigator, hospital, personnelName);
     }

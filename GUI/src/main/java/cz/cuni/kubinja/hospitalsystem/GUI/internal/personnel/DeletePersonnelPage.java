@@ -23,9 +23,9 @@ public abstract class DeletePersonnelPage<T extends Person> extends PersonnelAct
     private IdInput idInput;
 
     protected DeletePersonnelPage(
-            Navigator navigator,
-            Hospital hospital,
-            String personnelName
+        Navigator navigator,
+        Hospital hospital,
+        String personnelName
     ) {
         super(navigator, hospital, personnelName);
     }

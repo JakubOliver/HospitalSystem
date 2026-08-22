@@ -24,9 +24,9 @@ public abstract class EditPersonnelPage<T extends Person> extends PersonnelActio
     private int loadedPersonnelId;
 
     protected EditPersonnelPage(
-            Navigator navigator,
-            Hospital hospital,
-            String personnelName
+        Navigator navigator,
+        Hospital hospital,
+        String personnelName
     ) {
         super(navigator, hospital, personnelName);
     }

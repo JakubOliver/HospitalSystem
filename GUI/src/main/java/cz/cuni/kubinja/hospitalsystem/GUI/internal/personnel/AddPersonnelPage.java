@@ -15,9 +15,9 @@ import javafx.scene.control.Button;
  */
 public abstract class AddPersonnelPage<T extends Person> extends PersonnelActionPage<T> {
     protected AddPersonnelPage(
-            Navigator navigator,
-            Hospital hospital,
-            String personnelName
+        Navigator navigator,
+        Hospital hospital,
+        String personnelName
     ) {
         super(navigator, hospital, personnelName);
     }
