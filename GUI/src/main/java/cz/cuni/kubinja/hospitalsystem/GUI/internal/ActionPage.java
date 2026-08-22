@@ -24,9 +24,9 @@ import java.util.function.Supplier;
 public abstract class ActionPage extends BasePage {
     protected static final double DEFAULT_CENTERED_BOX_SPACING = 18;
     private static final String ERROR_TEXT_STYLE =
-            "-fx-text-fill: #b00020;";
+        "-fx-text-fill: #b00020;";
     private static final String INLINE_ERROR_TEXT_STYLE =
-            ERROR_TEXT_STYLE + " -fx-font-size: 11px;";
+        ERROR_TEXT_STYLE + " -fx-font-size: 11px;";
     private static final double PAGE_VERTICAL_PADDING = 30;
     private static final double PAGE_HORIZONTAL_PADDING = 36;
     private static final double PREFERRED_WIDTH = 700;
@@ -46,10 +46,10 @@ public abstract class ActionPage extends BasePage {
     @Override
     public final Parent createContent() {
         VBox root = createPageRoot(new Insets(
-                PAGE_VERTICAL_PADDING,
-                PAGE_HORIZONTAL_PADDING,
-                PAGE_VERTICAL_PADDING,
-                PAGE_HORIZONTAL_PADDING
+            PAGE_VERTICAL_PADDING,
+            PAGE_HORIZONTAL_PADDING,
+            PAGE_VERTICAL_PADDING,
+            PAGE_HORIZONTAL_PADDING
         ));
 
         Node body = createBody();
@@ -59,9 +59,9 @@ public abstract class ActionPage extends BasePage {
         }
 
         root.getChildren().addAll(
-                createPageTitle(),
-                body,
-                createNavigationFooter("Back", navigator::back)
+            createPageTitle(),
+            body,
+            createNavigationFooter("Back", navigator::back)
         );
         return root;
     }
@@ -93,8 +93,8 @@ public abstract class ActionPage extends BasePage {
 
     protected void showUnexpectedError(Throwable throwable) {
         Exception exception = throwable instanceof Exception error
-                ? error
-                : new Exception(throwable);
+            ? error
+            : new Exception(throwable);
 
         showApiError(new GeneralPacket(exception));
     }
@@ -113,9 +113,9 @@ public abstract class ActionPage extends BasePage {
     }
 
     protected boolean confirmAction(
-            String title,
-            String header,
-            String content
+        String title,
+        String header,
+        String content
     ) {
         Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
 
@@ -124,39 +124,39 @@ public abstract class ActionPage extends BasePage {
         confirmation.setContentText(content);
 
         return confirmation.showAndWait().orElse(ButtonType.CANCEL)
-                == ButtonType.OK;
+            == ButtonType.OK;
     }
 
     protected final <T> void runBackgroundOperation(
-            BooleanProperty busy,
-            Supplier<T> operation,
-            Consumer<T> onSuccess
+        BooleanProperty busy,
+        Supplier<T> operation,
+        Consumer<T> onSuccess
     ) {
         runBackgroundOperation(
-                busy,
-                operation,
-                onSuccess,
-                this::showUnexpectedError
+            busy,
+            operation,
+            onSuccess,
+            this::showUnexpectedError
         );
     }
 
     protected final <T> void runBackgroundOperation(
-            BooleanProperty busy,
-            Supplier<T> operation,
-            Consumer<T> onSuccess,
-            Consumer<Throwable> onFailure
+        BooleanProperty busy,
+        Supplier<T> operation,
+        Consumer<T> onSuccess,
+        Consumer<Throwable> onFailure
     ) {
         busy.set(true);
         BackgroundOperation.run(
-                operation,
-                result -> {
-                    busy.set(false);
-                    onSuccess.accept(result);
-                },
-                exception -> {
-                    busy.set(false);
-                    onFailure.accept(exception);
-                }
+            operation,
+            result -> {
+                busy.set(false);
+                onSuccess.accept(result);
+            },
+            exception -> {
+                busy.set(false);
+                onFailure.accept(exception);
+            }
         );
     }
 

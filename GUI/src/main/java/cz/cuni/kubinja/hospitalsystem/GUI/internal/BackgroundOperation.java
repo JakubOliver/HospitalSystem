@@ -20,9 +20,9 @@ public final class BackgroundOperation {
      * @param <T> Type of the result of the operation.
      */
     public static <T> void run(
-            Supplier<T> operation,
-            Consumer<T> onSuccess,
-            Consumer<Throwable> onFailure
+        Supplier<T> operation,
+        Consumer<T> onSuccess,
+        Consumer<Throwable> onFailure
     ) {
         Task<T> task = new Task<>() {
             @Override
