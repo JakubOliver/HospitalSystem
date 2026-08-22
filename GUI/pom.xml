@@ -61,6 +61,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <argLine>
+                        @{jacocoArgLine}
                         --enable-native-access=javafx.graphics,org.xerial.sqlitejdbc
                         --add-opens=javafx.graphics/com.sun.javafx.application=ALL-UNNAMED
                     </argLine>
