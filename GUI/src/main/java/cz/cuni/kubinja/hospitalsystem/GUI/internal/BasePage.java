@@ -62,9 +62,9 @@ public abstract class BasePage implements Page {
     }
 
     protected final Button createActionButton(
-            String text,
-            String style,
-            double preferredWidth
+        String text,
+        String style,
+        double preferredWidth
     ) {
         Button button = new Button(text);
         button.setMinHeight(ACTION_BUTTON_HEIGHT);
@@ -123,17 +123,17 @@ public abstract class BasePage implements Page {
     }
 
     protected final VBox createNavigationFooter(
-            String buttonText,
-            Runnable action
+        String buttonText,
+        Runnable action
     ) {
         Button button = createActionButton(buttonText, SECONDARY_BUTTON_WIDTH);
         button.setMaxWidth(SECONDARY_BUTTON_WIDTH);
         button.setOnAction(event -> action.run());
 
         VBox footer = new VBox(
-                NAVIGATION_FOOTER_SPACING,
-                new Separator(),
-                button
+            NAVIGATION_FOOTER_SPACING,
+            new Separator(),
+            button
         );
         footer.setAlignment(Pos.CENTER);
 
@@ -141,17 +141,17 @@ public abstract class BasePage implements Page {
     }
 
     protected final ProgressIndicator createProgressIndicator(
-            BooleanExpression visibleWhen
+        BooleanExpression visibleWhen
     ) {
         return createProgressIndicator(
-                visibleWhen,
-                PROGRESS_INDICATOR_SIZE
+            visibleWhen,
+            PROGRESS_INDICATOR_SIZE
         );
     }
 
     protected final ProgressIndicator createProgressIndicator(
-            BooleanExpression visibleWhen,
-            double size
+        BooleanExpression visibleWhen,
+        double size
     ) {
         ProgressIndicator progress = new ProgressIndicator();
         progress.setMaxSize(size, size);
