@@ -15,14 +15,14 @@ import java.util.List;
  * @param commonSpecializations Up to ten specializations ordered by occurrence count.
  */
 public record HospitalStatistics(
-        int patientCount,
-        int doctorCount,
-        int appointmentCount,
-        double averageAppointmentsPerPatient,
-        double averageAppointmentsPerDoctor,
-        List<PatientVisits> patientsWithMostVisits,
-        List<Occurrence> commonAnamneses,
-        List<Occurrence> commonSpecializations
+    int patientCount,
+    int doctorCount,
+    int appointmentCount,
+    double averageAppointmentsPerPatient,
+    double averageAppointmentsPerDoctor,
+    List<PatientVisits> patientsWithMostVisits,
+    List<Occurrence> commonAnamneses,
+    List<Occurrence> commonSpecializations
 ) {
     /**
      * Creates an immutable snapshot of hospital statistics.
@@ -42,10 +42,10 @@ public record HospitalStatistics(
      * @param appointmentCount Number of the patient's appointments.
      */
     public record PatientVisits(
-            int patientId,
-            String firstName,
-            String lastName,
-            int appointmentCount
+        int patientId,
+        String firstName,
+        String lastName,
+        int appointmentCount
     ) {}
 
     /**

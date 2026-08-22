@@ -57,8 +57,8 @@ final class StatisticsPage extends ActionPage {
         ProgressIndicator progress = createProgressIndicator(loading, 48);
 
         Button refresh = createActionButton(
-                "Refresh",
-                SECONDARY_BUTTON_WIDTH
+            "Refresh",
+            SECONDARY_BUTTON_WIDTH
         );
         refresh.disableProperty().bind(loading);
         refresh.setOnAction(event -> loadStatistics());
@@ -73,43 +73,43 @@ final class StatisticsPage extends ActionPage {
         statisticsContent.getChildren().setAll(new Label("Loading statistics..."));
 
         runBackgroundOperation(
-                loading,
-                hospital::getStatistics,
-                packet -> {
-                    if (showApiError(packet)) {
-                        showLoadError();
-                        return;
-                    }
-
-                    showStatistics(packet.data);
-                },
-                exception -> {
+            loading,
+            hospital::getStatistics,
+            packet -> {
+                if (showApiError(packet)) {
                     showLoadError();
-                    showUnexpectedError(exception);
+                    return;
                 }
+
+                showStatistics(packet.data);
+            },
+            exception -> {
+                showLoadError();
+                showUnexpectedError(exception);
+            }
         );
     }
 
     private void showStatistics(HospitalStatistics statistics) {
         statisticsContent.getChildren().setAll(
-                sectionTitle("Absolute values"),
-                totals(statistics),
-                sectionTitle("Averages"),
-                averages(statistics),
-                sectionTitle("5 patients with most visits"),
-                patientVisitsTable(statistics.patientsWithMostVisits()),
-                sectionTitle("10 most common anamneses"),
-                occurrenceTable(
-                        statistics.commonAnamneses(),
-                        "Anamnesis",
-                        "No anamneses found."
-                ),
-                sectionTitle("10 most common specializations"),
-                occurrenceTable(
-                        statistics.commonSpecializations(),
-                        "Specialization",
-                        "No specializations found."
-                )
+            sectionTitle("Absolute values"),
+            totals(statistics),
+            sectionTitle("Averages"),
+            averages(statistics),
+            sectionTitle("5 patients with most visits"),
+            patientVisitsTable(statistics.patientsWithMostVisits()),
+            sectionTitle("10 most common anamneses"),
+            occurrenceTable(
+                statistics.commonAnamneses(),
+                "Anamnesis",
+                "No anamneses found."
+            ),
+            sectionTitle("10 most common specializations"),
+            occurrenceTable(
+                statistics.commonSpecializations(),
+                "Specialization",
+                "No specializations found."
+            )
         );
     }
 
@@ -124,24 +124,24 @@ final class StatisticsPage extends ActionPage {
     private GridPane averages(HospitalStatistics statistics) {
         GridPane grid = valueGrid();
         addValue(
-                grid,
-                0,
-                "Appointments per patient",
-                String.format(
-                        Locale.ROOT,
-                        "%.3f",
-                        statistics.averageAppointmentsPerPatient()
-                )
+            grid,
+            0,
+            "Appointments per patient",
+            String.format(
+                Locale.ROOT,
+                "%.3f",
+                statistics.averageAppointmentsPerPatient()
+            )
         );
         addValue(
-                grid,
-                1,
-                "Appointments per doctor",
-                String.format(
-                        Locale.ROOT,
-                        "%.3f",
-                        statistics.averageAppointmentsPerDoctor()
-                )
+            grid,
+            1,
+            "Appointments per doctor",
+            String.format(
+                Locale.ROOT,
+                "%.3f",
+                statistics.averageAppointmentsPerDoctor()
+            )
         );
         return grid;
     }
@@ -159,13 +159,13 @@ final class StatisticsPage extends ActionPage {
 
         TableColumn<PatientVisits, String> patient = new TableColumn<>("Patient");
         patient.setCellValueFactory(cell -> new ReadOnlyStringWrapper(
-                cell.getValue().firstName() + " " + cell.getValue().lastName()
+            cell.getValue().firstName() + " " + cell.getValue().lastName()
         ));
 
         TableColumn<PatientVisits, Number> appointments =
-                new TableColumn<>("Appointments");
+            new TableColumn<>("Appointments");
         appointments.setCellValueFactory(
-                cell -> new ReadOnlyIntegerWrapper(cell.getValue().appointmentCount())
+            cell -> new ReadOnlyIntegerWrapper(cell.getValue().appointmentCount())
         );
 
         table.getColumns().addAll(List.of(rank, id, patient, appointments));
@@ -174,9 +174,9 @@ final class StatisticsPage extends ActionPage {
     }
 
     private TableView<Occurrence> occurrenceTable(
-            List<Occurrence> entries,
-            String valueTitle,
-            String emptyMessage
+        List<Occurrence> entries,
+        String valueTitle,
+        String emptyMessage
     ) {
         TableView<Occurrence> table = new TableView<>();
         table.setPlaceholder(new Label(emptyMessage));
@@ -187,12 +187,12 @@ final class StatisticsPage extends ActionPage {
 
         TableColumn<Occurrence, String> value = new TableColumn<>(valueTitle);
         value.setCellValueFactory(
-                cell -> new ReadOnlyStringWrapper(cell.getValue().value())
+            cell -> new ReadOnlyStringWrapper(cell.getValue().value())
         );
 
         TableColumn<Occurrence, Number> count = new TableColumn<>("Count");
         count.setCellValueFactory(
-                cell -> new ReadOnlyIntegerWrapper(cell.getValue().count())
+            cell -> new ReadOnlyIntegerWrapper(cell.getValue().count())
         );
 
         table.getColumns().addAll(List.of(rank, value, count));
@@ -236,7 +236,7 @@ final class StatisticsPage extends ActionPage {
 
     private void showLoadError() {
         statisticsContent.getChildren().setAll(
-                new Label("Statistics could not be loaded. Use Refresh to try again.")
+            new Label("Statistics could not be loaded. Use Refresh to try again.")
         );
     }
 

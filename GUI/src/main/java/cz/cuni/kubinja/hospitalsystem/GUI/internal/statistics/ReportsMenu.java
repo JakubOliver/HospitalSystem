@@ -30,9 +30,9 @@ public class ReportsMenu extends MenuPage {
     @Override
     protected void addOptions(GridPane options) {
         addOption(
-                options,
-                "Show statistics",
-                () -> navigator.navigate(new StatisticsPage(navigator, hospital))
+            options,
+            "Show statistics",
+            () -> navigator.navigate(new StatisticsPage(navigator, hospital))
         );
     }
 }
