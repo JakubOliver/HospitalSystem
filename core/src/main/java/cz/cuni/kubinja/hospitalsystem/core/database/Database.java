@@ -64,9 +64,7 @@ public class Database {
             JOIN people AS patient ON patient.id = appointments.patient_id
             JOIN people AS doctor ON doctor.id = appointments.doctor_id
             """;
-    private static final String appointmentSummaryOrder = """
-            ORDER BY appointments.start_time, appointments.end_time, appointments.id
-            """;
+    private static final String appointmentSummaryOrder = "ORDER BY appointments.start_time, appointments.end_time, appointments.id";
     private static final String getAppointmentSummaries =
             appointmentSummarySelect + appointmentSummaryOrder;
     private static final String getAppointmentSummaryById =
@@ -1104,10 +1102,10 @@ public class Database {
      */
     public List<AppointmentSummary> getAppointmentSummaries() throws DatabaseException {
         try (
-                Connection connection = DriverManager.getConnection(url);
-                PreparedStatement statement = connection.prepareStatement(
-                        getAppointmentSummaries
-                )
+            Connection connection = DriverManager.getConnection(url);
+            PreparedStatement statement = connection.prepareStatement(
+                getAppointmentSummaries
+            )
         ) {
             return readAppointmentSummaries(statement);
         } catch (SQLException e) {
@@ -1124,14 +1122,13 @@ public class Database {
      */
     public AppointmentSummary getAppointmentSummary(int id) throws DatabaseException {
         try (
-                Connection connection = DriverManager.getConnection(url);
-                PreparedStatement statement = connection.prepareStatement(
-                        getAppointmentSummaryById
-                )
+            Connection connection = DriverManager.getConnection(url);
+            PreparedStatement statement = connection.prepareStatement(
+                getAppointmentSummaryById
+            )
         ) {
             statement.setInt(1, id);
-            List<AppointmentSummary> appointments =
-                    readAppointmentSummaries(statement);
+            List<AppointmentSummary> appointments = readAppointmentSummaries(statement);
             if (appointments.isEmpty()) {
                 throw new DatabaseException(notExistingAppointmentIdentifierError);
             }
@@ -1151,21 +1148,19 @@ public class Database {
      * @throws DatabaseException Error connected with retrieving appointment data.
      */
     public List<AppointmentSummary> getAppointmentSummariesForPersonnel(
-            int id,
-            PersonKinds kind
+        int id,
+        PersonKinds kind
     ) throws DatabaseException {
-        try (
-                Connection connection = DriverManager.getConnection(url)
-        ) {
+        try (Connection connection = DriverManager.getConnection(url)) {
             try (
-                    PreparedStatement statement = connection.prepareStatement(
-                            switch (kind) {
-                                case Patient ->
-                                        getAppointmentSummariesForPatient;
-                                case Doctor ->
-                                        getAppointmentSummariesForDoctor;
-                            }
-                    )
+                PreparedStatement statement = connection.prepareStatement(
+                    switch (kind) {
+                        case Patient ->
+                                getAppointmentSummariesForPatient;
+                        case Doctor ->
+                                getAppointmentSummariesForDoctor;
+                    }
+                )
             ) {
                 statement.setInt(1, id);
                 return readAppointmentSummaries(statement);
@@ -1183,16 +1178,16 @@ public class Database {
 
             while (result.next()) {
                 appointments.add(new AppointmentSummary(
-                        result.getInt("id"),
-                        result.getInt("patient_id"),
-                        result.getString("patient_firstname"),
-                        result.getString("patient_lastname"),
-                        result.getInt("doctor_id"),
-                        result.getString("doctor_firstname"),
-                        result.getString("doctor_lastname"),
-                        result.getString("department"),
-                        LocalDateTime.parse(result.getString("start_time")),
-                        LocalDateTime.parse(result.getString("end_time"))
+                    result.getInt("id"),
+                    result.getInt("patient_id"),
+                    result.getString("patient_firstname"),
+                    result.getString("patient_lastname"),
+                    result.getInt("doctor_id"),
+                    result.getString("doctor_firstname"),
+                    result.getString("doctor_lastname"),
+                    result.getString("department"),
+                    LocalDateTime.parse(result.getString("start_time")),
+                    LocalDateTime.parse(result.getString("end_time"))
                 ));
             }
 
@@ -1202,8 +1197,8 @@ public class Database {
 
     private DatabaseException appointmentSummaryException(SQLException exception) {
         return new DatabaseException(
-                DatabaseException.appointmentGetDatabaseError,
-                exception.getMessage()
+            DatabaseException.appointmentGetDatabaseError,
+            exception.getMessage()
         );
     }
 
