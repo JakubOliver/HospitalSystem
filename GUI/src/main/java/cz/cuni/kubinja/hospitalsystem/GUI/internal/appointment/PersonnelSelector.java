@@ -29,9 +29,13 @@ final class PersonnelSelector<T extends Person> extends VBox {
         super(6);
         setAlignment(Pos.TOP_LEFT);
 
-        search.setPromptText("Search " + personnelName.toLowerCase(Locale.ROOT)
+        String selectorName = personnelName.toLowerCase(Locale.ROOT);
+
+        search.setPromptText("Search " + selectorName
             + " by ID or name");
-        choices.setPromptText("Select " + personnelName.toLowerCase(Locale.ROOT));
+        search.setId(selectorName + "-search");
+        choices.setPromptText("Select " + selectorName);
+        choices.setId(selectorName + "-choice");
         choices.setMaxWidth(Double.MAX_VALUE);
         choices.setConverter(new StringConverter<>() {
             @Override

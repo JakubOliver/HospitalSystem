@@ -72,6 +72,12 @@ final class AppointmentForm extends GridPane {
         startTime.setValue(LocalTime.of(Calendar.minStartingTime, 0));
         endTime.setValue(LocalTime.of(Calendar.minStartingTime + 1, 0));
 
+        date.setId("appointment-date");
+        startTime.setId("appointment-start-time");
+        endTime.setId("appointment-end-time");
+        personnelError.setId("appointment-personnel-error");
+        timeError.setId("appointment-time-error");
+
         startTime.setMaxWidth(Double.MAX_VALUE);
         endTime.setMaxWidth(Double.MAX_VALUE);
 
