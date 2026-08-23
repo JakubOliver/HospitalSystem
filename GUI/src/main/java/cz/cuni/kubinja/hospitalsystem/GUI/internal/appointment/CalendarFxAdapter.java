@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * Converts presentation-independent appointments into CalendarFX models.
+ * Converts HospitalSystem representation of appointments into CalendarFX models.
  */
 final class CalendarFxAdapter {
     private CalendarFxAdapter() {}
