@@ -9,8 +9,3 @@ Or you can visit web page [JavaDocs](https://kubinlabs.org/HospitalSystem/) wher
 ## Test cases
 
 You can run all tests cases with the command `mvn test`.
-
-## Test coverage
-
-Generate the combined project coverage report with `mvn clean verify`. The HTML
-report is written to `application/target/site/jacoco-aggregate/index.html`.
