@@ -7,6 +7,11 @@ import cz.cuni.kubinja.hospitalsystem.core.personnel.Doctor;
 import cz.cuni.kubinja.hospitalsystem.core.personnel.Patient;
 import java.util.List;
 
+//NOTE: In bigger "production" project the filtering would probably be done
+// by iterating the database not loading all patients/doctors into some object
+// and then doing filtering by the list. But for the purposes of school project
+// I think this approach with acknowledgment of these issues is enough.
+
 /**
  * Patient and doctor choices required by an appointment form.
  */
