@@ -3,6 +3,8 @@ package cz.cuni.kubinja.hospitalsystem.app;
 import cz.cuni.kubinja.hospitalsystem.core.Hospital;
 import cz.cuni.kubinja.hospitalsystem.core.database.exceptions.DatabaseException;
 
+import java.util.Arrays;
+
 /**
  * Contains main entry point of the program.
  */
@@ -21,7 +23,7 @@ public class Main {
      * @param args Arguments of the program.
      */
     public static void main(String[] args) throws Exception {
-        if (args.length > 0 && args[0].equals("-t")) {
+        if (args.length > 0 && Arrays.asList(args).contains("-t")) {
             Hospital hospital;
             try {
                 hospital = new Hospital(databasePath);

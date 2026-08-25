@@ -15,7 +15,9 @@ Program can be run in terminal by using following command: `mvn install -pl :app
 
 For the best working program and user experience it is necessary to use **Java 25** and also is required to have installed **Maven** (to run the start command).
 
-Note: It is also possible to run program directly inside IntelliJ, but it is not advised, because the IntelliJ terminal works differently than terminal in general and does not provide same options, for example running shell commands etc.
+Notes: 
+* It is also possible to run program directly inside IntelliJ, but it is not advised, because the IntelliJ terminal works differently than terminal in general and does not provide same options, for example running shell commands etc.
+* Only existing CLI flag is `-t` for terminal (not GUI) menu. So if this flag is present then TUI will be used in all other cases will show GUI (also `-t` flag have to be standalone, for example using `-ta` is not valid terminal flag). 
 
 # Controls 
 
@@ -42,6 +44,8 @@ In each submenu use can interact with specific actions regarding the domain of s
 # TUI
 
 Whole program is controlled by user via terminal user interface (TUI). User is always prompted with the specific options and required actions, that help him to seamlessly control hospital system. 
+
+TUI can be started with by adding flag `-t` do the command so `mvn install -pl :application -am -DskipTests && mvn exec:java -pl :application -Dexec.args="-t"`.
 
 ## Main menu 
 
