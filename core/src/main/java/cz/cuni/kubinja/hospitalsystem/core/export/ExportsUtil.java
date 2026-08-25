@@ -1,4 +1,4 @@
-package cz.cuni.kubinja.hospitalsystem.core.util;
+package cz.cuni.kubinja.hospitalsystem.core.export;
 
 import java.time.LocalDate;
 

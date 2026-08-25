@@ -16,5 +16,5 @@ module core {
     exports cz.cuni.kubinja.hospitalsystem.core.packet;
     exports cz.cuni.kubinja.hospitalsystem.core.statistics;
 
-    exports cz.cuni.kubinja.hospitalsystem.core.util; //TODO: better
+    exports cz.cuni.kubinja.hospitalsystem.core.export;
 }

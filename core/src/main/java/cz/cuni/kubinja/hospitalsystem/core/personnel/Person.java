@@ -1,7 +1,7 @@
 package cz.cuni.kubinja.hospitalsystem.core.personnel;
 
 import cz.cuni.kubinja.hospitalsystem.core.personnel.util.PersonData;
-import cz.cuni.kubinja.hospitalsystem.core.util.Exportable;
+import cz.cuni.kubinja.hospitalsystem.core.export.Exportable;
 
 import java.time.LocalDate;
 import java.time.Period;

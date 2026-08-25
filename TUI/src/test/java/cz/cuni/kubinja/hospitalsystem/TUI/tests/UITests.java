@@ -10,7 +10,7 @@ import cz.cuni.kubinja.hospitalsystem.core.packet.DataPacket;
 import cz.cuni.kubinja.hospitalsystem.core.packet.GeneralPacket;
 import cz.cuni.kubinja.hospitalsystem.core.personnel.Doctor;
 import cz.cuni.kubinja.hospitalsystem.core.personnel.Patient;
-import cz.cuni.kubinja.hospitalsystem.core.util.ExportsUtil;
+import cz.cuni.kubinja.hospitalsystem.core.export.ExportsUtil;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

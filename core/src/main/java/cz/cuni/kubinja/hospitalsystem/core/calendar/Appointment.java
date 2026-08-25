@@ -3,7 +3,7 @@ package cz.cuni.kubinja.hospitalsystem.core.calendar;
 import cz.cuni.kubinja.hospitalsystem.core.calendar.util.Parts;
 import cz.cuni.kubinja.hospitalsystem.core.personnel.Doctor;
 import cz.cuni.kubinja.hospitalsystem.core.personnel.Patient;
-import cz.cuni.kubinja.hospitalsystem.core.util.Exportable;
+import cz.cuni.kubinja.hospitalsystem.core.export.Exportable;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

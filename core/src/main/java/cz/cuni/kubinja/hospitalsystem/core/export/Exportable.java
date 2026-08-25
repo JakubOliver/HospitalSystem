@@ -1,4 +1,4 @@
-package cz.cuni.kubinja.hospitalsystem.core.util;
+package cz.cuni.kubinja.hospitalsystem.core.export;
 
 /**
  * Requires classes to implement export methods that could be use while exporting content of the classes into files.

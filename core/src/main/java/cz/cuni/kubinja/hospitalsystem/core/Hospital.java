@@ -16,8 +16,8 @@ import cz.cuni.kubinja.hospitalsystem.core.personnel.util.PersonKinds;
 import cz.cuni.kubinja.hospitalsystem.core.personnel.util.DoctorData;
 import cz.cuni.kubinja.hospitalsystem.core.personnel.util.PatientData;
 import cz.cuni.kubinja.hospitalsystem.core.statistics.HospitalStatistics;
-import cz.cuni.kubinja.hospitalsystem.core.util.Exportable;
-import cz.cuni.kubinja.hospitalsystem.core.util.ExportsUtil;
+import cz.cuni.kubinja.hospitalsystem.core.export.Exportable;
+import cz.cuni.kubinja.hospitalsystem.core.export.ExportsUtil;
 
 import java.io.File;
 import java.io.FileWriter;
